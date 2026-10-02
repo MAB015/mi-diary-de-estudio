@@ -93,6 +93,38 @@
         <p class="racha__mejor" id="mejor-racha" hidden>Mejor racha: 0 días</p>
       </section>
 
+      <section class="tarjeta cronometro">
+        <h2 class="tarjeta__titulo" data-i18n="cronometro.titulo">Cronómetro</h2>
+
+        <!-- El reloj NO es aria-live: un lector de pantalla que lee los
+             segundos cada vez es inservible. Lo que se anuncia es el cambio de
+             estado, en un aviso aparte (ver cronometro.anuncio). -->
+        <p class="cronometro__tiempo" id="cronometro-tiempo">00:00</p>
+        <p class="cronometro__estado" id="cronometro-estado">Listo para empezar</p>
+        <p class="visualmente-oculto" id="cronometro-anuncio" aria-live="polite"></p>
+
+        <div class="cronometro__botones">
+          <button class="boton" type="button" id="cronometro-iniciar" data-i18n="cronometro.iniciar">
+            Iniciar
+          </button>
+          <!-- El texto de este lo pone el JS: cambia entre "Pausar" y "Reanudar". -->
+          <button class="boton boton--secundario" type="button" id="cronometro-alternar" hidden>
+            Pausar
+          </button>
+          <button class="boton" type="button" id="cronometro-terminar" hidden data-i18n="cronometro.terminar">
+            Terminar
+          </button>
+          <!-- OJO: sin "display" en estilos/componentes.css, se oculta con el atributo hidden. -->
+          <button class="boton boton--peligro" type="button" id="cronometro-descartar" hidden data-i18n="cronometro.descartar">
+            Descartar
+          </button>
+        </div>
+
+        <p class="cronometro__ayuda" data-i18n="cronometro.ayuda">
+          Al terminar se rellenan los minutos en el formulario.
+        </p>
+      </section>
+
       <section class="tarjeta">
         <h2 class="tarjeta__titulo" data-i18n="meta.titulo">Meta diaria</h2>
 
@@ -200,6 +232,7 @@
     <script src="js/datos.js"></script>
     <script src="js/textos.js"></script>
     <script src="js/preferencias.js"></script>
+    <script src="js/cronometro.js"></script>
     <script src="js/interfaz.js"></script>
   </body>
 </html>

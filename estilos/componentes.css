@@ -99,6 +99,49 @@
   color: var(--texto);
 }
 
+/* --- Cronómetro --- */
+.cronometro {
+  text-align: center;
+}
+
+/* Cifras tabulares: los dígitos tienen la misma anchura y el reloj no baila
+   de un segundo a otro. */
+.cronometro__tiempo {
+  margin: var(--e-3) 0 0;
+  font-size: var(--texto-display);
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+  color: var(--texto);
+}
+
+.cronometro__estado {
+  margin: var(--e-1) 0 0;
+  font-size: var(--texto-sm);
+  font-weight: 600;
+  color: var(--texto-suave);
+}
+
+/* Corriendo, el reloj se pone del color de marca: es lo único que cambia. */
+.cronometro:has(#cronometro-iniciar[hidden]) .cronometro__tiempo {
+  color: var(--fuego);
+}
+
+.cronometro__botones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--e-2);
+  margin-top: var(--e-4);
+}
+
+.cronometro__ayuda {
+  margin: var(--e-4) 0 0;
+  font-size: var(--texto-xs);
+  color: var(--texto-suave);
+}
+
 /* --- Tarjetas --- */
 .tarjeta {
   background: var(--superficie);

@@ -253,6 +253,20 @@ Diario.registrar('interfaz', (function () {
     pintarLeyenda(meta);
   }
 
+  /*
+   * El cronómetro termina y pasa aquí los minutos que ha medido. No se guarda
+   * nada todavía: solo se rellena el formulario para que quien estudia sea quien
+   * confirme. Así sigue habiendo un único camino para escribir en localStorage.
+   */
+  function prepararSesion(minutos) {
+    salirDeEdicion();
+    campoFecha.value = claveDeFecha(new Date());
+    campoMinutos.value = String(minutos);
+    campoTema.value = '';
+    formulario.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    campoTema.focus();
+  }
+
   /* ---------- Validación ---------- */
 
   function mostrarError(campo, mensaje) {
@@ -376,6 +390,10 @@ Diario.registrar('interfaz', (function () {
     // refleja la preferencia guardada en el selector y se le escucha.
     Diario.obtener('preferencias').arrancar();
 
+    // El cronómetro va después porque al arrancar llama a pintar(), y pintar()
+    // necesita el idioma ya puesto.
+    Diario.obtener('cronometro').arrancar();
+
     pintarTodo(datos.leerSesiones());
   }
 
@@ -392,6 +410,7 @@ Diario.registrar('interfaz', (function () {
     ocultarError: ocultarError,
     limpiarErrores: limpiarErrores,
     limpiarFormulario: limpiarFormulario,
+    prepararSesion: prepararSesion,
     salirDeEdicion: salirDeEdicion,
     empezarEdicion: empezarEdicion,
     confirmarBorrado: confirmarBorrado,

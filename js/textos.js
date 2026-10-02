@@ -55,6 +55,19 @@ Diario.registrar('textos', (function () {
       'meta.texto': '{minutos} / {meta} min',
       'meta.cumplida': '¡Meta conseguida!',
 
+      'cronometro.titulo': 'Cronómetro',
+      'cronometro.enMarcha': 'Estudiando',
+      'cronometro.enPausa': 'En pausa',
+      'cronometro.listo': 'Listo para empezar',
+      'cronometro.iniciar': 'Iniciar',
+      'cronometro.pausar': 'Pausar',
+      'cronometro.reanudar': 'Reanudar',
+      'cronometro.terminar': 'Terminar',
+      'cronometro.descartar': 'Descartar',
+      'cronometro.ayuda':
+        'Al terminar se rellenan los minutos en el formulario: tú solo tienes que escribir el tema.',
+      'cronometro.confirmarDescarte': '¿Descartar el tiempo acumulado?',
+
       'calendario.titulo': 'Últimos 28 días',
       'calendario.sinSesion': 'Sin sesión',
       'calendario.hasta': 'Hasta {meta} min',
@@ -109,6 +122,18 @@ Diario.registrar('textos', (function () {
       'meta.texto': '{minutos} / {meta} min',
       'meta.cumplida': 'Goal reached!',
 
+      'cronometro.titulo': 'Timer',
+      'cronometro.enMarcha': 'Studying',
+      'cronometro.enPausa': 'Paused',
+      'cronometro.listo': 'Ready to start',
+      'cronometro.iniciar': 'Start',
+      'cronometro.pausar': 'Pause',
+      'cronometro.reanudar': 'Resume',
+      'cronometro.terminar': 'Finish',
+      'cronometro.descartar': 'Discard',
+      'cronometro.ayuda': 'When you finish, the minutes go into the form: you only write the topic.',
+      'cronometro.confirmarDescarte': 'Discard the accumulated time?',
+
       'calendario.titulo': 'Last 28 days',
       'calendario.sinSesion': 'No session',
       'calendario.hasta': 'Up to {meta} min',
@@ -162,6 +187,19 @@ Diario.registrar('textos', (function () {
       'meta.error': "L'objectif doit être un nombre entier supérieur à 0.",
       'meta.texto': '{minutos} / {meta} min',
       'meta.cumplida': 'Objectif atteint !',
+
+      'cronometro.titulo': 'Minuteur',
+      'cronometro.enMarcha': 'En étude',
+      'cronometro.enPausa': 'En pause',
+      'cronometro.listo': 'Prêt à commencer',
+      'cronometro.iniciar': 'Démarrer',
+      'cronometro.pausar': 'Pause',
+      'cronometro.reanudar': 'Reprendre',
+      'cronometro.terminar': 'Terminer',
+      'cronometro.descartar': 'Abandonner',
+      'cronometro.ayuda':
+        'En terminant, les minutes vont dans le formulaire : il ne reste qu’à écrire le thème.',
+      'cronometro.confirmarDescarte': 'Abandonner le temps accumulé ?',
 
       'calendario.titulo': '28 derniers jours',
       'calendario.sinSesion': 'Aucune session',
