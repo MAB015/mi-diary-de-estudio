@@ -3,7 +3,7 @@
 Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo que ya no aporte.
 
 ## Estado actual
-- v4 en curso: **Fases 0, (a), (b), (c) y (d) listas**. La (e) (panel de estadísticas) es la siguiente.
+- v4 en curso: **Fases 0, (a), (b), (c), (d) y (e) listas**. La (f) (interruptor de movimiento) es la siguiente.
 - Estructura: `js/nucleo.js`, `js/datos.js`, `js/textos.js`, `js/preferencias.js`, `js/cronometro.js`, `js/enfoque.js`, `js/interfaz.js` + `estilos/base.css` y `estilos/componentes.css`. `app.js` y `styles.css` borrados.
 - Funcionalidad intacta: registrar sesiones, racha actual, mejor racha, meta diaria, calendario de 28 días y editar/eliminar.
 - **Fase (a)**: tema claro/oscuro completo, selector con radios nativos, llama SVG por tramos y estados de interacción.
@@ -11,7 +11,7 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - **Fase (c)**: cronómetro que sobrevive al cierre de la pestaña (guarda marcas de tiempo, no un contador) y pasa los minutos al formulario sin guardarlos.
 - **Fase (d)**: modo enfoque, con `<dialog>` nativo, pantalla completa opcional y reloj que cuenta hacia arriba con objetivo.
 - Datos en `localStorage`: `sesiones`, `meta`, `tema`, `idioma`, `cronometro` y `enfoque`.
-- Verificado: **451 comprobaciones** en arnés `node:vm` + Chrome headless a 320/375/500 px, texto al 200 %, ambos temas, tres idiomas, `prefers-reduced-motion`, `forced-colors` y foco. Sin desborde ni errores de consola. 46/46 contrastes ≥ 4.5:1.
+- Verificado: **484 comprobaciones** en arnés `node:vm` + Chrome headless a 320/375/500 px, texto al 200 %, ambos temas, tres idiomas, `prefers-reduced-motion`, `forced-colors` y foco. Sin desborde ni errores de consola. 46/46 contrastes ≥ 4.5:1.
 - Skill de UI en `.opencode/skills/ui-director-accesible/SKILL.md`, obligatoria para todo lo visual.
 
 ## Decisiones (y por qué)
@@ -40,6 +40,10 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - Editar conserva el `id`: si creara uno nuevo, el orden entre sesiones del mismo día saltaría al guardar.
 - Mejor racha derivada de las sesiones, nunca guardada: sin clave nueva ni migración, y el récord no puede quedarse viejo si se borran datos a mano.
 - Las fechas futuras no cuentan para la racha, la mejor racha, la meta ni el calendario, aunque sí salen en la lista.
+- El filtro del panel **no se guarda**: el periodo es una decisión de esta visita, no un dato, y por eso vive en `diasPeriodo` y no en `localStorage` ni en el DOM.
+- El gráfico del panel tiene **tope de 30 días aunque el periodo sea todo**; por eso `#grafico-nota` avisa con `hidden`, y los días del KPI se cuentan con fechas únicas de las sesiones y no desde las barras.
+- El filtro del panel **no se guarda**: el periodo es una decisión de esta visita, no un dato, y por eso vive en diasPeriodo y no en localStorage ni en el DOM.
+- El gráfico del panel tiene **tope de 30 días aunque el periodo sea todo**; por eso #grafico-nota avisa con hidden, y los días del KPI se cuentan con fechas únicas de las sesiones y no desde las barras.
 
 ## Aprendizajes y errores a evitar
 - Varios `<script src>` clásicos **sí** cargan desde `file://`; un módulo ES falla con `blocked by CORS policy`. La duda ya está resuelta a favor de los clásicos.
@@ -58,8 +62,9 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - **Un aviso `aria-live` no puede reescribirse en cada tick**: si la frase lleva los segundos, cambia cada segundo y el lector de pantalla lee la hora cada segundo. Se compara la descripción y solo se toca al cambiar de estado.
 - Un solo hueco de oyente (`avisarAlCambiar = fn`) con tres módulos que pintan es un fallo silencioso: el último en apuntarse anula a los otros dos. La lista de oyentes era obligatoria.
 - En el arnés, dos módulos que exportan `iniciar`/`pausar`/`pintar` se pisan al reexportarlos como globales: el último define la variable y las pruebas del otro módulo se ejecutan contra la función equivocada **sin fallar**. Prefijar.
+- En SVG la clase se escribe **entera** en un atributo (`class="barra barra--maxima"`): en las pruebas hay que buscar el nombre dentro de la cadena, no compararla, y los `<text>` son hijos directos del `<svg>` sin `hijos` de grupo, que es un `TypeError` esperando.
 
 ## Próximos pasos
-- Fase (e): `js/panel.js` + `estilos/panel.css`, con pestañas, KPI, gráfico SVG y filtros.
-- Fases (f) y (g): interruptor de movimiento (con `diario-de-estudio.movimiento`) y sonidos con `diario-de-estudio.sonido`.
-- Cerrar con una auditoría WCAG completa y una pasada de accesibilidad en el panel.
+- Fase (f): interruptor de movimiento (con `diario-de-estudio.movimiento`).
+- Fase (g): sonidos con `diario-de-estudio.sonido`.
+- Cerrar con una auditoría WCAG completa.

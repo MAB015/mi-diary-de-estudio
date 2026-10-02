@@ -93,6 +93,21 @@ Diario.registrar('textos', (function () {
       'enfoque.anuncioPausa': 'Sesión en pausa.',
       'enfoque.confirmarSalir': '¿Salir de la sesión? El tiempo de hoy no se guardará.',
 
+      'panel.titulo': 'Estadísticas',
+      'panel.periodo': 'Periodo',
+      'panel.ultimos7': '7 días',
+      'panel.ultimos30': '30 días',
+      'panel.todo': 'Todo',
+      'panel.totalMinutos': 'Minutos',
+      'panel.mediaDiaria': 'Media diaria',
+      'panel.diasConSesion': 'Días con sesión',
+      'panel.numSesiones': 'Sesiones',
+'panel.minutosPorDia': 'Minutos por día',
+    'panel.ayudaGrafico': 'Pasa el ratón por una barra para ver el día.',
+    'panel.ultimos30Nota': 'El gráfico muestra siempre los últimos 30 días.',
+      'panel.reparto': 'Reparto del tiempo',
+      'panel.sinDatos': 'Todavía no hay sesiones en este periodo.',
+
       'calendario.titulo': 'Últimos 28 días',
       'calendario.sinSesion': 'Sin sesión',
       'calendario.hasta': 'Hasta {meta} min',
@@ -182,6 +197,21 @@ Diario.registrar('textos', (function () {
       'enfoque.anuncioInicio': 'Session for {tema} started. Goal: {minutos} minutes.',
       'enfoque.anuncioPausa': 'Session paused.',
       'enfoque.confirmarSalir': 'Leave the session? Today’s time will not be saved.',
+
+      'panel.titulo': 'Statistics',
+      'panel.periodo': 'Period',
+      'panel.ultimos7': '7 days',
+      'panel.ultimos30': '30 days',
+      'panel.todo': 'All',
+      'panel.totalMinutos': 'Minutes',
+      'panel.mediaDiaria': 'Daily average',
+      'panel.diasConSesion': 'Days studied',
+      'panel.numSesiones': 'Sessions',
+'panel.minutosPorDia': 'Minutes per day',
+    'panel.ayudaGrafico': 'Hover over a bar to see the day.',
+    'panel.ultimos30Nota': 'The chart always shows the last 30 days.',
+      'panel.reparto': 'Where the time went',
+      'panel.sinDatos': 'No sessions in this period yet.',
 
       'calendario.titulo': 'Last 28 days',
       'calendario.sinSesion': 'No session',
@@ -274,6 +304,21 @@ Diario.registrar('textos', (function () {
       'enfoque.anuncioInicio': 'Session « {tema} » démarrée. Objectif : {minutos} minutes.',
       'enfoque.anuncioPausa': 'Session en pause.',
       'enfoque.confirmarSalir': 'Quitter la session ? Le temps d’aujourd’hui ne sera pas enregistré.',
+
+      'panel.titulo': 'Statistiques',
+      'panel.periodo': 'Période',
+      'panel.ultimos7': '7 jours',
+      'panel.ultimos30': '30 jours',
+      'panel.todo': 'Tout',
+      'panel.totalMinutos': 'Minutes',
+      'panel.mediaDiaria': 'Moyenne par jour',
+      'panel.diasConSesion': 'Jours étudiés',
+      'panel.numSesiones': 'Sessions',
+'panel.minutosPorDia': 'Minutes par jour',
+    'panel.ayudaGrafico': 'Passez la souris sur une barre pour voir le jour.',
+    'panel.ultimos30Nota': 'Le graphique montre toujours les 30 derniers jours.',
+      'panel.reparto': 'Répartition du temps',
+      'panel.sinDatos': 'Aucune session sur cette période pour l’instant.',
 
       'calendario.titulo': '28 derniers jours',
       'calendario.sinSesion': 'Aucune session',
@@ -427,6 +472,19 @@ Diario.registrar('textos', (function () {
     });
   }
 
+  /*
+   * La inicial del día de la semana, para las etiquetas del gráfico.
+   * `weekday: 'short'` + corte a un carácter: en español sale "mar." y en
+   * francés "mar.", pero "mié." y "mar." se pisan si no se acorta, y con
+   * 30 días muchas iniciales a la vez ya son ruido.
+   */
+  function inicialDia(clave) {
+    const corto = new Date(`${clave}T00:00:00`).toLocaleDateString(LOCALES[idiomaActual || POR_DEFECTO], {
+      weekday: 'short',
+    });
+    return corto.slice(0, 1).toLocaleUpperCase(LOCALES[idiomaActual || POR_DEFECTO]);
+  }
+
   /* ---------- Pintar el texto fijo de la página ---------- */
 
   /*
@@ -484,6 +542,7 @@ Diario.registrar('textos', (function () {
     formatearNumero: formatearNumero,
     formatearDias: formatearDias,
     fechaLegible: fechaLegible,
+    inicialDia: inicialDia,
     traducirPagina: traducirPagina,
     // Solo para las pruebas: el diccionario entero y las listas de apoyo.
     DICCIONARIO: DICCIONARIO,

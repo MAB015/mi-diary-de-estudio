@@ -7,8 +7,8 @@ Web estática de una sola página para registrar sesiones de estudio y ver la ra
 - **Estructura de ficheros fija.** La app son `index.html`, dos carpetas y opcionalmente `vendor/`. Nada más:
   - `estilos/base.css`: variables de color, reset, tipografía base y contenedor.
   - `estilos/componentes.css`: el aspecto de cada pieza (cabecera, tarjetas, botones, campos, racha, calendario, lista).
-  - `estilos/panel.css`: lo del panel de estadísticas (KPI, gráficos, filtros). **Todavía no existe**: se crea cuando haya panel.
-  - `js/nucleo.js`, `js/datos.js`, `js/textos.js`, `js/preferencias.js`, `js/cronometro.js`, `js/enfoque.js`, `js/interfaz.js`: los que existen. `js/panel.js` se crea con su contenido, no como fichero vacío.
+- `estilos/panel.css`: lo del panel de estadísticas (KPI, gráfico, reparto). Existe desde la v4: es su hoja y no se mezcla con la de componentes.
+- `js/nucleo.js`, `js/datos.js`, `js/textos.js`, `js/preferencias.js`, `js/cronometro.js`, `js/enfoque.js`, `js/panel.js`, `js/interfaz.js`: los que existen.
   - `vendor/`: única excepción para librerías de terceros, con versión exacta en el nombre. Ahora vacío.
   - El orden de los `<link>` y los `<script>` en `index.html` está escrito en el fichero: **no lo cambies por gusto.**
 - **Sin frameworks, sin build, sin paso de compilación, sin CDN.**
@@ -92,6 +92,19 @@ Vale la pena saber por qué se chose esto y no un `app.js` de 2.600 líneas: es 
 5. Terminar llama a `interfaz.prepararSesion(minutos, tema)`: los dos datos, porque el modo enfoque sabe el tema y el cronómetro no. Salir sin terminar es el camino que pierde el rato, y por eso pregunta (`salirPreguntando()`), también con el Escape.
 6. La pantalla completa es un extra: si `requestFullscreen()` falla o no existe (iPhone), la sesión arranca igual y se avisa. Nunca debe ser un requisito.
 7. No reutiliza el cronómetro aunque la fórmula del tiempo sea la misma: aquel se guarda y sobrevive al cierre, este no. Couplarlos costaría más que repetir cuatro líneas.
+
+## Panel de estadísticas
+
+1. **El periodo solo vive en memoria** (`diasPeriodo` en `js/panel.js`), sin clave en `localStorage`: es una decisión de esta visita, no un dato. Guardarlo añadiría una clave y una regla para algo que se repone solo. Por eso el estado no va en el DOM: los radios de `index.html` son la entrada, `diasPeriodo` es la verdad.
+2. Tres periodos y ninguno más: 7 días, 30 días y todo. "Todo" **excluye las fechas futuras**, igual que la racha: una sesión apuntada al futuro no es estudio.
+3. **El gráfico tiene tope de 30 días aunque el periodo sea todo.** Por eso `#grafico-nota` avisa de ello con el atributo `hidden`: los KPI de toda la vida y el gráfico de 30 barras no miden lo mismo, y sin la nota se leerían como si sí. La nota **no puede llevar `display`** en `panel.css` (misma trampa que `.campo__error`).
+4. Los KPI se calculan con `resumen(sesiones)`, contando **fechas únicas de las sesiones**, nunca desde las barras: con "todo", contar desde el gráfico de 30 días dejaría fuera la historia.
+5. El gráfico se construye con `document.createElementNS` y nodos SVG. Un `<rect>` dentro de un `innerHTML` no es un elemento y no lleva `<title>`. La barra más alta se marca con la clase combinada `barra barra--maxima` (en SVG el atributo no se separa solo): en las pruebas hay que buscar la clase **dentro** de la cadena, no compararla entera.
+6. El SVG lleva `role="img"` con un `aria-label` resumen que se escribe en `pintarGrafico()`: los números que importan ya están arriba, en los KPI, y ese texto es el resumen para quien no ve las barras. Cada barra añade su fecha larga y sus minutos en un `<title>`.
+7. `#reparto-vacio` se oculta con `hidden` y no lleva `display`; la lista se construye con `createElement` y el ancho de cada carril va en `style.width` porque son datos, no estados.
+8. El reparto se queda con los **cinco primeros** temas: una lista de veinte no es un resumen y ocupa media pantalla. El desempate es alfabético para que el orden sea estable.
+9. `arrancar()` solo engancha el filtro y la lista de oyentes del idioma: **el primer pintado lo hace `interfaz.pintarTodo()`**, que es el único sitio desde el que se repinta la pantalla entera. Los rótulos del gráfico no salen de `data-i18n` (dependen de los datos), así que `panel.pintar()` está en la lista de `alCambiarIdioma()`.
+10. Los tres periodos se enganchan **uno a uno**: el arnés no tiene `querySelectorAll` y así puede probarlos.
 
 ## Tema claro y oscuro
 

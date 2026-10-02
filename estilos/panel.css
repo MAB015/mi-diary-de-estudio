@@ -1,0 +1,172 @@
+/* ---------------------------------------------------------------------------
+ * estilos/panel.css — el panel de estadísticas.
+ *
+ * Va en su propia hoja y no en componentes.css porque el panel es una pieza
+ * que va y viene (en una fase posterior se puede abrir y cerrar) y no el
+ * aspecto de la app. Aquí tampoco hay ningún color suelto: todo sale de un
+ * token de base.css.
+ * ------------------------------------------------------------------------- */
+
+.panel {
+  margin-top: var(--e-4);
+}
+
+.panel__filtros {
+  margin: var(--e-4) 0 var(--e-6);
+}
+
+.panel__subtitulo {
+  margin: var(--e-8) 0 var(--e-3);
+  font-size: var(--texto-h3);
+}
+
+/* --- Los cuatro números ---
+   Con 4 en una fila a 375 px quedarían en 80 px de ancho y el número no cabe.
+   Por eso 2x2 en móvil y 4 en una fila a partir de 40 rem. */
+.kpis {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--e-3);
+}
+
+@media (min-width: 40rem) {
+  .kpis {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.kpi {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-1);
+  padding: var(--e-3);
+  background: var(--superficie-2);
+  border: 1px solid var(--borde);
+  border-radius: var(--r-2);
+}
+
+.kpi__valor {
+  font-size: var(--texto-h2);
+  font-weight: 700;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  color: var(--fuego-texto);
+  overflow-wrap: anywhere;
+}
+
+.kpi__etiqueta {
+  font-size: var(--texto-xs);
+  color: var(--texto-suave);
+}
+
+/* --- Gráfico de barras ---
+   El SVG escala con el viewBox, así que las barras no necesitan medidas en
+   píxeles: las calcula js/panel.js. El alto mínimo evita que un día con 5
+   minutos y otro con 1 se vean iguales. */
+.grafico {
+  margin: var(--e-6) 0 0;
+}
+
+.grafico__titulo {
+  font-size: var(--texto-base);
+  font-weight: 600;
+  margin-bottom: var(--e-2);
+}
+
+.grafico__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.grafico__svg .barra {
+  fill: var(--llama-2);
+}
+
+.grafico__svg .barra--maxima {
+  fill: var(--llama-4);
+}
+
+.grafico__svg .eje {
+  fill: var(--texto-suave);
+  font-size: 10px;
+  text-anchor: middle;
+}
+
+.grafico__ayuda {
+  margin: var(--e-2) 0 0;
+  font-size: var(--texto-xs);
+  color: var(--texto-suave);
+}
+
+/* La nota del gráfico con el periodo "todo" se oculta con el atributo hidden,
+   así que aquí no puede haber display: un display de autor lo anularía. */
+.grafico__nota {
+  margin: var(--e-1) 0 0;
+  padding-top: var(--e-1);
+  border-top: 1px solid var(--borde);
+  font-size: var(--texto-xs);
+  color: var(--texto-suave);
+}
+
+/* --- Reparto por tema --- */
+.reparto {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-3);
+}
+
+.reparto__fila {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--e-1) var(--e-3);
+  align-items: baseline;
+}
+
+.reparto__tema {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.reparto__cifra {
+  font-size: var(--texto-sm);
+  color: var(--texto-suave);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.reparto__riel {
+  grid-column: 1 / -1;
+  height: 8px;
+  border-radius: var(--r-pill);
+  background: var(--superficie-3);
+  overflow: hidden;
+}
+
+.reparto__relleno {
+  display: block;
+  height: 100%;
+  border-radius: var(--r-pill);
+  background: var(--fuego);
+  transition: width var(--d-grande) var(--e-salida);
+}
+
+/* OJO: sin "display", se oculta con el atributo hidden. */
+.reparto__vacio {
+  margin: 0;
+  color: var(--texto-suave);
+  font-size: var(--texto-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reparto__relleno {
+    transition: none;
+  }
+}

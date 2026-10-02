@@ -86,6 +86,9 @@ Diario.registrar('interfaz', (function () {
     pintarMeta(sesiones);
     pintarCalendario(sesiones);
     pintarSesiones(sesiones);
+    // El panel lee las sesiones por su cuenta (filtra por periodo), así que no
+    // se le pasan: se le pide que se repinte y ya está.
+    Diario.obtener('panel').pintar();
   }
 
   /* ---------- Lista de sesiones ---------- */
@@ -401,6 +404,10 @@ Diario.registrar('interfaz', (function () {
     // El modo enfoque solo engancha botones al arrancar; su diálogo se abre
     // cuando se pulsa la llamada a la acción.
     Diario.obtener('enfoque').arrancar();
+
+    // El panel se engancha al arrancar para ouvir el filtro, pero se pinta desde
+    // pintarTodo(), que es el único sitio desde el que se repinta la pantalla.
+    Diario.obtener('panel').arrancar();
 
     pintarTodo(datos.leerSesiones());
   }

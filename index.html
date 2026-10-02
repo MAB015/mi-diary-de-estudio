@@ -35,6 +35,7 @@
 
     <link rel="stylesheet" href="estilos/base.css" />
     <link rel="stylesheet" href="estilos/componentes.css" />
+  <link rel="stylesheet" href="estilos/panel.css" />
   </head>
   <body>
     <main class="contenedor">
@@ -311,6 +312,81 @@
       </button>
     </div>
 
+    <!-- Panel de estadísticas. Su aspecto va en estilos/panel.css y su lógica en
+         js/panel.js, que se cargan antes que interfaz.js. -->
+    <section class="tarjeta panel" id="panel" aria-labelledby="panel-titulo">
+      <h2 class="tarjeta__titulo" id="panel-titulo" data-i18n="panel.titulo">Estadísticas</h2>
+
+      <fieldset class="ajustes panel__filtros">
+        <legend class="ajustes__leyenda" data-i18n="panel.periodo">Periodo</legend>
+        <div class="ajustes__grupo">
+          <input class="ajustes__radio" type="radio" name="periodo" id="periodo-7" value="7" checked />
+          <label class="ajustes__opcion" for="periodo-7">
+            <span data-i18n="panel.ultimos7">7 días</span>
+          </label>
+          <input class="ajustes__radio" type="radio" name="periodo" id="periodo-30" value="30" />
+          <label class="ajustes__opcion" for="periodo-30">
+            <span data-i18n="panel.ultimos30">30 días</span>
+          </label>
+          <input class="ajustes__radio" type="radio" name="periodo" id="periodo-todo" value="0" />
+          <label class="ajustes__opcion" for="periodo-todo">
+            <span data-i18n="panel.todo">Todo</span>
+          </label>
+        </div>
+      </fieldset>
+
+      <ul class="kpis">
+        <li class="kpi">
+          <span class="kpi__valor" id="kpi-total">0</span>
+          <span class="kpi__etiqueta" data-i18n="panel.totalMinutos">Minutos</span>
+        </li>
+        <li class="kpi">
+          <span class="kpi__valor" id="kpi-media">0</span>
+          <span class="kpi__etiqueta" data-i18n="panel.mediaDiaria">Media diaria</span>
+        </li>
+        <li class="kpi">
+          <span class="kpi__valor" id="kpi-dias">0</span>
+          <span class="kpi__etiqueta" data-i18n="panel.diasConSesion">Días con sesión</span>
+        </li>
+        <li class="kpi">
+          <span class="kpi__valor" id="kpi-sesiones">0</span>
+          <span class="kpi__etiqueta" data-i18n="panel.numSesiones">Sesiones</span>
+        </li>
+      </ul>
+
+      <figure class="grafico">
+        <figcaption class="grafico__titulo" id="grafico-titulo" data-i18n="panel.minutosPorDia">
+          Minutos por día
+        </figcaption>
+        <!-- El SVG lo construye el panel: con 7 o 30 días cambia el número de
+             barras y la etiqueta de cada una. Se pone role="img" con un
+             aria-label-resumen porque los números que importan ya están arriba,
+             en los KPI. -->
+        <svg
+          class="grafico__svg"
+          id="grafico-dias"
+          viewBox="0 0 280 108"
+          role="img"
+          aria-labelledby="grafico-titulo"
+        ></svg>
+<p class="grafico__ayuda" data-i18n="panel.ayudaGrafico">
+Pasa el ratón por una barra para ver el día.
+</p>
+<!-- Con el periodo "todo" el gráfico sigue teachendo los últimos 30 días, así
+que hay que decirlo: si no, los KPI de toda la vida y el gráfico parecerían
+medir lo mismo. Se oculta con el atributo hidden, nunca con display. -->
+<p class="grafico__nota" id="grafico-nota" hidden data-i18n="panel.ultimos30Nota">
+El gráfico muestra siempre los últimos 30 días.
+</p>
+      </figure>
+
+      <h3 class="panel__subtitulo" data-i18n="panel.reparto">Reparto del tiempo</h3>
+      <ul class="reparto" id="reparto"></ul>
+      <p class="reparto__vacio" id="reparto-vacio" hidden data-i18n="panel.sinDatos">
+        Todavía no hay sesiones en este periodo.
+      </p>
+    </section>
+
     <!--
       Los scripts van en este orden y en este orden importa:
       "nucleo" crea el registro de módulos y debe ir primero;
@@ -323,6 +399,7 @@
     <script src="js/preferencias.js"></script>
     <script src="js/cronometro.js"></script>
     <script src="js/enfoque.js"></script>
+    <script src="js/panel.js"></script>
     <script src="js/interfaz.js"></script>
   </body>
 </html>
