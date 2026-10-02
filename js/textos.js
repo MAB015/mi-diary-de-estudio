@@ -145,6 +145,9 @@ Diario.registrar('textos', (function () {
       'ajustes.idiomaEs': 'Español',
       'ajustes.idiomaEn': 'English',
       'ajustes.idiomaFr': 'Français',
+      'ajustes.movimientoLeyenda': 'Movimiento',
+      'ajustes.movimientoSistema': 'Sistema',
+      'ajustes.movimientoReducido': 'Reducido',
     },
 
     en: {
@@ -250,6 +253,9 @@ Diario.registrar('textos', (function () {
       'ajustes.idiomaEs': 'Español',
       'ajustes.idiomaEn': 'English',
       'ajustes.idiomaFr': 'Français',
+      'ajustes.movimientoLeyenda': 'Motion',
+      'ajustes.movimientoSistema': 'System',
+      'ajustes.movimientoReducido': 'Reduced',
     },
 
     fr: {
@@ -357,6 +363,9 @@ Diario.registrar('textos', (function () {
       'ajustes.idiomaEs': 'Español',
       'ajustes.idiomaEn': 'English',
       'ajustes.idiomaFr': 'Français',
+      'ajustes.movimientoLeyenda': 'Mouvement',
+      'ajustes.movimientoSistema': 'Système',
+      'ajustes.movimientoReducido': 'Réduit',
     },
   };
 

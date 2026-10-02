@@ -31,11 +31,23 @@
         if (consulta.addEventListener) consulta.addEventListener('change', aplicar);
         aplicar();
       })();
+
+      // El movimiento se pone aquí también, y por el mismo motivo: si se
+      // aplicara al final, la primera animación saldría sin querer. La clave y
+      // la regla están repetidas en js/preferencias.js a propósito, porque este
+      // script no puede usar Diario (nucleo.js todavía no ha cargado).
+      (function () {
+        'use strict';
+        var PREFERENCIA_MOVIMIENTO = 'diario-de-estudio.movimiento';
+        if (localStorage.getItem(PREFERENCIA_MOVIMIENTO) === 'reducido') {
+          document.documentElement.setAttribute('data-movimiento', 'reducido');
+        }
+      })();
     </script>
 
     <link rel="stylesheet" href="estilos/base.css" />
     <link rel="stylesheet" href="estilos/componentes.css" />
-  <link rel="stylesheet" href="estilos/panel.css" />
+    <link rel="stylesheet" href="estilos/panel.css" />
   </head>
   <body>
     <main class="contenedor">
@@ -82,6 +94,25 @@
 
               <input class="ajustes__radio" type="radio" name="idioma" id="idioma-fr" value="fr" />
               <label class="ajustes__opcion" for="idioma-fr" data-i18n="ajustes.idiomaFr">Français</label>
+            </div>
+          </fieldset>
+        </div>
+
+        <!--
+          El movimiento también es un grupo de radios, y con la misma idea que el
+          tema: "sistema" no pone atributo ninguno (manda el SO), "reducido" lo
+          pone y estilos/componentes.css apaga transiciones y animaciones igual
+          que hace @media (prefers-reduced-motion: reduce).
+        -->
+        <div class="ajustes">
+          <fieldset class="ajustes__seccion">
+            <legend class="ajustes__leyenda" data-i18n="ajustes.movimientoLeyenda">Movimiento</legend>
+            <div class="ajustes__grupo">
+              <input class="ajustes__radio" type="radio" name="movimiento" id="movimiento-sistema" value="sistema" checked />
+              <label class="ajustes__opcion" for="movimiento-sistema" data-i18n="ajustes.movimientoSistema">Sistema</label>
+
+              <input class="ajustes__radio" type="radio" name="movimiento" id="movimiento-reducido" value="reducido" />
+              <label class="ajustes__opcion" for="movimiento-reducido" data-i18n="ajustes.movimientoReducido">Reducido</label>
             </div>
           </fieldset>
         </div>

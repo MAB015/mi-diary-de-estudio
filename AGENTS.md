@@ -60,6 +60,7 @@ Vale la pena saber por qué se chose esto y no un `app.js` de 2.600 líneas: es 
 - `localStorage`, clave `diario-de-estudio.idioma`: `"es"`, `"en"` o `"fr"`. Se guarda el elegido, no el detectado.
 - `localStorage`, clave `diario-de-estudio.cronometro`: `{ estado, inicioMs, pausadoMs, pausaDesdeMs }` del cronómetro. No hay contador: ver "Cronómetro".
 - `localStorage`, clave `diario-de-estudio.enfoque`: `{ minutos, pantallaCompleta }`, la última elección del modo enfoque. La sesión en sí **no** se guarda: si cierras la pestaña, se pierde a propósito.
+- `localStorage`, clave `diario-de-estudio.movimiento`: `"sistema"` (por defecto) o `"reducido"`. Como con el tema, se guarda la preferencia y no el movimiento efectivo: con `sistema` manda el `@media (prefers-reduced-motion)`.
 - `id` es interno. Sirve para **ordenar** sesiones del mismo día (la más reciente guardada arriba) y para **saber cuál se está editando o borrando**. No lo pongas en la interfaz.
 - Puntos de entrada, por módulo: en `js/datos.js`, `calcularRacha()`, `calcularMejorRacha()`, `leerSesiones()`, `leerMeta()`; en `js/interfaz.js`, `pintarTodo()`, `validar()`, `pintarRacha()`, `pintarMeta()`, `pintarCalendario()`, `pintarSesiones()`. Todo lo demás son satélites de esos.
 - `pintarTodo(sesiones)` es el único sitio desde el que se repinta la pantalla entera. Si añades algo que dependa de las sesiones, llámalo desde ahí y no desde el manejador del botón.
@@ -141,8 +142,11 @@ El filtro de periodo hace de navegación: 7 días / 30 días / todo, con los tre
 ## Movimiento
 
 1. Todo movimiento pasa por tokens (`--d-micro`, `--d-estandar`, `--d-grande`, `--e-salida`, `--e-entrada`) y por la regla final de `componentes.css` que respeta `prefers-reduced-motion`.
-2. El interruptor visible "Reducir animaciones" **todavía no existe**: hasta que exista, no añadas movimiento automático de más de 5 s (fondos animados, partículas). La skill lo exige y no hay forma de pausarlo todavía.
-3. Con `--force-prefers-reduced-motion` todas las duraciones bajan a `0.00001s`. Ojo: `getAnimations()` sigue listando transiciones "en curso" porque el reloj del compositor no sigue al tiempo virtual de `--virtual-time-budget`; mide `transitionDuration` en vez de `playState`.
+2. El interruptor visible es un `<fieldset>` de **dos radios** (`movimiento-sistema` y `movimiento-reducido`), como el tema: "Sistema" y "Reducido". **No hay opción "Completo"**: una preferencia del SO no se puede desactivar con CSS, así que prometerlo sería mentir sobre lo que hace el selector.
+3. Solo `reducido` pone atributo: `data-movimiento="reducido"` en `<html>`. "Sistema" lo quita, porque sin atributo manda el `@media` y así el sistema sigue siendo quien decide. La clave se aplica también en el `<script>` inline de `<head>` (antes de los `<link>`), por el mismo motivo que el tema: si se aplicara al final, la primera transición saldría sin querer.
+4. La regla de CSS está **escrita dos veces** a propósito (el `@media` y el selector del atributo) porque una media query no puede meter selectores dentro. Si añades otro sitio que anime algo, los dos bloques lo cubren; no hace falta tocar nada más.
+5. Aun así, **no añadas movimiento automático de más de 5 s** (fondos animados, partículas): reducir el movimiento no es "no mover nada" y un bucle infinito sigue molestando con `animation-iteration-count: 1`.
+6. Con `--force-prefers-reduced-motion` (o con `data-movimiento="reducido"`) todas las duraciones bajan a `0.00001s`. Ojo: `getAnimations()` sigue listando transiciones "en curso" porque el reloj del compositor no sigue al tiempo virtual de `--virtual-time-budget`; mide `transitionDuration` en vez de `playState`.
 
 ## Meta diaria
 

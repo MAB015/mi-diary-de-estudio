@@ -718,8 +718,13 @@ body.en-foco .enfoque {
 }
 
 /* --- Movimiento reducido ---
-   El interruptor visible llega en una fase posterior; esto cubre a quien lo
-   tiene activado en el sistema desde el minuto uno. */
+   Dos caminos para lo mismo, y por eso el bloque está escrito dos veces:
+
+   1. La preferencia del sistema, con @media. Cubre a quien lo tiene activado
+      en el SO desde el minuto uno.
+   2. El interruptor "Reducido" de la app, que pone data-movimiento="reducido"
+      en <html>. No se puede escribir como un selector dentro del @media porque
+      una preferencia no se puede desactivar con CSS, y tiene que ser aparte. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -728,4 +733,12 @@ body.en-foco .enfoque {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+:root[data-movimiento="reducido"] *,
+:root[data-movimiento="reducido"] *::before,
+:root[data-movimiento="reducido"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
 }

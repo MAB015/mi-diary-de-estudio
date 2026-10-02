@@ -1,5 +1,5 @@
 /*
- * preferencias.js — el tema (y más adelante el sonido y las animaciones).
+ * preferencias.js - el tema, el idioma y el movimiento.
  *
  * El script de la cabecera ya pone el tema antes del primer pintado; aquí
  * solo se conecta el selector de la pantalla con esa misma decisión.
@@ -67,6 +67,17 @@ Diario.registrar('preferencias', (function () {
       if (radio) radio.addEventListener('change', () => elegirTema(valor));
     }
 
+    // El movimiento va aparte porque "reducido" no depende del sistema: o se
+    // reduce siempre, o no se toca nada y manda el SO.
+    const movimiento = movimientoGuardado();
+    marcarMovimientoEnElSelector(movimiento);
+    aplicarMovimiento(movimiento);
+
+    for (const valor of VALORES_MOVIMIENTO) {
+      const radio = document.getElementById(`movimiento-${valor}`);
+      if (radio) radio.addEventListener('change', () => elegirMovimiento(valor));
+    }
+
     // Mientras la preferencia sea "sistema", el cambio del sistema se sigue
     // en vivo. Al elegir un tema a mano, esta llamada deja de importar.
     if (consulta.addEventListener) {
@@ -79,10 +90,53 @@ Diario.registrar('preferencias', (function () {
     }
   }
 
+  /* ---------- Movimiento ---------- */
+
+  const CLAVE_MOVIMIENTO = 'diario-de-estudio.movimiento';
+  const VALORES_MOVIMIENTO = ['sistema', 'reducido'];
+
+  /*
+   * "sistema" no pone atributo ninguno: así manda el @media
+   * (prefers-reduced-motion: reduce) y el sistema sigue siendo la fuente. El
+   * atributo solo se pone para "reducido", que es una decisión explícita y por
+   * eso necesita un estado que lo distinga de "sistema".
+   */
+  function aplicarMovimiento(preferencia) {
+    if (preferencia === 'reducido') {
+      document.documentElement.setAttribute('data-movimiento', 'reducido');
+    } else {
+      document.documentElement.removeAttribute('data-movimiento');
+    }
+  }
+
+  function movimientoGuardado() {
+    const guardada = localStorage.getItem(CLAVE_MOVIMIENTO);
+    return VALORES_MOVIMIENTO.indexOf(guardada) === -1 ? 'sistema' : guardada;
+  }
+
+  function marcarMovimientoEnElSelector(valor) {
+    for (const otro of VALORES_MOVIMIENTO) {
+      const radio = document.getElementById(`movimiento-${otro}`);
+      if (radio) radio.checked = otro === valor;
+    }
+  }
+
+  function elegirMovimiento(valor) {
+    const elegido = VALORES_MOVIMIENTO.indexOf(valor) === -1 ? 'sistema' : valor;
+    localStorage.setItem(CLAVE_MOVIMIENTO, elegido);
+    aplicarMovimiento(elegido);
+    marcarMovimientoEnElSelector(elegido);
+    return elegido;
+  }
+
   return {
     arrancar: arrancar,
     elegirTema: elegirTema,
     aplicar: aplicar,
     preferenciaGuardada: preferenciaGuardada,
+    elegirMovimiento: elegirMovimiento,
+    aplicarMovimiento: aplicarMovimiento,
+    movimientoGuardado: movimientoGuardado,
+    marcarMovimientoEnElSelector: marcarMovimientoEnElSelector,
   };
 })());

@@ -3,15 +3,17 @@
 Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo que ya no aporte.
 
 ## Estado actual
-- v4 en curso: **Fases 0, (a), (b), (c), (d) y (e) listas**. La (f) (interruptor de movimiento) es la siguiente.
-- Estructura: `js/nucleo.js`, `js/datos.js`, `js/textos.js`, `js/preferencias.js`, `js/cronometro.js`, `js/enfoque.js`, `js/interfaz.js` + `estilos/base.css` y `estilos/componentes.css`. `app.js` y `styles.css` borrados.
+- v4 en curso: **Fases 0, (a), (b), (c), (d), (e) y (f) listas**. La (g) (sonidos) es la siguiente.
+- Estructura: `js/nucleo.js`, `js/datos.js`, `js/textos.js`, `js/preferencias.js`, `js/cronometro.js`, `js/enfoque.js`, `js/panel.js`, `js/interfaz.js` + `estilos/base.css`, `estilos/componentes.css` y `estilos/panel.css`. `app.js` y `styles.css` borrados.
 - Funcionalidad intacta: registrar sesiones, racha actual, mejor racha, meta diaria, calendario de 28 días y editar/eliminar.
 - **Fase (a)**: tema claro/oscuro completo, selector con radios nativos, llama SVG por tramos y estados de interacción.
 - **Fase (b)**: i18n ES/EN/FR completo con `js/textos.js` y selector de idioma.
 - **Fase (c)**: cronómetro que sobrevive al cierre de la pestaña (guarda marcas de tiempo, no un contador) y pasa los minutos al formulario sin guardarlos.
 - **Fase (d)**: modo enfoque, con `<dialog>` nativo, pantalla completa opcional y reloj que cuenta hacia arriba con objetivo.
-- Datos en `localStorage`: `sesiones`, `meta`, `tema`, `idioma`, `cronometro` y `enfoque`.
-- Verificado: **484 comprobaciones** en arnés `node:vm` + Chrome headless a 320/375/500 px, texto al 200 %, ambos temas, tres idiomas, `prefers-reduced-motion`, `forced-colors` y foco. Sin desborde ni errores de consola. 46/46 contrastes ≥ 4.5:1.
+- **Fase (e)**: panel de estadísticas en `js/panel.js` + `estilos/panel.css`: filtro de 7/30/todo, cuatro KPI, gráfico SVG con tope de 30 días y reparto por los cinco temas principales.
+- **Fase (f)**: interruptor de movimiento (`diario-de-estudio.movimiento`, `sistema` / `reducido`), aplicado en `<head>` antes de los `<link>` para que la primera transición no salga sin querer.
+- Datos en `localStorage`: `sesiones`, `meta`, `tema`, `idioma`, `cronometro`, `enfoque` y `movimiento`.
+- Verificado: **500 comprobaciones** en arnés `node:vm` + Chrome headless a 320/375/500 px, texto al 200 %, ambos temas, tres idiomas, `prefers-reduced-motion`, `forced-colors` y foco. Sin desborde ni errores de consola. 46/46 contrastes ≥ 4.5:1.
 - Skill de UI en `.opencode/skills/ui-director-accesible/SKILL.md`, obligatoria para todo lo visual.
 
 ## Decisiones (y por qué)
@@ -43,6 +45,7 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - El filtro del panel **no se guarda**: el periodo es una decisión de esta visita, no un dato, y por eso vive en `diasPeriodo` y no en `localStorage` ni en el DOM.
 - El gráfico del panel tiene **tope de 30 días aunque el periodo sea todo**; por eso `#grafico-nota` avisa con `hidden`, y los días del KPI se cuentan con fechas únicas de las sesiones y no desde las barras.
 - El panel **no lleva pestañas**: el filtro de periodo hace de navegación. Dos pestañas serían un widget (`role="tablist"`, flechas, `tabindex` rodante) para dos destinos, cuando el tercero ya tiene su tarjeta; los radios nativos dan lo mismo gratis y son los mismos que el tema y el idioma.
+- El movimiento tiene solo **dos** opciones (Sistema / Reducido), no tres: una preferencia del SO **no se puede desactivar con CSS**, así que prometer "Completo" sería mentir sobre lo que hace el selector. Solo `reducido` pone atributo; "Sistema" lo quita para que el `@media` siga mandando.
 - El filtro del panel **no se guarda**: el periodo es una decisión de esta visita, no un dato, y por eso vive en diasPeriodo y no en localStorage ni en el DOM.
 - El gráfico del panel tiene **tope de 30 días aunque el periodo sea todo**; por eso #grafico-nota avisa con hidden, y los días del KPI se cuentan con fechas únicas de las sesiones y no desde las barras.
 
@@ -66,6 +69,5 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - En SVG la clase se escribe **entera** en un atributo (`class="barra barra--maxima"`): en las pruebas hay que buscar el nombre dentro de la cadena, no compararla, y los `<text>` son hijos directos del `<svg>` sin `hijos` de grupo, que es un `TypeError` esperando.
 
 ## Próximos pasos
-- Fase (f): interruptor de movimiento (con `diario-de-estudio.movimiento`).
 - Fase (g): sonidos con `diario-de-estudio.sonido`.
 - Cerrar con una auditoría WCAG completa.
