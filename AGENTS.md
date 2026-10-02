@@ -10,8 +10,20 @@ Web estática de una sola página para registrar sesiones de estudio y ver la ra
 - **Código para principiantes**: nombres descriptivos, funciones cortas, comentarios breves que expliquen el *porqué*. Nada de abstracciones ni helpers genéricos por adelantado.
 - **Alcance cerrado**: nada de gráficos, estadísticas, exportación ni "mejoras" no pedidas. Si una idea es buena pero no está en el encargo, no la añadas. (Editar y eliminar sí están: ver "Editar y eliminar".)
 - Móvil primero. Revisar siempre a **375 px de ancho**.
-- El repo está en GitHub (`MAB015/mi-diary-de-estudio`): commit y push solo cuando lo pida, nunca por iniciativa propia.
+- El repo está en GitHub (`MAB015/mi-diary-de-estudio`). Todo cambio que añada, modifique o quite algo se documenta con un commit: ver "Commits".
 - Este `AGENTS.md` es un archivo de documentación permitido; la regla de "tres archivos" es solo de la app. `README.md` también.
+
+## Commits
+
+1. **Cada cambio se documenta con un commit.** Añadir una función, corregir un fallo, tocar estilos o reescribir el `AGENTS.md` son motivos de commit. Si un cambio no está en un commit, está perdido.
+2. **Primero verificar, después commitear.** Nada de commitear a ciegas: antes pasa el arnés (`node:vm`) y Chrome headless. Si no hay forma de probar el cambio, dilo en el mensaje del commit.
+3. **Un commit por cambio coherente**, no uno por línea ni uno gigante con todo. Si puedes explicarlo en una frase, es un commit; si necesitas decir "y también" dos veces, probablemente son dos.
+4. **El mensaje dice qué se hizo y por qué**, en español. Asunto con el nombre del proyecto y la función, como el primero: `Diario de Estudio: <qué>`. Debajo, el cuerpo con los *porqués* y los detalles que no se ven leyendo el diff.
+5. **El código y su documentación van en el mismo commit.** Si un cambio altera el comportamiento, actualiza `AGENTS.md` (reglas) y/o `MEMORY.md` (estado) en ese mismo commit, nunca en uno suelto después.
+6. **Nada de basura en el repo.** Solo los seis ficheros del proyecto. Las copias de prueba, los arneses y los perfiles de Chrome se quedan fuera, en la carpeta temporal.
+7. **No reescribas historia publicada.** Nada de `amend`, `rebase` ni `push --force` sobre lo que ya está en GitHub. Un commit ya subido se corrige con otro commit.
+8. **`push` cuando el usuario lo pida** o al cerrar una tanda de trabajo; el commit en local sí es siempre inmediato.
+9. Si el repo cambia de nombre o de sitio, actualiza la línea de GitHub de la cabecera.
 
 ## Dónde vive cada cosa
 
