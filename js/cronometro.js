@@ -16,6 +16,7 @@ Diario.registrar('cronometro', (function () {
 
   // Ya está cargado cuando este fichero se ejecuta: se puede coger arriba.
   const textos = Diario.obtener('textos');
+  const sonido = Diario.obtener('sonido');
 
   const CLAVE = 'diario-de-estudio.cronometro';
 
@@ -121,6 +122,7 @@ Diario.registrar('cronometro', (function () {
     guardar();
     ponerEnMarcha();
     pintar();
+    sonido.tocar('reloj');
   }
 
   function pausar() {
@@ -130,6 +132,7 @@ Diario.registrar('cronometro', (function () {
     pararElReloj();
     guardar();
     pintar();
+    sonido.tocar('pausa');
   }
 
   function reanudar() {
@@ -141,6 +144,7 @@ Diario.registrar('cronometro', (function () {
     guardar();
     ponerEnMarcha();
     pintar();
+    sonido.tocar('reloj');
   }
 
   /* Alterna pausa y reanudación: es el mismo botón con dos textos. */
@@ -155,6 +159,7 @@ Diario.registrar('cronometro', (function () {
    */
   function terminar() {
     const minutos = minutosTranscurridos();
+    sonido.tocar('fin');
     estado = 'parado';
     inicioMs = 0;
     pausadoMs = 0;

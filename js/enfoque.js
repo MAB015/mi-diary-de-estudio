@@ -19,6 +19,7 @@ Diario.registrar('enfoque', (function () {
   'use strict';
 
   const textos = Diario.obtener('textos');
+  const sonido = Diario.obtener('sonido');
 
   const CLAVE = 'diario-de-estudio.enfoque';
   const OBJETIVO_POR_DEFECTO = 25;
@@ -178,6 +179,7 @@ Diario.registrar('enfoque', (function () {
     document.getElementById('enfoque-alternar').focus();
     ponerEnMarcha();
     pintar();
+    sonido.tocar('reloj');
     return true;
   }
 
@@ -211,6 +213,7 @@ Diario.registrar('enfoque', (function () {
     pararElReloj();
     pintar();
     document.getElementById('enfoque-anuncio').textContent = textos.t('enfoque.anuncioPausa');
+    sonido.tocar('pausa');
   }
 
   function reanudar() {
@@ -219,6 +222,7 @@ Diario.registrar('enfoque', (function () {
     pausaDesdeMs = 0;
     ponerEnMarcha();
     pintar();
+    sonido.tocar('reloj');
   }
 
   function alternar() {
@@ -234,6 +238,7 @@ Diario.registrar('enfoque', (function () {
     if (!activo) return;
     const minutos = minutosTranscurridos();
     salir();
+    sonido.tocar('fin');
     // interfaz.js se carga después: se pide dentro de la función.
     Diario.obtener('interfaz').prepararSesion(minutos, temaSesion);
   }
@@ -299,6 +304,7 @@ Diario.registrar('enfoque', (function () {
     if (!objetivoCumplido && minutos >= objetivoMinutos) {
       objetivoCumplido = true;
       document.getElementById('enfoque-anuncio').textContent = textos.t('enfoque.objetivoCumplido');
+      sonido.tocar('logro');
     }
 
     document.getElementById('enfoque-alternar').textContent = textos.t(

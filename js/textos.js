@@ -148,6 +148,8 @@ Diario.registrar('textos', (function () {
       'ajustes.movimientoLeyenda': 'Movimiento',
       'ajustes.movimientoSistema': 'Sistema',
       'ajustes.movimientoReducido': 'Reducido',
+      'ajustes.sonidoLeyenda': 'Sonido',
+      'ajustes.sonidoActivar': 'Activar pitidos',
     },
 
     en: {
@@ -256,6 +258,8 @@ Diario.registrar('textos', (function () {
       'ajustes.movimientoLeyenda': 'Motion',
       'ajustes.movimientoSistema': 'System',
       'ajustes.movimientoReducido': 'Reduced',
+      'ajustes.sonidoLeyenda': 'Sound',
+      'ajustes.sonidoActivar': 'Enable beeps',
     },
 
     fr: {
@@ -366,6 +370,8 @@ Diario.registrar('textos', (function () {
       'ajustes.movimientoLeyenda': 'Mouvement',
       'ajustes.movimientoSistema': 'Système',
       'ajustes.movimientoReducido': 'Réduit',
+      'ajustes.sonidoLeyenda': 'Son',
+      'ajustes.sonidoActivar': 'Activer les bips',
     },
   };
 

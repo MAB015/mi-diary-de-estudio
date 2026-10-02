@@ -14,6 +14,7 @@ Diario.registrar('interfaz', (function () {
 
   const datos = Diario.obtener('datos');
   const textos = Diario.obtener('textos');
+  const sonido = Diario.obtener('sonido');
   const claveDeFecha = Diario.fechas.claveDeFecha;
 
   const formulario = document.getElementById('formulario');
@@ -41,6 +42,16 @@ Diario.registrar('interfaz', (function () {
    */
   let idEnEdicion = null;
 
+  /*
+   * Lo pintado la última vez, para poder distinguir "se cumple" de "ya estaba
+   * cumplido". Los dos casos valen lo mismo que el tono de logro: suena
+   * cuando la meta se cruza y cuando la llama sube de tramo, no en cada
+   * repintado. `null` y `0` son "todavía no se ha pintado nada", así que el
+   * primer pintado al cargar la página nunca suena.
+   */
+  let metaCumplidaAntes = null;
+  let tramoDeLlamaAntes = 0;
+
   /* ---------- Racha y meta ---------- */
 
   function pintarRacha(sesiones) {
@@ -58,6 +69,13 @@ Diario.registrar('interfaz', (function () {
     // no cabe más, y un número que sube cada vez daría la sensación de que
     // el esfuerzo diario no cuenta. El color y el tamaño van en el CSS.
     tarjetaRacha.className = `tarjeta racha racha--${tramoDeLlama(dias)}`;
+
+    // El tono de logro cuando la llama pasa a un tramo nuevo: es el momento que
+    // más merece un aviso. Solo si crece, y solo si ya había llama antes, para
+    // que cargar la página no suene.
+    const tramo = tramoDeLlama(dias);
+    if (tramoDeLlamaAntes > 0 && tramo > tramoDeLlamaAntes) sonido.tocar('logro');
+    tramoDeLlamaAntes = tramo;
   }
 
   /* 1-2, 3-6, 7-29 y 30 o más. */
@@ -78,6 +96,11 @@ Diario.registrar('interfaz', (function () {
     rellenoBarra.style.width = `${Math.min(100, (minutos / meta) * 100)}%`;
     barra.classList.toggle('barra--cumplida', cumplida);
     textoMetaCumplida.hidden = !cumplida;
+
+    // Igual que con la llama: el tono suena al cruzar la meta, no en cada
+    // repintado. Por eso hace falta acordarse de cómo estaba la vez anterior.
+    if (metaCumplidaAntes === false && cumplida) sonido.tocar('logro');
+    metaCumplidaAntes = cumplida;
   }
 
   /* Repinta todo lo que depende de las sesiones desde un único sitio. */
@@ -281,6 +304,9 @@ Diario.registrar('interfaz', (function () {
     aviso.textContent = mensaje;
     aviso.hidden = false;
     campo.setAttribute('aria-invalid', 'true');
+    // Un tono grave y corto: el mensaje sale del campo, así que el sonido solo
+    // avisa de que hay algo que rehacer sin tener que mirar el texto.
+    sonido.tocar('error');
   }
 
   function ocultarError(campo) {
@@ -375,6 +401,10 @@ Diario.registrar('interfaz', (function () {
       salirDeEdicion();
 
       pintarTodo(sesiones);
+      // El tono va después de pintar: si el guardado falla, no ha sonado nada.
+      // El pitido de logro (meta o racha) lo pone pintarTodo(), que es quien
+      // se entera de las dos cosas.
+      sonido.tocar('guardado');
       campoTema.focus();
     });
 
@@ -396,6 +426,10 @@ Diario.registrar('interfaz', (function () {
     // El tema ya está puesto por el script de la cabecera; aquí solo se
     // refleja la preferencia guardada en el selector y se le escucha.
     Diario.obtener('preferencias').arrancar();
+
+    // El sonido va antes que cronometro y enfoque: los dos suenan al arrancar
+    // sus relojes, y sin él el primer pitido se pierde.
+    Diario.obtener('sonido').arrancar();
 
     // El cronómetro va después porque al arrancar llama a pintar(), y pintar()
     // necesita el idioma ya puesto.

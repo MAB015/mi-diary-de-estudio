@@ -115,6 +115,18 @@
               <label class="ajustes__opcion" for="movimiento-reducido" data-i18n="ajustes.movimientoReducido">Reducido</label>
             </div>
           </fieldset>
+
+          <!-- El sonido es un sí/no, y un sí/no es una casilla: con radios
+               habría que inventar un valor para "apagado" que además no siempre
+               es lo contrario de "encendido" (puede estar en pausa por el
+               navegador). Va apagado por defecto. -->
+          <fieldset class="ajustes__seccion">
+            <legend class="ajustes__leyenda" data-i18n="ajustes.sonidoLeyenda">Sonido</legend>
+            <div class="ajustes__grupo">
+              <input class="ajustes__radio" type="checkbox" id="sonido-activo" />
+              <label class="ajustes__opcion" for="sonido-activo" data-i18n="ajustes.sonidoActivar">Activar pitidos</label>
+            </div>
+          </fieldset>
         </div>
       </header>
 
@@ -421,6 +433,7 @@ El gráfico muestra siempre los últimos 30 días.
     <!--
       Los scripts van en este orden y en este orden importa:
       "nucleo" crea el registro de módulos y debe ir primero;
+      "sonido" va antes que quien lo llama (cronometro, enfoque, interfaz);
       "interfaz" se pone en marcha al final, cuando todo lo demás está cargado.
       Prohibido type="module" e import: rompen la apertura con doble clic.
     -->
@@ -428,6 +441,7 @@ El gráfico muestra siempre los últimos 30 días.
     <script src="js/datos.js"></script>
     <script src="js/textos.js"></script>
     <script src="js/preferencias.js"></script>
+    <script src="js/sonido.js"></script>
     <script src="js/cronometro.js"></script>
     <script src="js/enfoque.js"></script>
     <script src="js/panel.js"></script>

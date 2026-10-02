@@ -8,7 +8,7 @@ Web estática de una sola página para registrar sesiones de estudio y ver la ra
   - `estilos/base.css`: variables de color, reset, tipografía base y contenedor.
   - `estilos/componentes.css`: el aspecto de cada pieza (cabecera, tarjetas, botones, campos, racha, calendario, lista).
 - `estilos/panel.css`: lo del panel de estadísticas (KPI, gráfico, reparto). Existe desde la v4: es su hoja y no se mezcla con la de componentes.
-- `js/nucleo.js`, `js/datos.js`, `js/textos.js`, `js/preferencias.js`, `js/cronometro.js`, `js/enfoque.js`, `js/panel.js`, `js/interfaz.js`: los que existen.
+- `js/nucleo.js`, `js/datos.js`, `js/textos.js`, `js/preferencias.js`, `js/cronometro.js`, `js/enfoque.js`, `js/panel.js`, `js/interfaz.js`: los que existen. `js/sonido.js` es el noveno, y va **antes** de los tres que lo llaman.
   - `vendor/`: única excepción para librerías de terceros, con versión exacta en el nombre. Ahora vacío.
   - El orden de los `<link>` y los `<script>` en `index.html` está escrito en el fichero: **no lo cambies por gusto.**
 - **Sin frameworks, sin build, sin paso de compilación, sin CDN.**
@@ -61,6 +61,7 @@ Vale la pena saber por qué se chose esto y no un `app.js` de 2.600 líneas: es 
 - `localStorage`, clave `diario-de-estudio.cronometro`: `{ estado, inicioMs, pausadoMs, pausaDesdeMs }` del cronómetro. No hay contador: ver "Cronómetro".
 - `localStorage`, clave `diario-de-estudio.enfoque`: `{ minutos, pantallaCompleta }`, la última elección del modo enfoque. La sesión en sí **no** se guarda: si cierras la pestaña, se pierde a propósito.
 - `localStorage`, clave `diario-de-estudio.movimiento`: `"sistema"` (por defecto) o `"reducido"`. Como con el tema, se guarda la preferencia y no el movimiento efectivo: con `sistema` manda el `@media (prefers-reduced-motion)`.
+- `localStorage`, clave `diario-de-estudio.sonido`: `"no"` (por defecto) o `"si"`. Ver "Sonido".
 - `id` es interno. Sirve para **ordenar** sesiones del mismo día (la más reciente guardada arriba) y para **saber cuál se está editando o borrando**. No lo pongas en la interfaz.
 - Puntos de entrada, por módulo: en `js/datos.js`, `calcularRacha()`, `calcularMejorRacha()`, `leerSesiones()`, `leerMeta()`; en `js/interfaz.js`, `pintarTodo()`, `validar()`, `pintarRacha()`, `pintarMeta()`, `pintarCalendario()`, `pintarSesiones()`. Todo lo demás son satélites de esos.
 - `pintarTodo(sesiones)` es el único sitio desde el que se repinta la pantalla entera. Si añades algo que dependa de las sesiones, llámalo desde ahí y no desde el manejador del botón.
@@ -148,6 +149,17 @@ El filtro de periodo hace de navegación: 7 días / 30 días / todo, con los tre
 5. Aun así, **no añadas movimiento automático de más de 5 s** (fondos animados, partículas): reducir el movimiento no es "no mover nada" y un bucle infinito sigue molestando con `animation-iteration-count: 1`.
 6. Con `--force-prefers-reduced-motion` (o con `data-movimiento="reducido"`) todas las duraciones bajan a `0.00001s`. Ojo: `getAnimations()` sigue listando transiciones "en curso" porque el reloj del compositor no sigue al tiempo virtual de `--virtual-time-budget`; mide `transitionDuration` en vez de `playState`.
 
+## Sonido
+
+1. **Seis tonos generados, cero ficheros.** `js/sonido.js` usa osciladores de la Web Audio API (`guardado` 660 Hz, `error` 180, `logro` 880, `reloj` 520, `pausa` 300, `fin` 440; ninguno pasa de 0,25 s). No hay `vendor/` ni audio binario: la app sigue abriéndose con doble clic.
+2. **Apagado por defecto** (`diario-de-estudio.sonido` = `"no"`). El interruptor es una casilla (`#sonido-activo`), no radios: es un sí/no.
+3. **Un sonido nunca rompe nada.** `tocar()` va enteramente en `try/catch` y devuelve `true`/`false`: sin Web Audio, con el audio en pausa o lanzando, la app sigue (el arnés lo comprueba en los tres casos).
+4. **El `AudioContext` se crea la primera vez que suena, no al cargar**: un contexto sin gesto del usuario queda en pausa y gasta recursos. Al apagarlo se `close()`a.
+5. **No suena con la pestaña en segundo plano** (`document.hidden`): un cronómetro pitando en una pestaña que no miras es una molestía.
+6. **El tono de logro suena al *cruzar*, no al repintar**: `interfaz.js` guarda `metaCumplidaAntes` y `tramoDeLlamaAntes` y solo suena cuando la meta pasa de no-cumplida a cumplida o la llama sube de tramo. Cargar la página con la meta ya cumplida o la llama en su tramo nunca suena.
+7. **El arnés no puede oír, puede *contar***: `AudioContextSimulado` apunta cada tono con su frecuencia y duración, y `tocar()` devuelve si ha sonado. Las pruebas de sonido verifican el tono exacto, no el volumen.
+8. En el arnés, `interfaz.arrancar()` **ya corre al final de `js/interfaz.js`**: si una prueba lo vuelve a llamar, cada acción se dispara dos veces (un guardado con el formulario ya limpio). Para simular una carga con datos, siérra el `localStorage` inicial, no repintar a mano.
+
 ## Meta diaria
 
 1. Entero > 0. Sin dato o dato corrupto → `META_POR_DEFECTO` (30).
@@ -220,7 +232,7 @@ Chrome headless es la vía rápida para render y consola:
 Para ejercitar el código (validación, racha, meta, calendario, editar/borrar, cronómetro, modo enfoque) sin navegador: cargar **los ficheros sueltos, en el mismo orden que `index.html`**, en un contexto `node:vm` con un DOM simulado y un `localStorage` simulado. Es como se validaron las tablas de racha, meta y calendario. Gotchas del arnés, todos verificados:
 
 - **El arnés reexpone las funciones de cada módulo como globales** (`sandbox.calcularRacha = Diario.obtener('datos').calcularRacha`) para no tener que reescribir las 264 aserciones cuando se mueve código. Si mueves una función de módulo, actualiza la tabla `EXPORTAR` del arnés o falla con `no exporta`.
-- **Los módulos que comparten nombres de función necesitan prefijo** en la tabla: el cronómetro y el modo enfoque exportan `iniciar`, `pausar`, `terminar`, `alternar` y `pintar`. Sin prefijo, el último en exponerse pisa al otro y las pruebas del cronómetro se ejecutan contra la función del modo enfoque **sin dar ningún error visible**. `enfoque` va como `enfoque_*`.
+- **Los módulos que comparten nombres de función necesitan prefijo** en la tabla: el cronómetro y el modo enfoque exportan `iniciar`, `pausar`, `terminar`, `alternar` y `pintar`, y el sonido comparte `arrancar` y `preferenciaGuardada` con otros. Sin prefijo, el último en exponerse pisa al otro y las pruebas se ejecutan contra la función equivocada **sin dar ningún error visible**. `enfoque` va como `enfoque_*`, `panel` como `panel_*` y `sonido` como `sonido_*`.
 - **`Date.now()` también hay que simularlo**: los relojes usan marcas de tiempo, no un contador, así que hay que sustituir `Date` por una subclase con `now()` estático y avanzar el reloj a mano con `K.avanzar(ms)`.
 - **Un estado mutable necesita `Object.defineProperty` con `get`**, no una copia: `idEnEdicion` se lee como `estadoEdicion()` desde dentro del módulo, porque si copiaras el valor el arnés leería siempre el inicial.
 - **Congelar "hoy" con `'2026-03-10T12:00:00'`, nunca con `'2026-03-10'`.** Una fecha sin hora se parsea como medianoche **UTC** y en husos negativos el día se desplaza, provocando ~16 fallos falsos de golpe.
@@ -235,6 +247,8 @@ Para ejercitar el código (validación, racha, meta, calendario, editar/borrar, 
 - Para tocar un campo del DOM simulado usa `K.run("document.getElementById('x').value = …")`. `K.cache['x']` da error si nadie ha pedido ese elemento antes, y `createElement` no lee el HTML: una casilla que en el HTML va `checked` llega al stub sin marcar.
 - `leerSesiones()` normaliza en memoria y **no** escribe. Para comprobar la normalización hay que leer `leerSesiones()`, no el JSON crudo de `localStorage`.
 - Si reescribes el arnés con `Set-Content` en PowerShell se rompe la codificación (lee UTF-8 como ANSI). Usa las herramientas de edición, o `[IO.File]::WriteAllText` con UTF-8.
+- **El `AudioContext` también se simula**: los tonos del sonido salen de osciladores, y sin un `AudioContextSimulado` que apunte cada frecuencia y duración, `tocar()` se iría siempre al `catch` y las pruebas no verificarían nada. Con el parámetro `SIN_AUDIO` se prueba el navegador sin Web Audio.
+- **Un check multi-línea sin llamar a su IIFE no falla: informa `undefined`.** `comprobar('…', 'no', (() => { … })` sin el `()` final pasa la *función* como valor obtenido: `JSON.stringify(fn)` es `undefined` y el cuerpo nunca se ejecuta. El fallo sale como "esperado X, obtenido undefined" y parece un bug del código cuando es solo un paréntesis que falta.
 
 ## Gotchas del navegador al probar
 
