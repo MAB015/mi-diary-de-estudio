@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Diario de Estudio</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="contenedor">
+      <header class="cabecera">
+        <h1 class="cabecera__titulo">Diario de Estudio</h1>
+        <p class="cabecera__subtitulo">Apunta tus sesiones y mantén viva la racha.</p>
+      </header>
+
+      <!-- La racha se lee sola al cambiar, por eso el aviso a lectores de pantalla. -->
+      <section class="tarjeta racha" aria-live="polite">
+        <p class="racha__etiqueta">Racha actual</p>
+        <p class="racha__valor" id="racha">🔥 0 días</p>
+        <p class="racha__mejor" id="mejor-racha" hidden>🏆 Mejor racha: 0 días</p>
+      </section>
+
+      <section class="tarjeta">
+        <h2 class="tarjeta__titulo">Meta diaria</h2>
+
+        <div class="campo campo--meta">
+          <label class="campo__etiqueta" for="meta">Minutos al día</label>
+          <input
+            class="campo__control campo__control--corto"
+            type="number"
+            id="meta"
+            min="1"
+            step="1"
+            inputmode="numeric"
+            aria-describedby="error-meta"
+          />
+          <p class="campo__error" id="error-meta" hidden></p>
+        </div>
+
+        <p class="meta__texto" id="meta-texto">0 / 30 min</p>
+        <!-- La pista recorta el relleno con overflow: la barra no puede desbordarse. -->
+        <div class="barra" id="barra">
+          <div class="barra__relleno" id="barra-relleno"></div>
+        </div>
+        <p class="meta__cumplida" id="meta-cumplida" hidden>🎉 ¡Meta conseguida!</p>
+      </section>
+
+      <section class="tarjeta">
+        <h2 class="tarjeta__titulo">Últimos 28 días</h2>
+        <div class="calendario" id="calendario"></div>
+        <p class="leyenda" id="leyenda"></p>
+      </section>
+
+      <section class="tarjeta">
+        <h2 class="tarjeta__titulo">Nueva sesión</h2>
+
+        <!-- novalidate: los errores los mostramos nosotros, junto a cada campo. -->
+        <form id="formulario" class="formulario" novalidate>
+          <div class="campo">
+            <label class="campo__etiqueta" for="fecha">Fecha</label>
+            <input
+              class="campo__control"
+              type="date"
+              id="fecha"
+              name="fecha"
+              aria-describedby="error-fecha"
+            />
+            <p class="campo__error" id="error-fecha" hidden></p>
+          </div>
+
+          <div class="campo">
+            <label class="campo__etiqueta" for="tema">Tema</label>
+            <input
+              class="campo__control"
+              type="text"
+              id="tema"
+              name="tema"
+              placeholder="Ej. Arrays y LinkedList"
+              autocomplete="off"
+              aria-describedby="error-tema"
+            />
+            <p class="campo__error" id="error-tema" hidden></p>
+          </div>
+
+          <div class="campo">
+            <label class="campo__etiqueta" for="minutos">Minutos</label>
+            <input
+              class="campo__control"
+              type="number"
+              id="minutos"
+              name="minutos"
+              min="1"
+              step="1"
+              inputmode="numeric"
+              placeholder="Ej. 45"
+              aria-describedby="error-minutos"
+            />
+            <p class="campo__error" id="error-minutos" hidden></p>
+          </div>
+
+          <button class="boton" type="submit" id="guardar">Guardar sesión</button>
+        <!-- OJO: sin "display" en styles.css, se oculta con el atributo hidden. -->
+        <button class="boton boton--secundario" type="button" id="cancelar-edicion" hidden>Cancelar</button>
+        </form>
+      </section>
+
+      <section class="tarjeta">
+        <h2 class="tarjeta__titulo">Sesiones</h2>
+        <ul class="sesiones" id="sesiones"></ul>
+        <p class="vacio" id="sin-sesiones">Todavía no has registrado ninguna sesión.</p>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

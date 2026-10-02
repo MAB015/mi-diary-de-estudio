@@ -1,0 +1,367 @@
+:root {
+  --fondo: #f4f5f7;
+  --superficie: #ffffff;
+  --texto: #1f2430;
+  --texto-suave: #6b7280;
+  --borde: #e3e6ea;
+  --acento: #2f6df6;
+  --acento-oscuro: #1f57cc;
+  --fuego: #ef6c00;
+  --error: #d13438;
+  --exito: #0b6b3f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 16px;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+}
+
+/* Móvil primero: una sola columna estrecha; en pantallas grandes se centra. */
+.contenedor {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cabecera__titulo {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.cabecera__subtitulo {
+  margin: 4px 0 0;
+  color: var(--texto-suave);
+  font-size: 0.95rem;
+}
+
+.tarjeta {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: 14px;
+  padding: 18px 16px;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+
+.tarjeta__titulo {
+  margin: 0 0 14px;
+  font-size: 1.05rem;
+  letter-spacing: 0.01em;
+}
+
+/* --- Racha --- */
+.racha {
+  text-align: center;
+  background: linear-gradient(160deg, #fff6ec, #ffffff 70%);
+  border-color: #f3dfc9;
+}
+
+.racha__etiqueta {
+  margin: 0;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--texto-suave);
+}
+
+.racha__valor {
+  margin: 6px 0 0;
+  font-size: 2.75rem;
+  font-weight: 700;
+  color: var(--fuego);
+  font-variant-numeric: tabular-nums;
+}
+
+/* OJO: esta regla no puede llevar "display" (ver AGENTS.md). */
+.racha__mejor {
+  margin: 12px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid #f3dfc9;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--texto-suave);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Formulario --- */
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.campo__etiqueta {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.campo__control {
+  /* 16px evita que iOS haga zoom al enfocar el campo. */
+  font: inherit;
+  font-size: 16px;
+  padding: 10px 12px;
+  border: 1px solid var(--borde);
+  border-radius: 10px;
+  background: var(--superficie);
+  color: var(--texto);
+  width: 100%;
+}
+
+.campo__control:focus {
+  outline: 2px solid var(--acento);
+  outline-offset: 1px;
+  border-color: var(--acento);
+}
+
+.campo__control[aria-invalid="true"] {
+  border-color: var(--error);
+}
+
+.campo__error {
+  margin: 0;
+  color: var(--error);
+  font-size: 0.85rem;
+}
+
+.boton {
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--acento);
+  color: #fff;
+  cursor: pointer;
+}
+
+.boton:hover {
+  background: var(--acento-oscuro);
+}
+
+.boton:active {
+  transform: translateY(1px);
+}
+
+/* --- Meta diaria ---
+   Va despues de .campo__control a proposito: dos reglas de una sola clase,
+   gana la ultima. */
+.campo__control--corto {
+  width: 110px;
+}
+
+.meta__texto {
+  margin: 14px 0 6px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.barra {
+  height: 12px;
+  border-radius: 999px;
+  background: #e9edf3;
+  /* Segunda barrera, junto al tope del 100% en app.js: la barra no desborda. */
+  overflow: hidden;
+}
+
+.barra__relleno {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: var(--acento);
+  transition: width 0.2s ease;
+}
+
+.barra--cumplida .barra__relleno {
+  background: var(--exito);
+}
+
+/* OJO: sin "display", se oculta con el atributo hidden. */
+.meta__cumplida {
+  margin: 10px 0 0;
+  color: var(--exito);
+  font-weight: 600;
+}
+
+/* --- Calendario ---
+   Aquí sí se usa "display": estas casillas nunca se ocultan con hidden. */
+.calendario {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 5px;
+}
+
+.dia {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--borde);
+  border-radius: 8px;
+  background: #f4f5f7;
+  /* Color del número de día elegido para que se lea sin esfuerzo. */
+  color: #4b5563;
+  font-size: 0.72rem;
+  font-weight: 600;
+  overflow: hidden;
+}
+
+.dia--bajo {
+  background: #bcd4ff;
+  border-color: #a6c4fb;
+  color: #16326b;
+}
+
+.dia--intenso {
+  background: var(--acento-oscuro);
+  border-color: var(--acento-oscuro);
+  color: #ffffff;
+}
+
+/* Hoy se distingue con un borde, no solo con el color. */
+.dia--hoy {
+  outline: 2px solid var(--fuego);
+  outline-offset: 1px;
+}
+
+.leyenda {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin: 12px 0 0;
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+}
+
+.leyenda__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.leyenda__muestra {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  border: 1px solid var(--borde);
+  border-radius: 4px;
+  background: #f4f5f7;
+}
+
+.leyenda__muestra.dia--bajo {
+  background: #bcd4ff;
+  border-color: #a6c4fb;
+}
+
+.leyenda__muestra.dia--intenso {
+  background: var(--acento-oscuro);
+  border-color: var(--acento-oscuro);
+}
+
+/* --- Botones secundarios --- */
+.boton--secundario {
+  background: var(--superficie);
+  color: var(--acento-oscuro);
+  border: 1px solid var(--borde);
+}
+
+.boton--secundario:hover {
+  background: #eef3ff;
+}
+
+.boton--peligro {
+  background: var(--superficie);
+  color: var(--error);
+  border: 1px solid #f0c9ca;
+}
+
+.boton--peligro:hover {
+  background: #fdf0f0;
+}
+
+.boton--pequeno {
+  padding: 7px 12px;
+  font-size: 0.85rem;
+  border-radius: 8px;
+}
+
+.sesion__acciones {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.sesion__acciones .boton {
+  font-weight: 600;
+}
+
+/* --- Lista de sesiones --- */
+.sesiones {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sesion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--borde);
+}
+
+.sesiones li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.sesion__tema {
+  margin: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.sesion__fecha {
+  margin: 2px 0 0;
+  color: var(--texto-suave);
+  font-size: 0.85rem;
+}
+
+.sesion__minutos {
+  margin: 0;
+  flex-shrink: 0;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--acento);
+  background: #eaf0ff;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.9rem;
+}
+
+.vacio {
+  margin: 0;
+  color: var(--texto-suave);
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 6px 0 2px;
+}
