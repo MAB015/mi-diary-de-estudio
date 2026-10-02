@@ -106,6 +106,17 @@ Vale la pena saber por qué se chose esto y no un `app.js` de 2.600 líneas: es 
 9. `arrancar()` solo engancha el filtro y la lista de oyentes del idioma: **el primer pintado lo hace `interfaz.pintarTodo()`**, que es el único sitio desde el que se repinta la pantalla entera. Los rótulos del gráfico no salen de `data-i18n` (dependen de los datos), así que `panel.pintar()` está en la lista de `alCambiarIdioma()`.
 10. Los tres periodos se enganchan **uno a uno**: el arnés no tiene `querySelectorAll` y así puede probarlos.
 
+### Por qué el panel **no** tiene pestañas (decidido, no es un olvido)
+
+El encargo de la fase decía "pestañas", y se的实现 se decidió al revés a propósito:
+
+- **Producto**: el panel responde a tres preguntas a la vez (¿cuánto estudié?, ¿con qué ritmo?, ¿en qué lo gasté?). Ocultar dos detrás de un gesto cuesta un toque y no ahorra nada: la página ya es un scroll largo y cada tarjeta es una respuesta, no un paso.
+- **Producto**: para que unas pestañas valieran harían falta tres destinos, y el tercero (racha y calendario) ya tiene su tarjeta. Quedarían dos pestañas, o sea un widget de navegación para dos sitios.
+- **UI**: `role="tablist"` obliga a flechas, `tabindex` rodante, `aria-selected` y paneles que desaparecen del árbol de accesibilidad. Los radios nativos ya dan grupo, teclado y "cuál está elegido" gratis, y son los mismos que usan el tema y el idioma: una sola manera de elegir en toda la app.
+- **Móvil**: a 375 px el panel mide unos 450 px con KPI y gráfico; el reparto son 250 px más. Como mucho se ahorra un desplazamiento, y se paga con dos toques.
+
+El filtro de periodo hace de navegación: 7 días / 30 días / todo, con los tres a la vista. Si algún día hacen falta pestañas de verdad, que sea porque hay una tercera vista, no por moda.
+
 ## Tema claro y oscuro
 
 1. **Dos bloques de variables y nada más.** `:root` es el tema claro y `:root[data-tema="oscuro"]` el oscuro. No uses `@media (prefers-color-scheme)` en el CSS: quien elige un tema a mano no podría告别arse del sistema, y quedarían tres paletas que mantener.

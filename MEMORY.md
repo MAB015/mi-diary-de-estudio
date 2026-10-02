@@ -42,6 +42,7 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - Las fechas futuras no cuentan para la racha, la mejor racha, la meta ni el calendario, aunque sí salen en la lista.
 - El filtro del panel **no se guarda**: el periodo es una decisión de esta visita, no un dato, y por eso vive en `diasPeriodo` y no en `localStorage` ni en el DOM.
 - El gráfico del panel tiene **tope de 30 días aunque el periodo sea todo**; por eso `#grafico-nota` avisa con `hidden`, y los días del KPI se cuentan con fechas únicas de las sesiones y no desde las barras.
+- El panel **no lleva pestañas**: el filtro de periodo hace de navegación. Dos pestañas serían un widget (`role="tablist"`, flechas, `tabindex` rodante) para dos destinos, cuando el tercero ya tiene su tarjeta; los radios nativos dan lo mismo gratis y son los mismos que el tema y el idioma.
 - El filtro del panel **no se guarda**: el periodo es una decisión de esta visita, no un dato, y por eso vive en diasPeriodo y no en localStorage ni en el DOM.
 - El gráfico del panel tiene **tope de 30 días aunque el periodo sea todo**; por eso #grafico-nota avisa con hidden, y los días del KPI se cuentan con fechas únicas de las sesiones y no desde las barras.
 
