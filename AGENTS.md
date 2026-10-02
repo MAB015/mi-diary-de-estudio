@@ -20,7 +20,7 @@ Web estática de una sola página para registrar sesiones de estudio y ver la ra
 3. **Un commit por cambio coherente**, no uno por línea ni uno gigante con todo. Si puedes explicarlo en una frase, es un commit; si necesitas decir "y también" dos veces, probablemente son dos.
 4. **El mensaje dice qué se hizo y por qué**, en español. Asunto con el nombre del proyecto y la función, como el primero: `Diario de Estudio: <qué>`. Debajo, el cuerpo con los *porqués* y los detalles que no se ven leyendo el diff.
 5. **El código y su documentación van en el mismo commit.** Si un cambio altera el comportamiento, actualiza `AGENTS.md` (reglas) y/o `MEMORY.md` (estado) en ese mismo commit, nunca en uno suelto después.
-6. **Nada de basura en el repo.** Solo los seis ficheros del proyecto. Las copias de prueba, los arneses y los perfiles de Chrome se quedan fuera, en la carpeta temporal.
+6. **Nada de basura en el repo.** Solo los seis ficheros del proyecto, más `.gitignore` (que existe únicamente para ignorar `.vercel/`, la carpeta que crea la CLI de Vercel al desplegar). Las copias de prueba, los arneses y los perfiles de Chrome se quedan fuera, en la carpeta temporal.
 7. **No reescribas historia publicada.** Nada de `amend`, `rebase` ni `push --force` sobre lo que ya está en GitHub. Un commit ya subido se corrige con otro commit.
 8. **`push` cuando el usuario lo pida** o al cerrar una tanda de trabajo; el commit en local sí es siempre inmediato.
 9. Si el repo cambia de nombre o de sitio, actualiza la línea de GitHub de la cabecera.

@@ -1,0 +1,3 @@
+# Carpeta que crea la CLI de Vercel al enlazar el proyecto. No forma parte de la app.
+.vercel
+.vercel
