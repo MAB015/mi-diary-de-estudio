@@ -55,4 +55,5 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - En SVG la clase se escribe entera en el atributo; los `<text>` son hijos directos del `<svg>`.
 
 ## Próximos pasos
-- Cerrar con una auditoría WCAG 2.2 AA completa.
+- Reconstruir el arnés `node:vm` (`test-diario.js` fue truncado a 0 bytes; se perdió el 2/10/2026).
+- Cerrar con una auditoría WCAG 2.2 AA completa (contrastes ya OK con `contraste.js`).
