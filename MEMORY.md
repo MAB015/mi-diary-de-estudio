@@ -3,14 +3,14 @@
 Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo que ya no aporte.
 
 ## Estado actual
-- v4 en curso: **Fases 0, (a), (b), (c), (d), (e), (f) y (g) listas**, más rediseño de pantalla (marca Ascua, cabecera compacta, tablero bento, racha/meta compactas). Falta la auditoría WCAG final y reconstruir el arnés.
+- v4 en curso: **Fases 0, (a), (b), (c), (d), (e), (f) y (g) listas**, más rediseño de pantalla (marca Ascua, cabecera compacta, tablero bento, racha/meta compactas). Falta la auditoría WCAG final.
 - Estructura: `js/nucleo.js`, `js/datos.js`, `js/textos.js`, `js/preferencias.js`, `js/sonido.js`, `js/cronometro.js`, `js/enfoque.js`, `js/panel.js`, `js/interfaz.js` + `estilos/base.css`, `estilos/componentes.css` y `estilos/panel.css`.
 - Funcionalidad: sesiones, racha, mejor racha, meta, calendario, editar/eliminar, cronómetro, modo enfoque, panel de estadísticas, tema, idioma y movimiento.
 - **Fase (g)**: seis tonos generados con Web Audio (sin ficheros), apagado por defecto (`diario-de-estudio.sonido`), checkbox `#cabecera-sonido`. Suena al guardar, al error, al iniciar/pausar/terminar cronómetro y enfoque, al cruzar meta y al subir de tramo de llama; nunca al cargar ni con la pestaña oculta.
 - IDs/clases cambiados en la cabecera: `.barra` → `.cabecera` (radios `cabecera-tema/-idioma/-movimiento-*`), `#sonido-activo` → `#cabecera-sonido`, y las barras del SVG pasan de `.barra` a `.barra-dia`.
-- **Arnés node:vm perdido** (fichero `test-diario.js` truncado a 0 bytes por un reemplazo con regex mal hecho; no recuperable). La verificación queda en Chrome headless + `contraste.js` hasta reconstruirlo.
+- El arnés `node:vm` original (550 checks) se perdió el 2/10/2026 (truncado a 0 bytes). Reconstruido como un arnés nuevo y funcional en `C:\Users\AERO\AppData\Local\Temp\opencode\test-harness.js`: **83 comprobaciones, 0 fallos**.
 - Datos en `localStorage`: `sesiones`, `meta`, `tema`, `idioma`, `cronometro`, `enfoque`, `movimiento`, `sonido`.
-- Verificado hasta la v4 antigua: **550 comprobaciones** en arnés `node:vm` (perdido después, ver arriba) + Chrome headless a 320/375/500/1280/1440 px, ambos temas, tres idiomas, `prefers-reduced-motion`, `forced-colors`, foco y sonido. Sin desborde ni errores de consola. 46/46 contrastes.
+- Verificado hasta la v4 antigua: 550 comprobaciones en arnés `node:vm` (perdido) + Chrome headless. Verificado ahora: **83 checks** en el arnés nuevo + contrastes 46/46 + bento medido a 375/1280 px.
 - Skill de UI en `.opencode/skills/ui-director-accesible/SKILL.md`, obligatoria para todo lo visual.
 
 ## Decisiones (y por qué)
@@ -55,5 +55,5 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - En SVG la clase se escribe entera en el atributo; los `<text>` son hijos directos del `<svg>`.
 
 ## Próximos pasos
-- Reconstruir el arnés `node:vm` (`test-diario.js` fue truncado a 0 bytes; se perdió el 2/10/2026).
 - Cerrar con una auditoría WCAG 2.2 AA completa (contrastes ya OK con `contraste.js`).
+- Ampliar el arnés nuevo hacia el tamaño del antiguo (~550 checks) si hace falta más red de seguridad.

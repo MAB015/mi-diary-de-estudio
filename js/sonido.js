@@ -65,6 +65,7 @@ Diario.registrar('sonido', (function () {
     localStorage.setItem(CLAVE, elegido);
     aplicar(elegido);
     marcarEnElSelector(elegido);
+    actualizarIconoSonido(elegido === 'si');
     return elegido;
   }
 
@@ -162,7 +163,6 @@ Diario.registrar('sonido', (function () {
     if (interruptor) {
       interruptor.addEventListener('change', () => {
         elegir(interruptor.checked ? 'si' : 'no');
-        actualizarIconoSonido(interruptor.checked);
       });
     }
   }
