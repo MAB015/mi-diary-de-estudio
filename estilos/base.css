@@ -1,42 +1,236 @@
 /*
- * base.css — las variables de color y la forma general de la página.
+ * base.css — tokens de diseño, tema y forma general de la página.
  *
- * Solo lo que no cambia de sitio: los tokens, el reset y el contenedor.
- * Los componentes van en componentes.css.
+ * Aquí vive todo lo que no depende de una pieza concreta: los colores de
+ * cada tema, la escala tipográfica, el espaciado, los radios, las sombras y
+ * las duraciones. Los componentes van en componentes.css y solo consumen
+ * estas variables, nunca un color suelto: así cambiar un token repinta la
+ * app entera y los dos themes se mantienen coherentes por construcción.
  */
 
+/* ---------------------------------------------------------------------------
+ * Tema claro (el de por defecto) y tokens que no cambian con el tema.
+ *
+ * El tema se elige con data-tema en <html>. El script de la cabecera lo
+ * resuelve antes del primer pintado, así que aquí solo hay dos bloques:
+ * las variables de claro y, al final del fichero, las de oscuro.
+ * ------------------------------------------------------------------------ */
 :root {
-  --fondo: #f4f5f7;
+  color-scheme: light;
+
+  /* Color. Roles, no colores sueltos: ver AGENTS.md y la skill de UI. */
+  --fondo: #fbf8f4;
+  --fondo-2: #f2eee8;
   --superficie: #ffffff;
-  --texto: #1f2430;
-  --texto-suave: #6b7280;
-  --borde: #e3e6ea;
-  --acento: #2f6df6;
-  --acento-oscuro: #1f57cc;
-  --fuego: #ef6c00;
-  --error: #d13438;
+  --superficie-2: #f7f4f0;
+  --superficie-3: #f2eee8;
+  --texto: #191817;
+  --texto-suave: #66605a;
+  --borde: #e5ded4;
+  --borde-fuerte: #8a837a;
+  --fuego: #c2410c;
+  --fuego-texto: #9a3412;
+  --fuego-tenue: #fdeadd;
+  --texto-boton: #ffffff;
   --exito: #0b6b3f;
+  --exito-tenue: #e6f4ec;
+  --error: #b3261e;
+  --error-tenue: #fdecea;
+  --aviso: #8a5a00;
+  --foco: #1d4ed8;
+  --foco-halo: #dbe4fe;
+
+  /* Los tres niveles del calendario. El umbral sigue a la meta, no al color. */
+  --dia-vacio: #eae4da;
+  --dia-bajo: #f5c9a4;
+  --dia-intenso: #e08b4c;
+  --dia-hoy: #c2410c;
+
+  /* La llama tiene su propia rampa: es el único elemento que "se enciende".
+     En claro son tonos más profundos: sobre una tarjeta crema, un naranja
+     claro no se ve. */
+  --llama-1: #9a5b1b;
+  --llama-2: #c2410c;
+  --llama-3: #ea580c;
+  --llama-4: #f97316;
+  --llama-1-sombra: #5a2d05;
+  --llama-4-sombra: #c2410c;
+
+  /* Sombras. Tres niveles y nada más. */
+  --sombra-1: 0 1px 2px rgba(25, 24, 23, 0.06), 0 1px 3px rgba(25, 24, 23, 0.04);
+  --sombra-2: 0 2px 6px rgba(25, 24, 23, 0.07), 0 8px 20px rgba(25, 24, 23, 0.06);
+  --sombra-3: 0 8px 16px rgba(25, 24, 23, 0.08), 0 24px 48px rgba(25, 24, 23, 0.1);
+
+  /* Tipografía. Fuentes del sistema: cero descargas, cero parpadeo al abrir. */
+  --fuente: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --texto-xs: 0.78rem;
+  --texto-sm: 0.875rem;
+  --texto-base: 1rem;
+  --texto-lead: 1.125rem;
+  --texto-h3: 1.25rem;
+  --texto-h2: 1.5rem;
+  --texto-h1: 1.875rem;
+  --texto-display: clamp(2.75rem, 13vw, 4.25rem);
+  --linea-cuerpo: 1.5;
+  --linea-titulo: 1.15;
+
+  /* Espaciado en base 4. Nada de valores sueltos. */
+  --e-1: 4px;
+  --e-2: 8px;
+  --e-3: 12px;
+  --e-4: 16px;
+  --e-6: 24px;
+  --e-8: 32px;
+  --e-12: 48px;
+
+  /* Radios: un solo lenguaje de esquinas. */
+  --r-1: 6px;
+  --r-2: 10px;
+  --r-3: 16px;
+  --r-pill: 999px;
+
+  /* Movimiento. */
+  --d-micro: 120ms;
+  --d-estandar: 200ms;
+  --d-grande: 420ms;
+  --e-salida: cubic-bezier(0.2, 0.7, 0.3, 1);
+  --e-entrada: cubic-bezier(0.4, 0, 0.7, 0.2);
+
+  /* Objetivo táctil (WCAG 2.5.8 pide 24; usamos 44 por gusto). */
+  --objetivo: 44px;
+}
+
+/* Tema oscuro de verdad: fondo gris azulado, nunca negro puro, y texto que
+ * tampoco es blanco puro. Menos saturación para que nada vibre. */
+:root[data-tema="oscuro"] {
+  color-scheme: dark;
+
+  --fondo: #0f1216;
+  --fondo-2: #12161b;
+  --superficie: #171b21;
+  --superficie-2: #1f242c;
+  --superficie-3: #262c35;
+  --texto: #edf0f4;
+  --texto-suave: #a7b1bd;
+  --borde: #2a313a;
+  --borde-fuerte: #6b7683;
+  --fuego: #ff7a1a;
+  --fuego-texto: #ffa25c;
+  --fuego-tenue: #2b1a0c;
+  --texto-boton: #231100;
+  --exito: #4ecb8f;
+  --exito-tenue: #12281f;
+  --error: #ff8b84;
+  --error-tenue: #2b1618;
+  --aviso: #ffc24b;
+  --foco: #7ba7ff;
+  --foco-halo: #1c2c48;
+
+  --dia-vacio: #1f242c;
+  --dia-bajo: #5a3a1c;
+  --dia-intenso: #a25718;
+  --dia-hoy: #ff7a1a;
+
+  --sombra-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --sombra-2: 0 2px 8px rgba(0, 0, 0, 0.45), 0 12px 28px rgba(0, 0, 0, 0.3);
+  --sombra-3: 0 10px 20px rgba(0, 0, 0, 0.5), 0 30px 60px rgba(0, 0, 0, 0.4);
+
+  /* La llama tiene su propia rampa: es el único elemento que "se enciende". */
+  --llama-1: #9d5a1c;
+  --llama-2: #d2691e;
+  --llama-3: #ff7a1a;
+  --llama-4: #ffb05c;
+  --llama-1-sombra: #4a1f04;
+  --llama-4-sombra: #ff6a00;
 }
 
 * {
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-  padding: 16px;
+html {
+  /* El tema lo fija un script en la cabecera; esto es solo la red de seguridad. */
   background: var(--fondo);
-  color: var(--texto);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  line-height: 1.5;
 }
 
-/* Móvil primero: una sola columna estrecha; en pantallas grandes se centra. */
+body {
+  margin: 0;
+  padding: var(--e-4);
+  padding-bottom: calc(var(--e-4) + env(safe-area-inset-bottom, 0px));
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--fuente);
+  font-size: var(--texto-base);
+  line-height: var(--linea-cuerpo);
+  -webkit-text-size-adjust: 100%;
+}
+
+/* Un solo anillo de foco en toda la app. Cada componente lo reescribe con
+ * su --foco, pero el grosor y el desplazamiento son siempre los mismos. */
+:focus-visible {
+  outline: 3px solid var(--foco);
+  outline-offset: 2px;
+  border-radius: var(--r-1);
+}
+
+/* Windows en alto contraste: los fondos desaparecen, los bordes no.
+   Los bordes que aqui son transparentes SÍ hay que declararlos: el modo
+   fuerza los colores del autor, pero un `transparent` se queda transparente
+   y el control se quedaria sin contorno. */
+@media (forced-colors: active) {
+  :root {
+    --borde: CanvasText;
+    --borde-fuerte: CanvasText;
+  }
+
+  .boton,
+  .campo__control,
+  .ajustes__grupo,
+  .dia {
+    border-color: ButtonText;
+  }
+
+  :focus-visible {
+    outline-color: Highlight;
+  }
+}
+
+/* Sólo para lectores de pantalla: visible para el motor, no para el ojo. */
+.visualmente-oculto {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Móvil primero: una sola columna estrecha. En pantallas grandes se abre a
+ * rejilla (bento) y se ensancha, para que la app no parezca un móvil
+ * estirado. */
 .contenedor {
   width: 100%;
-  max-width: 480px;
+  max-width: 520px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--e-4);
+}
+
+@media (min-width: 60rem) {
+  .contenedor {
+    max-width: 68rem;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--e-6);
+    align-items: start;
+  }
+
+  .contenedor > * {
+    grid-column: span 12;
+  }
 }

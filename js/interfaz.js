@@ -25,6 +25,7 @@ Diario.registrar('interfaz', (function () {
   const mensajeVacio = document.getElementById('sin-sesiones');
   const textoRacha = document.getElementById('racha');
   const textoMejorRacha = document.getElementById('mejor-racha');
+  const tarjetaRacha = document.getElementById('racha-tarjeta');
   const textoMeta = document.getElementById('meta-texto');
   const barra = document.getElementById('barra');
   const rellenoBarra = document.getElementById('barra-relleno');
@@ -43,12 +44,28 @@ Diario.registrar('interfaz', (function () {
   /* ---------- Racha y meta ---------- */
 
   function pintarRacha(sesiones) {
-    textoRacha.textContent = `🔥 ${textos.formatearDias(datos.calcularRacha(sesiones))}`;
+    const dias = datos.calcularRacha(sesiones);
+    // Sin emoji delante: la llama de al lado ya dice "esto está encendido".
+    // El numero va solo, y el CSS lo pone enorme con cifras tabulares.
+    textoRacha.textContent = textos.formatearDias(dias);
 
     const mejor = datos.calcularMejorRacha(sesiones);
-    textoMejorRacha.textContent = `🏆 Mejor racha: ${textos.formatearDias(mejor)}`;
+    textoMejorRacha.textContent = `Mejor racha: ${textos.formatearDias(mejor)}`;
     // Un récord de 0 no es un récord, así que la línea se esconde hasta que haya uno.
     textoMejorRacha.hidden = mejor === 0;
+
+    // La llama crece por tramos y no por cada día: a partir de 30 días ya
+    // no cabe más, y un número que sube cada vez daría la sensación de que
+    // el esfuerzo diario no cuenta. El color y el tamaño van en el CSS.
+    tarjetaRacha.className = `tarjeta racha racha--${tramoDeLlama(dias)}`;
+  }
+
+  /* 1-2, 3-6, 7-29 y 30 o más. */
+  function tramoDeLlama(dias) {
+    if (dias >= 30) return 4;
+    if (dias >= 7) return 3;
+    if (dias >= 3) return 2;
+    return 1;
   }
 
   function pintarMeta(sesiones) {
@@ -342,6 +359,10 @@ Diario.registrar('interfaz', (function () {
     // La fecha por defecto es hoy, en hora local.
     campoFecha.value = claveDeFecha(new Date());
     campoMeta.value = datos.leerMeta();
+
+    // El tema ya está puesto por el script de la cabecera; aquí solo se
+    // refleja la preferencia guardada en el selector y se le escucha.
+    Diario.obtener('preferencias').arrancar();
 
     pintarTodo(datos.leerSesiones());
   }

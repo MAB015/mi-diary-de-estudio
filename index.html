@@ -4,6 +4,35 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Diario de Estudio</title>
+    <meta name="theme-color" id="color-barra" content="#fbf8f4" />
+
+    <!--
+      Tema antes de pintar, y no un script más: este bloque va antes de los
+      <link> a propósito. Si el tema se pusiera al final, quien usa el tema
+      oscuro vería un fogonazo blanco hasta que arranque el JS.
+      Es el único script inline del proyecto; todo lo demás va en js/.
+    -->
+    <script>
+      (function () {
+        'use strict';
+        var PREFERENCIA = 'diario-de-estudio.tema';
+        var consulta = window.matchMedia('(prefers-color-scheme: dark)');
+        function aplicar() {
+          // "sistema" es el valor por defecto; lo que se guarda es la
+          // preferencia, y el tema efectivo se calcula aqui cada vez.
+          var guardada = localStorage.getItem(PREFERENCIA) || 'sistema';
+          var oscuro = guardada === 'oscuro' || (guardada === 'sistema' && consulta.matches);
+          document.documentElement.setAttribute('data-tema', oscuro ? 'oscuro' : 'claro');
+          document
+            .getElementById('color-barra')
+            .setAttribute('content', oscuro ? '#0f1216' : '#fbf8f4');
+        }
+        // Si la preferencia es "sistema", hay que seguir al sistema en vivo.
+        if (consulta.addEventListener) consulta.addEventListener('change', aplicar);
+        aplicar();
+      })();
+    </script>
+
     <link rel="stylesheet" href="estilos/base.css" />
     <link rel="stylesheet" href="estilos/componentes.css" />
   </head>
@@ -12,13 +41,53 @@
       <header class="cabecera">
         <h1 class="cabecera__titulo">Diario de Estudio</h1>
         <p class="cabecera__subtitulo">Apunta tus sesiones y mantén viva la racha.</p>
+
+        <fieldset class="ajustes">
+          <legend class="ajustes__leyenda">Tema</legend>
+          <!-- Tres radios nativos, no botones: el teclado y la semántica
+               de grupo salen gratis. El falso se pone en "sistema". -->
+          <div class="ajustes__grupo">
+            <input
+              class="ajustes__radio"
+              type="radio"
+              name="tema"
+              id="tema-sistema"
+              value="sistema"
+              checked
+            />
+            <label class="ajustes__opcion" for="tema-sistema">Sistema</label>
+
+            <input
+              class="ajustes__radio"
+              type="radio"
+              name="tema"
+              id="tema-claro"
+              value="claro"
+            />
+            <label class="ajustes__opcion" for="tema-claro">Claro</label>
+
+            <input
+              class="ajustes__radio"
+              type="radio"
+              name="tema"
+              id="tema-oscuro"
+              value="oscuro"
+            />
+            <label class="ajustes__opcion" for="tema-oscuro">Oscuro</label>
+          </div>
+        </fieldset>
       </header>
 
       <!-- La racha se lee sola al cambiar, por eso el aviso a lectores de pantalla. -->
-      <section class="tarjeta racha" aria-live="polite">
+      <section class="tarjeta racha" id="racha-tarjeta" aria-live="polite">
         <p class="racha__etiqueta">Racha actual</p>
-        <p class="racha__valor" id="racha">🔥 0 días</p>
-        <p class="racha__mejor" id="mejor-racha" hidden>🏆 Mejor racha: 0 días</p>
+        <!-- La llama es decorativa (aria-hidden) y su tamano lo pone el CSS
+             segun el tramo de racha: el numero de al lado ya lo dice. -->
+        <svg class="racha__llama" viewBox="0 0 48 60" aria-hidden="true" focusable="false">
+          <path class="racha__llama-nucleo" d="M24 4c2 8-6 10-6 17a8 8 0 0 0 16 0c0-4-2-7-4-9 4 1 8 6 8 13 0 10-7 17-14 17S10 35 10 25C10 14 20 10 24 4z" />
+        </svg>
+        <p class="racha__valor" id="racha">0 días</p>
+        <p class="racha__mejor" id="mejor-racha" hidden>Mejor racha: 0 días</p>
       </section>
 
       <section class="tarjeta">
@@ -121,6 +190,7 @@
     <script src="js/nucleo.js"></script>
     <script src="js/datos.js"></script>
     <script src="js/textos.js"></script>
+    <script src="js/preferencias.js"></script>
     <script src="js/interfaz.js"></script>
   </body>
 </html>

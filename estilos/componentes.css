@@ -1,82 +1,226 @@
 /*
- * componentes.css — el aspecto de cada pieza: cabecera, tarjetas, botones,
- * campos, racha, calendario y lista de sesiones.
+ * componentes.css — el aspecto de cada pieza: cabecera, ajustes, tarjetas,
+ * botones, campos, racha, calendario y lista de sesiones.
+ *
+ * Cada regla consume los tokens de base.css y ningún color suelto. Si aquí
+ * aparece un hexadecimal, es que falta un token.
  */
 
+/* --- Cabecera --- */
 .cabecera__titulo {
   margin: 0;
-  font-size: 1.6rem;
+  font-size: var(--texto-h1);
+  line-height: var(--linea-titulo);
+  letter-spacing: -0.015em;
 }
 
 .cabecera__subtitulo {
-  margin: 4px 0 0;
+  margin: var(--e-1) 0 0;
   color: var(--texto-suave);
-  font-size: 0.95rem;
+  font-size: var(--texto-base);
 }
 
-.tarjeta {
-  background: var(--superficie);
-  border: 1px solid var(--borde);
-  border-radius: 14px;
-  padding: 18px 16px;
-  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+/* --- Ajustes (selector de tema) ---
+   Un fieldset con tres radios nativos: el grupo, el teclado y elannouncedor
+   de "cuál está elegido" salen del propio elemento, sin ARIA. */
+.ajustes {
+  margin: var(--e-4) 0 0;
+  padding: 0;
+  border: 0;
 }
 
-.tarjeta__titulo {
-  margin: 0 0 14px;
-  font-size: 1.05rem;
-  letter-spacing: 0.01em;
-}
-
-/* --- Racha --- */
-.racha {
-  text-align: center;
-  background: linear-gradient(160deg, #fff6ec, #ffffff 70%);
-  border-color: #f3dfc9;
-}
-
-.racha__etiqueta {
-  margin: 0;
-  font-size: 0.8rem;
+.ajustes__leyenda {
+  padding: 0;
+  margin-bottom: var(--e-2);
+  font-size: var(--texto-xs);
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--texto-suave);
 }
 
+.ajustes__grupo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-1);
+  padding: var(--e-1);
+  background: var(--superficie-2);
+  border: 1px solid var(--borde);
+  border-radius: var(--r-3);
+}
+
+.ajustes__radio {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.ajustes__opcion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
+  min-height: var(--objetivo);
+  padding: var(--e-1) var(--e-4);
+  border-radius: var(--r-pill);
+  font-size: var(--texto-sm);
+  font-weight: 600;
+  color: var(--texto-suave);
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--d-micro) var(--e-salida),
+    color var(--d-micro) var(--e-salida);
+}
+
+.ajustes__opcion:hover {
+  color: var(--texto);
+}
+
+/* El anillo lo pone el propio input, que está encima y sigue siendo el
+   elemento enfocado: el label pinta el relleno, el input pinta el foco. */
+.ajustes__radio:checked + .ajustes__opcion {
+  background: var(--superficie);
+  color: var(--texto);
+  box-shadow: var(--sombra-1);
+}
+
+.ajustes__radio:focus-visible + .ajustes__opcion {
+  outline: 3px solid var(--foco);
+  outline-offset: 2px;
+  background: var(--superficie);
+  color: var(--texto);
+}
+
+/* --- Tarjetas --- */
+.tarjeta {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: var(--r-3);
+  padding: var(--e-6) var(--e-4);
+  box-shadow: var(--sombra-1);
+}
+
+.tarjeta__titulo {
+  margin: 0 0 var(--e-4);
+  font-size: var(--texto-h3);
+  line-height: var(--linea-titulo);
+}
+
+/* --- Racha: la protagonista ---
+   Es lo único realmente distinto de la pantalla (efecto Von Restorff), así
+   que se lleva el único acento de color y el único número gigante. */
+.racha {
+  text-align: center;
+  background: var(--fuego-tenue);
+  border-color: var(--fuego-tenue);
+  padding-block: var(--e-8);
+}
+
+.racha__etiqueta {
+  margin: 0;
+  font-size: var(--texto-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--texto-suave);
+}
+
+.racha__llama {
+  display: block;
+  margin: var(--e-3) auto 0;
+  width: var(--llama-ancho);
+  max-width: 30vw;
+  height: auto;
+  fill: var(--llama-color);
+  /* El desenfoque y el color del halo van en tokens separados: en un solo
+     token la regla entera se descartaria por tener un valor donde no toca. */
+  filter: drop-shadow(0 6px var(--llama-desenfoque) var(--llama-halo));
+  transition: width var(--llama-duracion) var(--e-salida),
+    fill var(--llama-duracion) var(--e-salida),
+    filter var(--llama-duracion) var(--e-salida);
+}
+
+.racha__llama-nucleo {
+  fill: var(--llama-nucleo);
+}
+
 .racha__valor {
-  margin: 6px 0 0;
-  font-size: 2.75rem;
+  margin: var(--e-2) 0 0;
+  font-size: var(--texto-display);
   font-weight: 700;
-  color: var(--fuego);
+  line-height: var(--linea-titulo);
+  letter-spacing: -0.02em;
+  color: var(--fuego-texto);
   font-variant-numeric: tabular-nums;
 }
 
 /* OJO: esta regla no puede llevar "display" (ver AGENTS.md). */
 .racha__mejor {
-  margin: 12px 0 0;
-  padding-top: 10px;
-  border-top: 1px solid #f3dfc9;
-  font-size: 0.95rem;
+  margin: var(--e-4) 0 0;
+  padding-top: var(--e-3);
+  border-top: 1px solid var(--borde);
+  font-size: var(--texto-sm);
   font-weight: 600;
   color: var(--texto-suave);
   font-variant-numeric: tabular-nums;
+}
+
+/* Los cuatro tramos. Solo cambian el tamaño, el color y el halo: la forma
+   es siempre la misma, para que se reconozca el producto con el logo tapado.
+   En los dos primeros no hay halo ni transición: sin llama grande, un resplandor
+   orange sería más ruido que señal. */
+.racha--1 {
+  --llama-ancho: 34px;
+  --llama-color: var(--llama-1);
+  --llama-nucleo: var(--llama-1-sombra);
+  --llama-halo: transparent;
+  --llama-desenfoque: 0px;
+  --llama-duracion: 0s;
+}
+
+.racha--2 {
+  --llama-ancho: 46px;
+  --llama-color: var(--llama-2);
+  --llama-nucleo: var(--llama-1-sombra);
+  --llama-halo: transparent;
+  --llama-desenfoque: 0px;
+  --llama-duracion: 0s;
+}
+
+.racha--3 {
+  --llama-ancho: 58px;
+  --llama-color: var(--llama-3);
+  --llama-nucleo: #7c2e05;
+  --llama-halo: rgb(255 122 26 / 0.25);
+  --llama-desenfoque: 10px;
+  --llama-duracion: var(--d-grande);
+}
+
+.racha--4 {
+  --llama-ancho: 70px;
+  --llama-color: var(--llama-4);
+  --llama-nucleo: #7c2e05;
+  --llama-halo: rgb(255 122 26 / 0.35);
+  --llama-desenfoque: 14px;
+  --llama-duracion: var(--d-grande);
 }
 
 /* --- Formulario --- */
 .formulario {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--e-4);
 }
 
 .campo {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--e-2);
 }
 
 .campo__etiqueta {
-  font-size: 0.9rem;
+  font-size: var(--texto-sm);
   font-weight: 600;
 }
 
@@ -84,48 +228,51 @@
   /* 16px evita que iOS haga zoom al enfocar el campo. */
   font: inherit;
   font-size: 16px;
-  padding: 10px 12px;
-  border: 1px solid var(--borde);
-  border-radius: 10px;
+  min-height: var(--objetivo);
+  padding: var(--e-3);
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--r-2);
   background: var(--superficie);
   color: var(--texto);
   width: 100%;
+  transition: border-color var(--d-micro) var(--e-salida),
+    box-shadow var(--d-micro) var(--e-salida);
+}
+
+.campo__control::placeholder {
+  color: var(--texto-suave);
+  opacity: 1;
+}
+
+.campo__control:hover {
+  border-color: var(--texto-suave);
 }
 
 .campo__control:focus {
-  outline: 2px solid var(--acento);
+  border-color: var(--foco);
+  box-shadow: 0 0 0 3px var(--foco-halo);
+}
+
+.campo__control:focus-visible {
+  outline: 3px solid var(--foco);
   outline-offset: 1px;
-  border-color: var(--acento);
 }
 
 .campo__control[aria-invalid="true"] {
   border-color: var(--error);
+  background: var(--error-tenue);
 }
 
+/* OJO: sin "display", se oculta con el atributo hidden. */
 .campo__error {
   margin: 0;
   color: var(--error);
-  font-size: 0.85rem;
-}
-
-.boton {
-  font: inherit;
-  font-size: 1rem;
+  font-size: var(--texto-sm);
   font-weight: 600;
-  padding: 12px 16px;
-  border: 0;
-  border-radius: 10px;
-  background: var(--acento);
-  color: #fff;
-  cursor: pointer;
 }
 
-.boton:hover {
-  background: var(--acento-oscuro);
-}
-
-.boton:active {
-  transform: translateY(1px);
+.campo__error::before {
+  content: "⚠ ";
 }
 
 /* --- Meta diaria ---
@@ -136,15 +283,15 @@
 }
 
 .meta__texto {
-  margin: 14px 0 6px;
+  margin: var(--e-4) 0 var(--e-2);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
 
 .barra {
   height: 12px;
-  border-radius: 999px;
-  background: #e9edf3;
+  border-radius: var(--r-pill);
+  background: var(--superficie-3);
   /* Segunda barrera, junto al tope del 100% en interfaz.js: la barra no desborda. */
   overflow: hidden;
 }
@@ -152,9 +299,9 @@
 .barra__relleno {
   height: 100%;
   width: 0%;
-  border-radius: 999px;
-  background: var(--acento);
-  transition: width 0.2s ease;
+  border-radius: var(--r-pill);
+  background: var(--fuego);
+  transition: width var(--d-estandar) var(--e-salida);
 }
 
 .barra--cumplida .barra__relleno {
@@ -163,9 +310,80 @@
 
 /* OJO: sin "display", se oculta con el atributo hidden. */
 .meta__cumplida {
-  margin: 10px 0 0;
+  margin: var(--e-3) 0 0;
+  padding: var(--e-2) var(--e-3);
+  border-radius: var(--r-2);
+  background: var(--exito-tenue);
   color: var(--exito);
   font-weight: 600;
+}
+
+/* --- Botones ---
+   Todos con los cinco estados de la sección 9 de la skill: reposo, hover,
+   focus-visible, activo y deshabilitado. */
+.boton {
+  font: inherit;
+  font-size: var(--texto-base);
+  font-weight: 600;
+  min-height: var(--objetivo);
+  padding: var(--e-3) var(--e-4);
+  border: 1px solid transparent;
+  border-radius: var(--r-2);
+  background: var(--fuego);
+  color: var(--texto-boton);
+  cursor: pointer;
+  transition: transform var(--d-micro) var(--e-salida),
+    background var(--d-micro) var(--e-salida),
+    box-shadow var(--d-micro) var(--e-salida);
+}
+
+.boton:hover {
+  filter: brightness(1.08);
+}
+
+.boton:active {
+  transform: translateY(1px);
+}
+
+.boton:focus-visible {
+  outline: 3px solid var(--foco);
+  outline-offset: 2px;
+}
+
+.boton:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+  box-shadow: none;
+}
+
+/* OJO: sin "display", se oculta con el atributo hidden. */
+.boton--secundario {
+  background: var(--superficie);
+  color: var(--fuego-texto);
+  border-color: var(--borde-fuerte);
+}
+
+.boton--secundario:hover {
+  background: var(--superficie-2);
+  filter: none;
+}
+
+.boton--peligro {
+  background: var(--superficie);
+  color: var(--error);
+  border-color: var(--error);
+}
+
+.boton--peligro:hover {
+  background: var(--error-tenue);
+  filter: none;
+}
+
+.boton--pequeno {
+  min-height: var(--objetivo);
+  padding: 0 var(--e-3);
+  font-size: var(--texto-sm);
+  border-radius: var(--r-1);
 }
 
 /* --- Calendario ---
@@ -173,7 +391,7 @@
 .calendario {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
+  gap: var(--e-1);
 }
 
 .dia {
@@ -182,102 +400,63 @@
   align-items: center;
   justify-content: center;
   border: 1px solid var(--borde);
-  border-radius: 8px;
-  background: #f4f5f7;
-  /* Color del número de día elegido para que se lea sin esfuerzo. */
-  color: #4b5563;
-  font-size: 0.72rem;
+  border-radius: var(--r-1);
+  background: var(--dia-vacio);
+  color: var(--texto);
+  font-size: var(--texto-xs);
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
   overflow: hidden;
 }
 
 .dia--bajo {
-  background: #bcd4ff;
-  border-color: #a6c4fb;
-  color: #16326b;
+  background: var(--dia-bajo);
+  border-color: var(--dia-bajo);
 }
 
 .dia--intenso {
-  background: var(--acento-oscuro);
-  border-color: var(--acento-oscuro);
-  color: #ffffff;
+  background: var(--dia-intenso);
+  border-color: var(--dia-intenso);
 }
 
 /* Hoy se distingue con un borde, no solo con el color. */
 .dia--hoy {
-  outline: 2px solid var(--fuego);
+  outline: 2px solid var(--dia-hoy);
   outline-offset: 1px;
 }
 
 .leyenda {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px 14px;
-  margin: 12px 0 0;
-  font-size: 0.8rem;
+  gap: var(--e-1) var(--e-3);
+  margin: var(--e-3) 0 0;
+  font-size: var(--texto-xs);
   color: var(--texto-suave);
 }
 
 .leyenda__item {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: var(--e-1);
 }
 
 .leyenda__muestra {
-  width: 13px;
-  height: 13px;
+  width: 14px;
+  height: 14px;
   flex-shrink: 0;
   border: 1px solid var(--borde);
   border-radius: 4px;
-  background: #f4f5f7;
+  background: var(--dia-vacio);
 }
 
 .leyenda__muestra.dia--bajo {
-  background: #bcd4ff;
-  border-color: #a6c4fb;
+  background: var(--dia-bajo);
+  border-color: var(--dia-bajo);
 }
 
 .leyenda__muestra.dia--intenso {
-  background: var(--acento-oscuro);
-  border-color: var(--acento-oscuro);
-}
-
-/* --- Botones secundarios --- */
-.boton--secundario {
-  background: var(--superficie);
-  color: var(--acento-oscuro);
-  border: 1px solid var(--borde);
-}
-
-.boton--secundario:hover {
-  background: #eef3ff;
-}
-
-.boton--peligro {
-  background: var(--superficie);
-  color: var(--error);
-  border: 1px solid #f0c9ca;
-}
-
-.boton--peligro:hover {
-  background: #fdf0f0;
-}
-
-.boton--pequeno {
-  padding: 7px 12px;
-  font-size: 0.85rem;
-  border-radius: 8px;
-}
-
-.sesion__acciones {
-  display: flex;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.sesion__acciones .boton {
-  font-weight: 600;
+  background: var(--dia-intenso);
+  border-color: var(--dia-intenso);
 }
 
 /* --- Lista de sesiones --- */
@@ -293,8 +472,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 12px 0;
+  gap: var(--e-3);
+  padding: var(--e-3) 0;
   border-top: 1px solid var(--borde);
 }
 
@@ -312,7 +491,7 @@
 .sesion__fecha {
   margin: 2px 0 0;
   color: var(--texto-suave);
-  font-size: 0.85rem;
+  font-size: var(--texto-sm);
 }
 
 .sesion__minutos {
@@ -320,17 +499,37 @@
   flex-shrink: 0;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  color: var(--acento);
-  background: #eaf0ff;
-  border-radius: 999px;
-  padding: 4px 10px;
-  font-size: 0.9rem;
+  color: var(--fuego-texto);
+  background: var(--fuego-tenue);
+  border-radius: var(--r-pill);
+  padding: var(--e-1) var(--e-3);
+  font-size: var(--texto-sm);
+}
+
+.sesion__acciones {
+  display: flex;
+  gap: var(--e-2);
+  margin-top: var(--e-2);
+  flex-wrap: wrap;
 }
 
 .vacio {
   margin: 0;
   color: var(--texto-suave);
-  font-size: 0.95rem;
+  font-size: var(--texto-base);
   text-align: center;
-  padding: 6px 0 2px;
+  padding: var(--e-2) 0;
+}
+
+/* --- Movimiento reducido ---
+   El interruptor visible llega en una fase posterior; esto cubre a quien lo
+   tiene activado en el sistema desde el minuto uno. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

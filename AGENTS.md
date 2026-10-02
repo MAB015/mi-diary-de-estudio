@@ -8,7 +8,7 @@ Web estática de una sola página para registrar sesiones de estudio y ver la ra
   - `estilos/base.css`: variables de color, reset, tipografía base y contenedor.
   - `estilos/componentes.css`: el aspecto de cada pieza (cabecera, tarjetas, botones, campos, racha, calendario, lista).
   - `estilos/panel.css`: lo del panel de estadísticas (KPI, gráficos, filtros). **Todavía no existe**: se crea cuando haya panel.
-  - `js/nucleo.js`, `js/datos.js`, `js/textos.js`, `js/interfaz.js`: los que existen. `js/preferencias.js`, `js/cronometro.js` y `js/panel.css`… se crean con su contenido, no como ficheros vacíos.
+  - `js/nucleo.js`, `js/datos.js`, `js/textos.js`, `js/preferencias.js`, `js/interfaz.js`: los que existen. `js/cronometro.js` y `js/panel.js` se crean con su contenido, no como ficheros vacíos.
   - `vendor/`: única excepción para librerías de terceros, con versión exacta en el nombre. Ahora vacío.
   - El orden de los `<link>` y los `<script>` en `index.html` está escrito en el fichero: **no lo cambies por gusto.**
 - **Sin frameworks, sin build, sin paso de compilación, sin CDN.**
@@ -56,10 +56,38 @@ Vale la pena saber por qué se chose esto y no un `app.js` de 2.600 líneas: es 
 
 - `localStorage`, clave `diario-de-estudio.sesiones`. Forma de cada sesión: `{ id: number, fecha: 'AAAA-MM-DD', tema: string, minutos: number }`.
 - `localStorage`, clave `diario-de-estudio.meta`: un entero (minutos por día). Vive separada de las sesiones porque la meta no es una sesión.
+- `localStorage`, clave `diario-de-estudio.tema`: `"sistema"` (por defecto), `"claro"` o `"oscuro"`. **Se guarda la preferencia, no el tema aplicado**: si es `sistema`, el tema efectivo se recalcula en cada carga y en cada cambio del sistema.
 - `id` es interno. Sirve para **ordenar** sesiones del mismo día (la más reciente guardada arriba) y para **saber cuál se está editando o borrando**. No lo pongas en la interfaz.
 - Puntos de entrada, por módulo: en `js/datos.js`, `calcularRacha()`, `calcularMejorRacha()`, `leerSesiones()`, `leerMeta()`; en `js/interfaz.js`, `pintarTodo()`, `validar()`, `pintarRacha()`, `pintarMeta()`, `pintarCalendario()`, `pintarSesiones()`. Todo lo demás son satélites de esos.
 - `pintarTodo(sesiones)` es el único sitio desde el que se repinta la pantalla entera. Si añades algo que dependa de las sesiones, llámalo desde ahí y no desde el manejador del botón.
 - `index.html` usa `novalidate` a propósito: los errores los pinta la app, no el navegador. Quitarlo hace que aparezcan los tooltips nativos y desaparezcan los mensajes propios.
+
+## Tema claro y oscuro
+
+1. **Dos bloques de variables y nada más.** `:root` es el tema claro y `:root[data-tema="oscuro"]` el oscuro. No uses `@media (prefers-color-scheme)` en el CSS: quien elige un tema a mano no podría告别arse del sistema, y quedarían tres paletas que mantener.
+2. **El tema lo pone un `<script>` inline en `<head>`, antes de los `<link>`.** Es el único script inline del proyecto. Va primero para que el tema oscuro no dé un fogonazo blanco mientras carga el resto. El arnés de pruebas lo saca de `index.html` y lo ejecuta antes que los ficheros sueltos.
+3. **Ese script no puede usar `Diario`.** `nucleo.js` hace `var Diario = ...` y lo reemplaza entero, así que cualquier cosa que se cuelgue ahí antes de tiempo se pierde. Si necesitas compartir estado desde la cabecera, no lo hagas: recalcula la decisión desde la misma clave.
+4. La clave `diario-de-estudio.tema` y la regla "sin preferencia manda el sistema" están **escritas en dos sitios** (el script inline y `js/preferencias.js`) a propósito: el primero tiene que ser sin dependencias. Si cambias una, cambia las dos.
+5. `color-scheme` va declarado por tema, para que los controles nativos (el calendario del input de fecha) no queden en blanco sobre tema oscuro.
+6. El selector es un `<fieldset>` con **radios nativos**, no botones: el grupo, el teclado y el "cuál está elegido" salen del elemento. `marcarEnElSelector()` desmarca los otros a mano aunque el navegador ya lo haga, para que no dependa de una casualidad.
+7. `<meta name="theme-color" id="color-barra">` se actualiza al cambiar el tema, para la barra del navegador en móvil.
+
+## Tokens y color
+
+1. **En `estilos/componentes.css` no puede aparecer un color suelto.** Todo sale de un token de `base.css`. Si necesitas un color nuevo, primero es un token con sus dos temas.
+2. Roles, no colores: `--fondo`, `--superficie`, `--superficie-2/3`, `--texto`, `--texto-suave`, `--borde`, `--borde-fuerte`, `--fuego`, `--fuego-texto`, `--fuego-tenue`, `--texto-boton`, `--exito`, `--error`, `--aviso`, `--foco`, `--dia-vacio/-bajo/-intenso`.
+3. **Calcula los contrastes con la función de la skill, no a ojo**, y anota los ratios en el informe de la fase. Se comprobaron 23 parejas por tema (46 en total).
+4. `--borde-fuerte` (no `--borde`) es el que usan los campos de formulario: los bordes de control necesitan 3:1 y los decorativos no.
+5. **Un token, un tipo de valor.** La rampa de la llama tenía `--llama-sombra` sirviendo a la vez de duración, de desenfoque y de color, y `transition`/`drop-shadow` rechazaban la declaración entera sin avisar. Separa `--llama-duracion`, `--llama-desenfoque` y `--llama-halo`.
+6. En `forced-colors` los bordes que en el CSS son `transparent` **hay que redeclararlos**: el modo fuerza los colores del autor pero un `transparent` se queda transparente y el control se queda sin contorno.
+7. La llama crece por tramos, no por día: `1`, `--1` hasta 2 días, `--2` hasta 6, `--3` hasta 29 y `--4` desde 30. La clase la pone `pintarRacha()` sobre `#racha-tarjeta`. Los tramos 1 y 2 no llevan halo ni transición: sin llama grande, el resplandor sería ruido.
+8. El texto de la racha **no lleva emoji**: la llama es un SVG decorativo (`aria-hidden="true"`), y el número al lado ya dice lo mismo.
+
+## Movimiento
+
+1. Todo movimiento pasa por tokens (`--d-micro`, `--d-estandar`, `--d-grande`, `--e-salida`, `--e-entrada`) y por la regla final de `componentes.css` que respeta `prefers-reduced-motion`.
+2. El interruptor visible "Reducir animaciones" **todavía no existe**: hasta que exista, no añadas movimiento automático de más de 5 s (fondos animados, partículas). La skill lo exige y no hay forma de pausarlo todavía.
+3. Con `--force-prefers-reduced-motion` todas las duraciones bajan a `0.00001s`. Ojo: `getAnimations()` sigue listando transiciones "en curso" porque el reloj del compositor no sigue al tiempo virtual de `--virtual-time-budget`; mide `transitionDuration` en vez de `playState`.
 
 ## Meta diaria
 
