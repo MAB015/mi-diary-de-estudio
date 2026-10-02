@@ -3,12 +3,15 @@
 Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo que ya no aporte.
 
 ## Estado actual
-- v4 en curso: **Fases 0 y (a) listas**; la (a) es la primera de la modernization visual y aún no está pusheada.
-- Estructura: `js/nucleo.js`, `js/datos.js`, `js/textos.js`, `js/preferencias.js`, `js/interfaz.js` + `estilos/base.css` y `estilos/componentes.css`. `app.js` y `styles.css` borrados.
+- v4 en curso: **Fases 0, (a), (b), (c) y (d) listas**. La (e) (panel de estadísticas) es la siguiente.
+- Estructura: `js/nucleo.js`, `js/datos.js`, `js/textos.js`, `js/preferencias.js`, `js/cronometro.js`, `js/enfoque.js`, `js/interfaz.js` + `estilos/base.css` y `estilos/componentes.css`. `app.js` y `styles.css` borrados.
 - Funcionalidad intacta: registrar sesiones, racha actual, mejor racha, meta diaria, calendario de 28 días y editar/eliminar.
 - **Fase (a)**: tema claro/oscuro completo, selector con radios nativos, llama SVG por tramos y estados de interacción.
-- Datos en `localStorage`: `sesiones` (array), `meta` (entero, 30 por defecto) y `tema` (`sistema`/`claro`/`oscuro`).
-- Verificado: **297 comprobaciones** en arnés `node:vm` + Chrome headless a 320/375/500 px, texto al 200 %, ambos temas, `prefers-reduced-motion` y foco en los 20 controles. Sin desborde ni errores de consola. 46/46 contrastes ≥ 4.5:1.
+- **Fase (b)**: i18n ES/EN/FR completo con `js/textos.js` y selector de idioma.
+- **Fase (c)**: cronómetro que sobrevive al cierre de la pestaña (guarda marcas de tiempo, no un contador) y pasa los minutos al formulario sin guardarlos.
+- **Fase (d)**: modo enfoque, con `<dialog>` nativo, pantalla completa opcional y reloj que cuenta hacia arriba con objetivo.
+- Datos en `localStorage`: `sesiones`, `meta`, `tema`, `idioma`, `cronometro` y `enfoque`.
+- Verificado: **451 comprobaciones** en arnés `node:vm` + Chrome headless a 320/375/500 px, texto al 200 %, ambos temas, tres idiomas, `prefers-reduced-motion`, `forced-colors` y foco. Sin desborde ni errores de consola. 46/46 contrastes ≥ 4.5:1.
 - Skill de UI en `.opencode/skills/ui-director-accesible/SKILL.md`, obligatoria para todo lo visual.
 
 ## Decisiones (y por qué)
@@ -21,7 +24,14 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - El tema lo aplica un `<script>` inline antes de los `<link>` para evitar el fogonazo blanco. No puede usar `Diario` (nucleo.js lo reemplaza entero), así que la clave y la regla están duplicadas a propósito en `preferencias.js`.
 - Se guarda la **preferencia** (`sistema`), no el tema aplicado: con `sistema` se recalcula en cada carga y en cada cambio del SO.
 - La llama crece por tramos y no por día: la forma siempre es la misma para reconocer el producto, y los dos primeros tramos van sin halo porque un resplandor grande ahí sería ruido.
-- CTA "Empezar a estudiar" aplazada a la fase de enfoque y fondo animado a la de movimiento: un botón sin acción o un bucle que no se puede pausar es peor que no tenerlo.
+- El texto que depende del estado **no puede llevar `data-i18n`**: hay que repintarlo, así que `alCambiarIdioma()` es una lista y app, cronómetro y modo enfoque se apuntan los tres.
+- El cronómetro guarda `inicioMs`/`pausadoMs`, no un contador: recargar no pierde el rato y no se acumula deriva si el navegador se ralentiza.
+- Terminar el cronómetro o el modo enfoque **no guarda la sesión**, solo rellena el formulario: queda un único camino para escribir en `localStorage`.
+- El modo enfoque usa `<dialog showModal()>` y una clase en `<body>`, nunca `hidden`: la trampa de foco la da el navegador y ningún `display` de autor puede anular una clase.
+- El reloj del modo enfoque **cuenta hacia arriba** y el objetivo es un objetivo: un contador hacia abajo obligaría a inventar el tiempo restante y no refleja lo estudiado de verdad.
+- La pantalla completa es un extra: si `requestFullscreen()` falla, la sesión arranca igual.
+- Salir del modo enfoque sin terminar **pregunta**: es el único camino que pierde el rato.
+- El modo enfoque no reutiliza el cronómetro aunque la fórmula del tiempo sea la misma: aquel se guarda y sobrevive al cierre, este no; couplerlos costaría más que repetir cuatro líneas.
 - Meta guardada en `change`, sin botón, y revierte al último valor válido si escribes algo que no vale: una meta no cambia sin que te enteres.
 - Meta, racha y mejor racha son independientes: subir la meta a 20 no debe fingir más días de estudio.
 - El umbral de "día intenso" del calendario **es la meta**, no un número fijo: así el color significa lo mismo que la barra.
@@ -45,7 +55,11 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - En `forced-colors` un `border-color: transparent` **no** se corrige solo: hay que redeclararlo como `ButtonText`.
 - El texto del selector de tema (`display:flex; flex-wrap:wrap`) desbordaba a 385 px con texto al 200 %; con `inline-flex` + `white-space` las etiquetas no bajan de línea. Probar siempre al 200 %.
 - Con `--virtual-time-budget` las transiciones CSS no avanzan (el reloj del compositor no sigue al tiempo virtual): para comprobar un valor de token mide `getPropertyValue('--token')`, no el `filter` computado.
+- **Un aviso `aria-live` no puede reescribirse en cada tick**: si la frase lleva los segundos, cambia cada segundo y el lector de pantalla lee la hora cada segundo. Se compara la descripción y solo se toca al cambiar de estado.
+- Un solo hueco de oyente (`avisarAlCambiar = fn`) con tres módulos que pintan es un fallo silencioso: el último en apuntarse anula a los otros dos. La lista de oyentes era obligatoria.
+- En el arnés, dos módulos que exportan `iniciar`/`pausar`/`pintar` se pisan al reexportarlos como globales: el último define la variable y las pruebas del otro módulo se ejecutan contra la función equivocada **sin fallar**. Prefijar.
 
 ## Próximos pasos
-- Commit y push de la fase (a).
-- Fase (b): i18n ES/EN/FR con las claves ya decididas (`tema`, `sonido`, `movimiento`, `idioma`, `enfoque`).
+- Fase (e): `js/panel.js` + `estilos/panel.css`, con pestañas, KPI, gráfico SVG y filtros.
+- Fases (f) y (g): interruptor de movimiento (con `diario-de-estudio.movimiento`) y sonidos con `diario-de-estudio.sonido`.
+- Cerrar con una auditoría WCAG completa y una pasada de accesibilidad en el panel.

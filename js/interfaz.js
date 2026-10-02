@@ -254,15 +254,19 @@ Diario.registrar('interfaz', (function () {
   }
 
   /*
-   * El cronómetro termina y pasa aquí los minutos que ha medido. No se guarda
-   * nada todavía: solo se rellena el formulario para que quien estudia sea quien
-   * confirme. Así sigue habiendo un único camino para escribir en localStorage.
+   * El cronómetro y el modo enfoque terminan y pasan aquí los minutos que han
+   * medido. No se guarda nada todavía: solo se rellena el formulario para que
+   * quien estudia sea quien confirme. Así sigue habiendo un único camino para
+   * escribir en localStorage.
+   *
+   * El tema llega vacío si quien termina no lo sabe (el cronómetro no lo sabe):
+   * el modo enfoque lo escribe y así quien vuelve solo tiene que darle a Guardar.
    */
-  function prepararSesion(minutos) {
+  function prepararSesion(minutos, tema) {
     salirDeEdicion();
     campoFecha.value = claveDeFecha(new Date());
     campoMinutos.value = String(minutos);
-    campoTema.value = '';
+    campoTema.value = tema ?? '';
     formulario.scrollIntoView({ behavior: 'smooth', block: 'start' });
     campoTema.focus();
   }
@@ -393,6 +397,10 @@ Diario.registrar('interfaz', (function () {
     // El cronómetro va después porque al arrancar llama a pintar(), y pintar()
     // necesita el idioma ya puesto.
     Diario.obtener('cronometro').arrancar();
+
+    // El modo enfoque solo engancha botones al arrancar; su diálogo se abre
+    // cuando se pulsa la llamada a la acción.
+    Diario.obtener('enfoque').arrancar();
 
     pintarTodo(datos.leerSesiones());
   }

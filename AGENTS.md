@@ -8,7 +8,7 @@ Web estática de una sola página para registrar sesiones de estudio y ver la ra
   - `estilos/base.css`: variables de color, reset, tipografía base y contenedor.
   - `estilos/componentes.css`: el aspecto de cada pieza (cabecera, tarjetas, botones, campos, racha, calendario, lista).
   - `estilos/panel.css`: lo del panel de estadísticas (KPI, gráficos, filtros). **Todavía no existe**: se crea cuando haya panel.
-  - `js/nucleo.js`, `js/datos.js`, `js/textos.js`, `js/preferencias.js`, `js/interfaz.js`: los que existen. `js/cronometro.js` y `js/panel.js` se crean con su contenido, no como ficheros vacíos.
+  - `js/nucleo.js`, `js/datos.js`, `js/textos.js`, `js/preferencias.js`, `js/cronometro.js`, `js/enfoque.js`, `js/interfaz.js`: los que existen. `js/panel.js` se crea con su contenido, no como fichero vacío.
   - `vendor/`: única excepción para librerías de terceros, con versión exacta en el nombre. Ahora vacío.
   - El orden de los `<link>` y los `<script>` en `index.html` está escrito en el fichero: **no lo cambies por gusto.**
 - **Sin frameworks, sin build, sin paso de compilación, sin CDN.**
@@ -57,10 +57,41 @@ Vale la pena saber por qué se chose esto y no un `app.js` de 2.600 líneas: es 
 - `localStorage`, clave `diario-de-estudio.sesiones`. Forma de cada sesión: `{ id: number, fecha: 'AAAA-MM-DD', tema: string, minutos: number }`.
 - `localStorage`, clave `diario-de-estudio.meta`: un entero (minutos por día). Vive separada de las sesiones porque la meta no es una sesión.
 - `localStorage`, clave `diario-de-estudio.tema`: `"sistema"` (por defecto), `"claro"` o `"oscuro"`. **Se guarda la preferencia, no el tema aplicado**: si es `sistema`, el tema efectivo se recalcula en cada carga y en cada cambio del sistema.
+- `localStorage`, clave `diario-de-estudio.idioma`: `"es"`, `"en"` o `"fr"`. Se guarda el elegido, no el detectado.
+- `localStorage`, clave `diario-de-estudio.cronometro`: `{ estado, inicioMs, pausadoMs, pausaDesdeMs }` del cronómetro. No hay contador: ver "Cronómetro".
+- `localStorage`, clave `diario-de-estudio.enfoque`: `{ minutos, pantallaCompleta }`, la última elección del modo enfoque. La sesión en sí **no** se guarda: si cierras la pestaña, se pierde a propósito.
 - `id` es interno. Sirve para **ordenar** sesiones del mismo día (la más reciente guardada arriba) y para **saber cuál se está editando o borrando**. No lo pongas en la interfaz.
 - Puntos de entrada, por módulo: en `js/datos.js`, `calcularRacha()`, `calcularMejorRacha()`, `leerSesiones()`, `leerMeta()`; en `js/interfaz.js`, `pintarTodo()`, `validar()`, `pintarRacha()`, `pintarMeta()`, `pintarCalendario()`, `pintarSesiones()`. Todo lo demás son satélites de esos.
 - `pintarTodo(sesiones)` es el único sitio desde el que se repinta la pantalla entera. Si añades algo que dependa de las sesiones, llámalo desde ahí y no desde el manejador del botón.
 - `index.html` usa `novalidate` a propósito: los errores los pinta la app, no el navegador. Quitarlo hace que aparezcan los tooltips nativos y desaparezcan los mensajes propios.
+
+## Idiomas
+
+1. Todo el texto visible sale de `js/textos.js`: `t(clave, { … })`, y `formatearNumero()`, `enPlural()`, `fechaLegible()` para lo que depende del idioma. Si añades un literal a `index.html`, ponle también su `data-i18n`.
+2. `traducirPagina()` recorre `data-i18n`, `data-i18n-placeholder` y `data-i18n-titulo`/`data-i18n-aria`. **El DOM real no se consulta**: el arnés no tiene `querySelectorAll` y devuelve una lista vacía, así que el arranque lo que hace es `t()` sobre lo que ya existe en el DOM y el resto lo repinta `pintarTodo()`.
+3. **Lo que depende del estado no puede llevar `data-i18n`**: hay que repintarlo. Por eso `textos.alCambiarIdioma()` es una **lista de oyentes**, no un hueco único: la app, el cronómetro y el modo enfoque se apuntan los tres, y con un solo hueco el último en apuntarse pisaba a los otros dos.
+4. Atajo: en el arnés, `document.getElementById('x').value = …` crea el elemento si no existe; `K.cache['x']` da error si nadie lo ha pedido antes.
+
+## Cronómetro
+
+1. **Se guarda la marca de inicio, no un contador.** `{ estado, inicioMs, pausadoMs, pausaDesdeMs }`: `transcurrido = ahora - inicioMs - pausadoMs - (en pausa, lo que lleva)`. Por eso recargar la página no pierde el rato y no se acumula error si el navegador se ralentiza.
+2. Estados: `parado`, `marcha`, `pausa`. Un estado desconocido o un JSON corrupto arrancan **parados**: un reloj que miente es peor que un reloj parado.
+3. **Pausar no regala tiempo**: el tramo en pausa se excluye mientras dura y se suma a `pausadoMs` al reanudar.
+4. `minutosTranscurridos()` usa `Math.max(1, Math.round(ms / 60000))`. El mínimo de 1 evita que veinte segundos de estudio se guarden como 0, que parece un fallo de la app.
+5. Terminar llama a `interfaz.prepararSesion(minutos)` y **no guarda la sesión**: sigue habiendo un único camino para escribir en `localStorage`, el botón de Guardar. `descartar()` sí pregunta con `confirm()`.
+6. El `document.title` lleva el tiempo mientras corre: es lo único que se ve con la pestaña en segundo plano.
+7. Con el evento `storage` se adopta el estado si otra pestaña mueve el mismo cronómetro; si no, las dos pestañas tendrían relojes distintos.
+8. **El reloj no es `aria-live`.** `#cronometro-anuncio` lleva `aria-live="polite"` pero `actualizarAnuncio()` compara **la descripción, no la frase entera**: si comparase la frase, que lleva los segundos, volvería a cambiar en cada tick y el lector de pantalla leería la hora cada segundo. El tiempo que se anuncia es el del momento del cambio.
+
+## Modo enfoque
+
+1. El diálogo de arranque es un **`<dialog>` nativo** con `showModal()`: la trampa de foco, el Escape y el nivel superior los da el navegador. Escribirlo a mano es como más se cuela un fallo de foco.
+2. **La pantalla de enfoque se enseña con una clase en `<body>`** (`en-foco`), nunca con el atributo `hidden`: el CSS le da `display`, y cualquier `display` de autor anula `hidden`. El `<dialog>` tampoco lleva `display` en el CSS.
+3. `min-height: 100dvh`, no `100vh`: en móvil los `100vh` no llegan al final de la pantalla y el botón de abajo quedaba debajo del borde. Con `env(safe-area-inset-*)` para las muescas.
+4. **El reloj cuenta hacia arriba y el objetivo es un objetivo, no un límite.** Llegar a los 25 minutos avisa una sola vez y el reloj sigue; pasarse anota el rato real. Un contador que se para solo obligaría a inventar el tiempo que queda, y lo que se guarda es tiempo de estudio de verdad.
+5. Terminar llama a `interfaz.prepararSesion(minutos, tema)`: los dos datos, porque el modo enfoque sabe el tema y el cronómetro no. Salir sin terminar es el camino que pierde el rato, y por eso pregunta (`salirPreguntando()`), también con el Escape.
+6. La pantalla completa es un extra: si `requestFullscreen()` falla o no existe (iPhone), la sesión arranca igual y se avisa. Nunca debe ser un requisito.
+7. No reutiliza el cronómetro aunque la fórmula del tiempo sea la misma: aquel se guarda y sobrevive al cierre, este no. Couplarlos costaría más que repetir cuatro líneas.
 
 ## Tema claro y oscuro
 
@@ -158,9 +189,11 @@ Chrome headless es la vía rápida para render y consola:
 & "C:\Program Files\Google\Chrome\Application\chrome.exe" --headless --disable-gpu --user-data-dir="$env:TEMP\perfil-x" --virtual-time-budget=3000 --dump-dom "file:///F:/Projects/MyStudyDaily/index.html"
 ```
 
-Para ejercitar el código (validación, racha, meta, calendario, editar/borrar) sin navegador: cargar **los cuatro ficheros, en el mismo orden que `index.html`**, en un contexto `node:vm` con un DOM simulado y un `localStorage` simulado. Es como se validaron las tablas de racha, meta y calendario. Gotchas del arnés, todos verificados:
+Para ejercitar el código (validación, racha, meta, calendario, editar/borrar, cronómetro, modo enfoque) sin navegador: cargar **los ficheros sueltos, en el mismo orden que `index.html`**, en un contexto `node:vm` con un DOM simulado y un `localStorage` simulado. Es como se validaron las tablas de racha, meta y calendario. Gotchas del arnés, todos verificados:
 
 - **El arnés reexpone las funciones de cada módulo como globales** (`sandbox.calcularRacha = Diario.obtener('datos').calcularRacha`) para no tener que reescribir las 264 aserciones cuando se mueve código. Si mueves una función de módulo, actualiza la tabla `EXPORTAR` del arnés o falla con `no exporta`.
+- **Los módulos que comparten nombres de función necesitan prefijo** en la tabla: el cronómetro y el modo enfoque exportan `iniciar`, `pausar`, `terminar`, `alternar` y `pintar`. Sin prefijo, el último en exponerse pisa al otro y las pruebas del cronómetro se ejecutan contra la función del modo enfoque **sin dar ningún error visible**. `enfoque` va como `enfoque_*`.
+- **`Date.now()` también hay que simularlo**: los relojes usan marcas de tiempo, no un contador, así que hay que sustituir `Date` por una subclase con `now()` estático y avanzar el reloj a mano con `K.avanzar(ms)`.
 - **Un estado mutable necesita `Object.defineProperty` con `get`**, no una copia: `idEnEdicion` se lee como `estadoEdicion()` desde dentro del módulo, porque si copiaras el valor el arnés leería siempre el inicial.
 - **Congelar "hoy" con `'2026-03-10T12:00:00'`, nunca con `'2026-03-10'`.** Una fecha sin hora se parsea como medianoche **UTC** y en husos negativos el día se desplaza, provocando ~16 fallos falsos de golpe.
 - Sustituye `Date` por una subclase que en el constructor sin argumentos devuelve la fecha fija; el código solo usa `new Date()`, `new Date(string)` y `Date.UTC`.
@@ -171,6 +204,7 @@ Para ejercitar el código (validación, racha, meta, calendario, editar/borrar) 
 - Al escribir un caso de prueba, **mira los días que usas antes de asumir que son pasados**. Con "hoy = 10 mar", un tramo del 20 al 24 es futuro y la mejor racha lo descarta (falla por diseño, no por bug).
 - Cuidado con `append('texto')`: en el DOM crea un nodo de texto y suma al `textContent` del padre. Si el stub no lo imita, hay que leer el texto de los hijos.
 - `className = 'x'` y `classList.add('x')` son caminos distintos: el stub tiene un `Set` aparte, así que para leer una clase puesta con `className` compara el `className`, no el `classList`.
+- Para tocar un campo del DOM simulado usa `K.run("document.getElementById('x').value = …")`. `K.cache['x']` da error si nadie ha pedido ese elemento antes, y `createElement` no lee el HTML: una casilla que en el HTML va `checked` llega al stub sin marcar.
 - `leerSesiones()` normaliza en memoria y **no** escribe. Para comprobar la normalización hay que leer `leerSesiones()`, no el JSON crudo de `localStorage`.
 - Si reescribes el arnés con `Set-Content` en PowerShell se rompe la codificación (lee UTF-8 como ANSI). Usa las herramientas de edición, o `[IO.File]::WriteAllText` con UTF-8.
 

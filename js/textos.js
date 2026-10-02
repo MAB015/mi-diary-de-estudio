@@ -68,6 +68,31 @@ Diario.registrar('textos', (function () {
         'Al terminar se rellenan los minutos en el formulario: tú solo tienes que escribir el tema.',
       'cronometro.confirmarDescarte': '¿Descartar el tiempo acumulado?',
 
+      'enfoque.cta': 'Empezar a estudiar',
+      'enfoque.titulo': 'Empezar a estudiar',
+      'enfoque.temaEtiqueta': 'Qué vas a estudiar',
+      'enfoque.temaEjemplo': 'Ej. Arrays y LinkedList',
+      'enfoque.temaError': 'Escribe qué vas a estudiar.',
+      'enfoque.objetivoEtiqueta': 'Objetivo en minutos',
+      'enfoque.objetivoAyuda':
+        'Es un objetivo, no un límite: puedes seguir estudiando cuando llegues.',
+      'enfoque.objetivoError': 'El objetivo debe ser un número entero entre 1 y 480.',
+      'enfoque.objetivoCumplido': '¡Objetivo cumplido! Puedes seguir o terminar.',
+      'enfoque.pantallaCompleta': 'Intentar pantalla completa',
+      'enfoque.pantallaNoDisponible':
+        'Este navegador no deja usar la pantalla completa; el modo funciona igual.',
+      'enfoque.empezar': 'Empezar',
+      'enfoque.cancelar': 'Cancelar',
+      'enfoque.sesion': 'Sesión de enfoque',
+      'enfoque.objetivoDe': 'Objetivo: {minutos} min',
+      'enfoque.pausar': 'Pausar',
+      'enfoque.reanudar': 'Reanudar',
+      'enfoque.terminar': 'Terminar',
+      'enfoque.salir': 'Salir',
+      'enfoque.anuncioInicio': 'Sesión de {tema} iniciada. Objetivo: {minutos} minutos.',
+      'enfoque.anuncioPausa': 'Sesión en pausa.',
+      'enfoque.confirmarSalir': '¿Salir de la sesión? El tiempo de hoy no se guardará.',
+
       'calendario.titulo': 'Últimos 28 días',
       'calendario.sinSesion': 'Sin sesión',
       'calendario.hasta': 'Hasta {meta} min',
@@ -133,6 +158,30 @@ Diario.registrar('textos', (function () {
       'cronometro.descartar': 'Discard',
       'cronometro.ayuda': 'When you finish, the minutes go into the form: you only write the topic.',
       'cronometro.confirmarDescarte': 'Discard the accumulated time?',
+
+      'enfoque.cta': 'Start studying',
+      'enfoque.titulo': 'Start studying',
+      'enfoque.temaEtiqueta': 'What are you going to study?',
+      'enfoque.temaEjemplo': 'e.g. Arrays and LinkedList',
+      'enfoque.temaError': 'Write down what you are going to study.',
+      'enfoque.objetivoEtiqueta': 'Goal in minutes',
+      'enfoque.objetivoAyuda': 'It is a goal, not a limit: you can keep going when you get there.',
+      'enfoque.objetivoError': 'The goal must be a whole number between 1 and 480.',
+      'enfoque.objetivoCumplido': 'Goal reached! You can keep going or finish.',
+      'enfoque.pantallaCompleta': 'Try full screen',
+      'enfoque.pantallaNoDisponible':
+        'This browser will not go full screen; the mode works the same.',
+      'enfoque.empezar': 'Start',
+      'enfoque.cancelar': 'Cancel',
+      'enfoque.sesion': 'Focus session',
+      'enfoque.objetivoDe': 'Goal: {minutos} min',
+      'enfoque.pausar': 'Pause',
+      'enfoque.reanudar': 'Resume',
+      'enfoque.terminar': 'Finish',
+      'enfoque.salir': 'Leave',
+      'enfoque.anuncioInicio': 'Session for {tema} started. Goal: {minutos} minutes.',
+      'enfoque.anuncioPausa': 'Session paused.',
+      'enfoque.confirmarSalir': 'Leave the session? Today’s time will not be saved.',
 
       'calendario.titulo': 'Last 28 days',
       'calendario.sinSesion': 'No session',
@@ -201,6 +250,31 @@ Diario.registrar('textos', (function () {
         'En terminant, les minutes vont dans le formulaire : il ne reste qu’à écrire le thème.',
       'cronometro.confirmarDescarte': 'Abandonner le temps accumulé ?',
 
+      'enfoque.cta': 'Commencer à étudier',
+      'enfoque.titulo': 'Commencer à étudier',
+      'enfoque.temaEtiqueta': 'Qu’allez-vous étudier ?',
+      'enfoque.temaEjemplo': 'ex. Tableaux et listes chaînées',
+      'enfoque.temaError': 'Indiquez ce que vous allez étudier.',
+      'enfoque.objetivoEtiqueta': 'Objectif en minutes',
+      'enfoque.objetivoAyuda':
+        'C’est un objectif, pas une limite : vous pouvez continuer une fois arrivé.',
+      'enfoque.objetivoError': 'L’objectif doit être un nombre entier entre 1 et 480.',
+      'enfoque.objetivoCumplido': 'Objectif atteint ! Vous pouvez continuer ou terminer.',
+      'enfoque.pantallaCompleta': 'Tenter le plein écran',
+      'enfoque.pantallaNoDisponible':
+        'Ce navigateur ne permet pas le plein écran ; le mode fonctionne pareil.',
+      'enfoque.empezar': 'Commencer',
+      'enfoque.cancelar': 'Annuler',
+      'enfoque.sesion': 'Session de concentration',
+      'enfoque.objetivoDe': 'Objectif : {minutos} min',
+      'enfoque.pausar': 'Pause',
+      'enfoque.reanudar': 'Reprendre',
+      'enfoque.terminar': 'Terminer',
+      'enfoque.salir': 'Quitter',
+      'enfoque.anuncioInicio': 'Session « {tema} » démarrée. Objectif : {minutos} minutes.',
+      'enfoque.anuncioPausa': 'Session en pause.',
+      'enfoque.confirmarSalir': 'Quitter la session ? Le temps d’aujourd’hui ne sera pas enregistré.',
+
       'calendario.titulo': '28 derniers jours',
       'calendario.sinSesion': 'Aucune session',
       'calendario.hasta': "Jusqu'à {meta} min",
@@ -248,7 +322,13 @@ Diario.registrar('textos', (function () {
   let idiomaActual = null;
 
   /* Quien pinte texto dinámico (interfaz.js) se apunta aquí para repintar al cambiar. */
-  let avisarAlCambiar = function () {};
+  /*
+   * Son varios los que pintan texto que depende del idioma (la app, el
+   * cronometro, el modo enfoque), asi que la lista es una lista. Con un solo
+   * hueco, el modulo que se apuntara el ultimo pisaba a los otros dos y la app
+   * se quedaba en el idioma anterior al cambiarlo con la sesion abierta.
+   */
+  const alCambiarIdioma = [];
 
   /* ---------- Lectura y elección de idioma ---------- */
 
@@ -282,7 +362,7 @@ Diario.registrar('textos', (function () {
     idiomaActual = elegido;
     marcarEnElSelector(elegido);
     traducirPagina();
-    avisarAlCambiar();
+    for (const avisar of alCambiarIdioma) avisar();
     return elegido;
   }
 
@@ -393,7 +473,7 @@ Diario.registrar('textos', (function () {
   return {
     arrancar: arrancar,
     alCambiarIdioma: (fn) => {
-      avisarAlCambiar = fn;
+      alCambiarIdioma.push(fn);
     },
     cambiarIdioma: cambiarIdioma,
     preferenciaGuardada: preferenciaGuardada,

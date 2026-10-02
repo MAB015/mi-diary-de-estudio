@@ -142,6 +142,124 @@
   color: var(--texto-suave);
 }
 
+/* --- Modo enfoque ---
+   La pantalla se enseña con una clase en <body>, no con el atributo hidden:
+   si el CSS le da "display", el atributo deja de mandar. Lo mismo con el
+   <dialog>, que el navegador pinta centrado sin necesitar position. */
+body.en-foco .contenedor {
+  display: none;
+}
+
+body.en-foco .enfoque {
+  display: flex;
+}
+
+.enfoque {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--e-3);
+  text-align: center;
+  padding: calc(var(--e-6) + env(safe-area-inset-top)) var(--e-4)
+    calc(var(--e-6) + env(safe-area-inset-bottom));
+  /* 100dvh, no 100vh: en móvil los 100vh no llegan al final de la pantalla y
+     el botón de abajo quedaba debajo del borde. */
+  min-height: 100dvh;
+  background: var(--fondo-2);
+  overflow-y: auto;
+}
+
+.enfoque__etiqueta {
+  margin: 0;
+  font-size: var(--texto-sm);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--texto-suave);
+}
+
+.enfoque__tema {
+  margin: 0;
+  font-size: var(--texto-h2);
+  font-weight: 700;
+  max-width: 20ch;
+  overflow-wrap: anywhere;
+}
+
+.enfoque__tiempo {
+  margin: var(--e-2) 0 0;
+  font-size: var(--texto-display);
+  font-weight: 700;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+  color: var(--fuego);
+}
+
+.enfoque__objetivo {
+  margin: 0;
+  font-size: var(--texto-sm);
+  color: var(--texto-suave);
+}
+
+.enfoque__botones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--e-3);
+  margin-top: var(--e-6);
+}
+
+.enfoque__salir {
+  margin-top: var(--e-6);
+}
+
+/* Diálogo: <dialog> nativo. El fondo lo pone el propio navegador, así que solo
+   se le da color a la caja y se respeta el tema. */
+.dialogo {
+  width: min(28rem, calc(100vw - 2 * var(--e-4)));
+  padding: var(--e-6);
+  border: 1px solid var(--borde-fuerte);
+  border-radius: var(--r-3);
+  background: var(--superficie);
+  color: var(--texto);
+  box-shadow: var(--sombra-3);
+}
+
+.dialogo::backdrop {
+  background: var(--velo);
+}
+
+.dialogo__titulo {
+  margin: 0 0 var(--e-4);
+  font-size: var(--texto-h3);
+}
+
+.dialogo__botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-3);
+  margin-top: var(--e-6);
+}
+
+/* El botón grande es la llamada a la acción de la portada: ancho completo en
+   móvil porque a 375 px dos botones lado a lado no caben sin encogerlos. */
+.boton--grande {
+  width: 100%;
+  min-height: 3rem;
+  font-size: var(--texto-lead);
+}
+
+@media (min-width: 40rem) {
+  .boton--grande {
+    width: auto;
+    min-width: 14rem;
+  }
+}
+
 /* --- Tarjetas --- */
 .tarjeta {
   background: var(--superficie);
@@ -241,8 +359,8 @@
 .racha--3 {
   --llama-ancho: 58px;
   --llama-color: var(--llama-3);
-  --llama-nucleo: #7c2e05;
-  --llama-halo: rgb(255 122 26 / 0.25);
+  --llama-nucleo: var(--llama-3-nucleo);
+  --llama-halo: var(--llama-3-halo);
   --llama-desenfoque: 10px;
   --llama-duracion: var(--d-grande);
 }
@@ -250,8 +368,8 @@
 .racha--4 {
   --llama-ancho: 70px;
   --llama-color: var(--llama-4);
-  --llama-nucleo: #7c2e05;
-  --llama-halo: rgb(255 122 26 / 0.35);
+  --llama-nucleo: var(--llama-3-nucleo);
+  --llama-halo: var(--llama-4-halo);
   --llama-desenfoque: 14px;
   --llama-duracion: var(--d-grande);
 }
@@ -330,6 +448,34 @@
    gana la ultima. */
 .campo__control--corto {
   width: 110px;
+}
+
+/* Texto de ayuda: es lo que el campo anuncia, no un error. */
+.campo__ayuda {
+  margin: 0;
+  font-size: var(--texto-xs);
+  color: var(--texto-suave);
+}
+
+/* Checkbox con la etiqueta al lado: se usa en el diálogo del modo enfoque. */
+.campo--linea {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--e-3);
+}
+
+.campo__casilla {
+  width: 1.35rem;
+  height: 1.35rem;
+  flex-shrink: 0;
+  margin: 0;
+  accent-color: var(--fuego);
+  cursor: pointer;
+}
+
+.campo__casilla:focus-visible {
+  outline: 3px solid var(--foco);
+  outline-offset: 2px;
 }
 
 .meta__texto {

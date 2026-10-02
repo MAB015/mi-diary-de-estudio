@@ -18,6 +18,11 @@
 :root {
   color-scheme: light;
 
+  /* Velo del <dialog> modal. Es un color de un tema y del otro a proposito: en
+     los dos hay que oscurecer lo que hay detras, y un negro puro en tema claro
+     deja el fondo como una mancha. */
+  --velo: rgb(10 8 6 / 0.6);
+
   /* Color. Roles, no colores sueltos: ver AGENTS.md y la skill de UI. */
   --fondo: #fbf8f4;
   --fondo-2: #f2eee8;
@@ -53,8 +58,11 @@
   --llama-2: #c2410c;
   --llama-3: #ea580c;
   --llama-4: #f97316;
-  --llama-1-sombra: #5a2d05;
-  --llama-4-sombra: #c2410c;
+--llama-1-sombra: #5a2d05;
+--llama-4-sombra: #c2410c;
+--llama-3-nucleo: #7c2e05;
+--llama-3-halo: rgb(234 88 12 / 0.25);
+--llama-4-halo: rgb(249 115 22 / 0.35);
 
   /* Sombras. Tres niveles y nada más. */
   --sombra-1: 0 1px 2px rgba(25, 24, 23, 0.06), 0 1px 3px rgba(25, 24, 23, 0.04);
@@ -105,6 +113,8 @@
 :root[data-tema="oscuro"] {
   color-scheme: dark;
 
+  --velo: rgb(0 0 0 / 0.72);
+
   --fondo: #0f1216;
   --fondo-2: #12161b;
   --superficie: #171b21;
@@ -140,8 +150,11 @@
   --llama-2: #d2691e;
   --llama-3: #ff7a1a;
   --llama-4: #ffb05c;
-  --llama-1-sombra: #4a1f04;
-  --llama-4-sombra: #ff6a00;
+--llama-1-sombra: #4a1f04;
+--llama-4-sombra: #ff6a00;
+--llama-3-nucleo: #7c2e05;
+--llama-3-halo: rgb(255 122 26 / 0.25);
+--llama-4-halo: rgb(255 176 92 / 0.35);
 }
 
 * {

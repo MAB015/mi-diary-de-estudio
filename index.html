@@ -44,6 +44,11 @@
           Apunta tus sesiones y mantén viva la racha.
         </p>
 
+        <!-- La llamada a la accion: sin ella la app es solo un formulario. -->
+        <button class="boton boton--grande" type="button" id="empezar-estudio" data-i18n="enfoque.cta">
+          Empezar a estudiar
+        </button>
+
         <!--
           Dos grupos de radios nativos, no botones: el teclado, el "cuál está
           elegido" y la semántica de grupo salen del elemento. El falso del
@@ -223,6 +228,90 @@
     </main>
 
     <!--
+      Modo enfoque. El diálogo es un <dialog> nativo a propósito: la trampa de
+      foco, el Escape y el nivel superior los da el navegador, que es justo lo
+      que hay que acertar y es fácil de hacer mal a mano.
+    -->
+    <dialog class="dialogo" id="dialogo-enfoque">
+      <form method="dialog" id="formulario-enfoque" novalidate>
+        <h2 class="dialogo__titulo" data-i18n="enfoque.titulo">Empezar a estudiar</h2>
+
+        <div class="campo">
+          <label class="campo__etiqueta" for="enfoque-tema" data-i18n="enfoque.temaEtiqueta">
+            Qué vas a estudiar
+          </label>
+          <input
+            class="campo__control"
+            type="text"
+            id="enfoque-tema"
+            autocomplete="off"
+            placeholder="Ej. Arrays y LinkedList"
+            data-i18n-placeholder="enfoque.temaEjemplo"
+            aria-describedby="error-enfoque-tema"
+          />
+          <p class="campo__error" id="error-enfoque-tema" hidden></p>
+        </div>
+
+        <div class="campo">
+          <label class="campo__etiqueta" for="enfoque-objetivo" data-i18n="enfoque.objetivoEtiqueta">
+            Objetivo en minutos
+          </label>
+          <input
+            class="campo__control campo__control--corto"
+            type="number"
+            id="enfoque-objetivo"
+            min="1"
+            max="480"
+            step="5"
+            inputmode="numeric"
+            aria-describedby="enfoque-ayuda error-enfoque-objetivo"
+          />
+          <p class="campo__ayuda" id="enfoque-ayuda" data-i18n="enfoque.objetivoAyuda">
+            Es un objetivo, no un límite: puedes seguir estudundo al llegar.
+          </p>
+          <p class="campo__error" id="error-enfoque-objetivo" hidden></p>
+        </div>
+
+        <div class="campo campo--linea">
+          <input class="campo__casilla" type="checkbox" id="enfoque-pantalla" checked />
+          <label class="campo__etiqueta" for="enfoque-pantalla" data-i18n="enfoque.pantallaCompleta">
+            Intentar pantalla completa
+          </label>
+        </div>
+
+        <div class="dialogo__botones">
+          <button class="boton" type="submit" data-i18n="enfoque.empezar">Empezar</button>
+          <button class="boton boton--secundario" type="button" id="enfoque-cancelar" data-i18n="enfoque.cancelar">
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </dialog>
+
+    <!--
+      La pantalla de enfoque se enseña con una clase en <body>, no con el
+      atributo hidden: si el CSS le da "display", el atributo deja de mandar.
+    -->
+    <div class="enfoque" id="enfoque">
+      <p class="enfoque__etiqueta" data-i18n="enfoque.sesion">Sesión de enfoque</p>
+      <h2 class="enfoque__tema" id="enfoque-tema-pantalla"></h2>
+      <p class="enfoque__tiempo" id="enfoque-tiempo">00:00</p>
+      <p class="enfoque__objetivo" id="enfoque-objetivo-pantalla"></p>
+      <p class="visualmente-oculto" id="enfoque-anuncio" aria-live="polite"></p>
+
+      <div class="enfoque__botones">
+        <button class="boton" type="button" id="enfoque-alternar">Pausar</button>
+        <button class="boton boton--secundario" type="button" id="enfoque-terminar" data-i18n="enfoque.terminar">
+          Terminar
+        </button>
+      </div>
+
+      <button class="boton boton--pequeno boton--secundario enfoque__salir" type="button" id="enfoque-salir" data-i18n="enfoque.salir">
+        Salir
+      </button>
+    </div>
+
+    <!--
       Los scripts van en este orden y en este orden importa:
       "nucleo" crea el registro de módulos y debe ir primero;
       "interfaz" se pone en marcha al final, cuando todo lo demás está cargado.
@@ -233,6 +322,7 @@
     <script src="js/textos.js"></script>
     <script src="js/preferencias.js"></script>
     <script src="js/cronometro.js"></script>
+    <script src="js/enfoque.js"></script>
     <script src="js/interfaz.js"></script>
   </body>
 </html>

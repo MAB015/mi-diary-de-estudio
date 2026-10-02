@@ -273,6 +273,14 @@ const tiempo = formatearTiempo(transcurrido());
     });
 
     pintar();
+
+    /*
+     * El idioma puede cambiar con el cronómetro delante. Sus textos no salen de
+     * data-i18n porque dependen del estado, así que hay que repintarlos aquí.
+     * Sin esto, parado se quedaba en el idioma anterior hasta el siguiente clic.
+     */
+    textos.alCambiarIdioma(() => pintar());
+
     // Si estaba corriendo al cerrar la página, sigue corriendo: es la gracia de
     // guardar la marca de inicio en vez de un contador.
     if (habiaEstado && estado === 'marcha') ponerEnMarcha();
