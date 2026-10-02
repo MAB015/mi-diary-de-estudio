@@ -4,7 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Diario de Estudio</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="estilos/base.css" />
+    <link rel="stylesheet" href="estilos/componentes.css" />
   </head>
   <body>
     <main class="contenedor">
@@ -99,9 +100,9 @@
           </div>
 
           <button class="boton" type="submit" id="guardar">Guardar sesión</button>
-        <!-- OJO: sin "display" en styles.css, se oculta con el atributo hidden. -->
+        <!-- OJO: sin "display" en estilos/componentes.css, se oculta con el atributo hidden. -->
         <button class="boton boton--secundario" type="button" id="cancelar-edicion" hidden>Cancelar</button>
-        </form>
+      </form>
       </section>
 
       <section class="tarjeta">
@@ -111,6 +112,15 @@
       </section>
     </main>
 
-    <script src="app.js"></script>
+    <!--
+      Los scripts van en este orden y en este orden importa:
+      "nucleo" crea el registro de módulos y debe ir primero;
+      "interfaz" se pone en marcha al final, cuando todo lo demás está cargado.
+      Prohibido type="module" e import: rompen la apertura con doble clic.
+    -->
+    <script src="js/nucleo.js"></script>
+    <script src="js/datos.js"></script>
+    <script src="js/textos.js"></script>
+    <script src="js/interfaz.js"></script>
   </body>
 </html>

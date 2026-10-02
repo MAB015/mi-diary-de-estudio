@@ -25,8 +25,14 @@ Los datos se guardan en el `localStorage` de tu navegador. No salen de tu equipo
 | Archivo | Para qué sirve |
 | --- | --- |
 | `index.html` | La estructura de la página. |
-| `styles.css` | Los estilos. Pensados para móvil (375 px). |
-| `app.js` | Toda la lógica: validaciones, rachas, calendario y guardado. |
+| `js/nucleo.js` | El registro de módulos y las utilidades de fecha. |
+| `js/datos.js` | `localStorage`, rachas, meta y minutos por día. |
+| `js/textos.js` | Los textos de la interfaz. |
+| `js/interfaz.js` | La pantalla: validaciones, pintado, calendario y guardado. |
+| `estilos/base.css` | Variables de color, tipografía y contenedor. |
+| `estilos/componentes.css` | El aspecto de cada pieza. Pensado para móvil (375 px). |
+
+Todo son scripts y estilos clásicos: la página funciona con doble clic, sin servidor, sin build y sin conexión.
 
 `AGENTS.md` recoge las reglas del proyecto y `MEMORY.md` el estado del desarrollo.
 

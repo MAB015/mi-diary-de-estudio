@@ -4,14 +4,35 @@ Web estática de una sola página para registrar sesiones de estudio y ver la ra
 
 ## Reglas del proyecto (no negociables)
 
-- **Solo tres archivos de la app**: `index.html`, `styles.css`, `app.js`. Sin frameworks, sin librerías, sin CDN, sin build, sin paso de compilación.
-- **Debe funcionar con doble clic** en `index.html`. Por eso está prohibido `type="module"` (CORS lo bloquea en `file://`), `fetch()` de ficheros locales y cualquier import. Script clásico al final del `<body>`.
+- **Estructura de ficheros fija.** La app son `index.html`, dos carpetas y opcionalmente `vendor/`. Nada más:
+  - `estilos/base.css`: variables de color, reset, tipografía base y contenedor.
+  - `estilos/componentes.css`: el aspecto de cada pieza (cabecera, tarjetas, botones, campos, racha, calendario, lista).
+  - `estilos/panel.css`: lo del panel de estadísticas (KPI, gráficos, filtros). **Todavía no existe**: se crea cuando haya panel.
+  - `js/nucleo.js`, `js/datos.js`, `js/textos.js`, `js/interfaz.js`: los que existen. `js/preferencias.js`, `js/cronometro.js` y `js/panel.css`… se crean con su contenido, no como ficheros vacíos.
+  - `vendor/`: única excepción para librerías de terceros, con versión exacta en el nombre. Ahora vacío.
+  - El orden de los `<link>` y los `<script>` en `index.html` está escrito en el fichero: **no lo cambies por gusto.**
+- **Sin frameworks, sin build, sin paso de compilación, sin CDN.**
+- **Debe funcionar con doble clic** en `index.html`. Por eso está prohibido `type="module"` (CORS lo bloquea en `file://`), `import`, `export`, `fetch()` de ficheros locales y cualquier import. Varios `<script src>` clásicos **sí** funcionan desde `file://`: está verificado. Un módulo ES desde `file://` falla con `blocked by CORS policy`: también verificado.
 - **Todo el texto de la interfaz y los comentarios del código en español.**
 - **Código para principiantes**: nombres descriptivos, funciones cortas, comentarios breves que expliquen el *porqué*. Nada de abstracciones ni helpers genéricos por adelantado.
-- **Alcance cerrado**: nada de gráficos, estadísticas, exportación ni "mejoras" no pedidas. Si una idea es buena pero no está en el encargo, no la añadas. (Editar y eliminar sí están: ver "Editar y eliminar".)
+- **Alcance cerrado**: nada que no esté en el encargo actual. Si una idea es buena pero no la pidió el usuario, no la añadas. (Editar y eliminar sí están: ver "Editar y eliminar".)
 - Móvil primero. Revisar siempre a **375 px de ancho**.
 - El repo está en GitHub (`MAB015/mi-diary-de-estudio`). Todo cambio que añada, modifique o quite algo se documenta con un commit: ver "Commits".
-- Este `AGENTS.md` es un archivo de documentación permitido; la regla de "tres archivos" es solo de la app. `README.md` también.
+- Este `AGENTS.md` es un archivo de documentación permitido; la regla de estructura de ficheros es solo de la app. `README.md` también.
+
+## Módulos de JavaScript (regla estructural)
+
+Desde la v4 el código está partido en ficheros para que ninguno se haga enorme. El precio es que **no hay módulos ES**, así que esto es obligatorio:
+
+1. **Todo lo que cuelga de `window` es exactamente una cosa: `Diario`.** Ni una variable ni una función más en el ámbito global.
+2. **Cada fichero va dentro de una IIFE** y se registra: `Diario.registrar('datos', (function () { 'use strict'; … return { … }; })());`. Lo que devuelvas es su API pública; lo demás es privado.
+3. **`js/nucleo.js` va primero**: crea `Diario` con `registrar()`, `obtener()` y `Diario.fechas` (`rellenar`, `claveDeFecha`, `moverClave`).
+4. **Dependencias ya cargadas: se cogen arriba.** Si `datos.js` y `textos.js` ya están cargados, `interfaz.js` puede hacer `const datos = Diario.obtener('datos');` en su cabecera.
+5. **Dependencias que se cargan después: `Diario.obtener()` dentro de la función**, nunca arriba. Si no, sale un error de módulo inexistente. Ejemplo: el cronómetro necesita a la interfaz, pero la interfaz carga antes.
+6. **Si el orden de `<script>` se rompe, `obtener()` lo dice en español** con el nombre del módulo que falta. Es el error que hay que leer primero cuando algo no funcione.
+7. **Prohibido** `type="module"`, `import`, `export` y tocar `window` con nada más que `Diario`.
+
+Vale la pena saber por qué se chose esto y no un `app.js` de 2.600 líneas: es más fácil de depurar (el error dice el fichero), evita colisiones de nombres entre secciones y deja cada fichero con una responsabilidad. Lo que se pierde es el ámbito de módulo nativo, y por eso las IIFEs no son opcionales.
 
 ## Commits
 
@@ -20,7 +41,7 @@ Web estática de una sola página para registrar sesiones de estudio y ver la ra
 3. **Un commit por cambio coherente**, no uno por línea ni uno gigante con todo. Si puedes explicarlo en una frase, es un commit; si necesitas decir "y también" dos veces, probablemente son dos.
 4. **El mensaje dice qué se hizo y por qué**, en español. Asunto con el nombre del proyecto y la función, como el primero: `Diario de Estudio: <qué>`. Debajo, el cuerpo con los *porqués* y los detalles que no se ven leyendo el diff.
 5. **El código y su documentación van en el mismo commit.** Si un cambio altera el comportamiento, actualiza `AGENTS.md` (reglas) y/o `MEMORY.md` (estado) en ese mismo commit, nunca en uno suelto después.
-6. **Nada de basura en el repo.** Solo los seis ficheros del proyecto, más dos carpetas de tooling: `.gitignore` (ignora `.vercel/`) y `.opencode/skills/` (skills del proyecto, no son código de la app). Las copias de prueba, los arneses y los perfiles de Chrome se quedan fuera, en la carpeta temporal.
+6. **Nada de basura en el repo.** Solo los ficheros del proyecto (`index.html`, `js/`, `estilos/`, `vendor/` cuando haga falta) más tres carpetas de tooling: `.gitignore` (ignora `.vercel/`), `.opencode/skills/` (skills del proyecto, no son código de la app) y la documentación (`AGENTS.md`, `MEMORY.md`, `README.md`). Las copias de prueba, los arneses y los perfiles de Chrome se quedan fuera, en la carpeta temporal.
 7. **No reescribas historia publicada.** Nada de `amend`, `rebase` ni `push --force` sobre lo que ya está en GitHub. Un commit ya subido se corrige con otro commit.
 8. **`push` cuando el usuario lo pida** o al cerrar una tanda de trabajo; el commit en local sí es siempre inmediato.
 9. Si el repo cambia de nombre o de sitio, actualiza la línea de GitHub de la cabecera.
@@ -36,7 +57,7 @@ Web estática de una sola página para registrar sesiones de estudio y ver la ra
 - `localStorage`, clave `diario-de-estudio.sesiones`. Forma de cada sesión: `{ id: number, fecha: 'AAAA-MM-DD', tema: string, minutos: number }`.
 - `localStorage`, clave `diario-de-estudio.meta`: un entero (minutos por día). Vive separada de las sesiones porque la meta no es una sesión.
 - `id` es interno. Sirve para **ordenar** sesiones del mismo día (la más reciente guardada arriba) y para **saber cuál se está editando o borrando**. No lo pongas en la interfaz.
-- Puntos de entrada de `app.js`: `calcularRacha()`, `calcularMejorRacha()`, `pintarTodo()`, `validar()`, `pintarRacha()`, `pintarMeta()`, `pintarCalendario()`, `pintarSesiones()`, `leerSesiones()`, `leerMeta()`. Todo lo demás son satélites de esos.
+- Puntos de entrada, por módulo: en `js/datos.js`, `calcularRacha()`, `calcularMejorRacha()`, `leerSesiones()`, `leerMeta()`; en `js/interfaz.js`, `pintarTodo()`, `validar()`, `pintarRacha()`, `pintarMeta()`, `pintarCalendario()`, `pintarSesiones()`. Todo lo demás son satélites de esos.
 - `pintarTodo(sesiones)` es el único sitio desde el que se repinta la pantalla entera. Si añades algo que dependa de las sesiones, llámalo desde ahí y no desde el manejador del botón.
 - `index.html` usa `novalidate` a propósito: los errores los pinta la app, no el navegador. Quitarlo hace que aparezcan los tooltips nativos y desaparezcan los mensajes propios.
 
@@ -99,7 +120,7 @@ Web estática de una sola página para registrar sesiones de estudio y ver la ra
 
 ## Trampa de CSS
 
-`.campo__error`, `.racha__mejor`, `.meta__cumplida` y `.boton--secundario` (el botón Cancelar) **no pueden tener `display`** en `styles.css`. Se ocultan con el atributo `hidden`, y cualquier `display` de autor lo anula y los deja siempre visibles. Compruébalo en el navegador con `getComputedStyle(el).display === 'none'` y `el.offsetHeight === 0`, no mirando solo el atributo: `<p>` ya trae `display: block` del navegador y `<button>` trae `inline-block`, así que el valor computado engaña. Si necesitas espaciado, usa `margin`/`font-size`/`border-top`. En cambio `.dia` y `.leyenda` **sí** llevan `display`: nunca se ocultan con `hidden`.
+`.campo__error`, `.racha__mejor`, `.meta__cumplida` y `.boton--secundario` (el botón Cancelar) **no pueden tener `display`** en `estilos/componentes.css`. Se ocultan con el atributo `hidden`, y cualquier `display` de autor lo anula y los deja siempre visibles. Compruébalo en el navegador con `getComputedStyle(el).display === 'none'` y `el.offsetHeight === 0`, no mirando solo el atributo: `<p>` ya trae `display: block` del navegador y `<button>` trae `inline-block`, así que el valor computado engaña. Si necesitas espaciado, usa `margin`/`font-size`/`border-top`. En cambio `.dia` y `.leyenda` **sí** llevan `display`: nunca se ocultan con `hidden`.
 
 ## Cómo verificar (no hay tooling: ni test, ni lint, ni package.json)
 
@@ -109,10 +130,12 @@ Chrome headless es la vía rápida para render y consola:
 & "C:\Program Files\Google\Chrome\Application\chrome.exe" --headless --disable-gpu --user-data-dir="$env:TEMP\perfil-x" --virtual-time-budget=3000 --dump-dom "file:///F:/Projects/MyStudyDaily/index.html"
 ```
 
-Para ejercitar `app.js` (validación, racha, meta, calendario, editar/borrar) sin navegador: cargar el fichero en un contexto `node:vm` con un DOM simulado y un `localStorage` simulado. Es como se validaron las tablas de racha, meta y calendario. Gotchas del arnés, todos verificados:
+Para ejercitar el código (validación, racha, meta, calendario, editar/borrar) sin navegador: cargar **los cuatro ficheros, en el mismo orden que `index.html`**, en un contexto `node:vm` con un DOM simulado y un `localStorage` simulado. Es como se validaron las tablas de racha, meta y calendario. Gotchas del arnés, todos verificados:
 
+- **El arnés reexpone las funciones de cada módulo como globales** (`sandbox.calcularRacha = Diario.obtener('datos').calcularRacha`) para no tener que reescribir las 264 aserciones cuando se mueve código. Si mueves una función de módulo, actualiza la tabla `EXPORTAR` del arnés o falla con `no exporta`.
+- **Un estado mutable necesita `Object.defineProperty` con `get`**, no una copia: `idEnEdicion` se lee como `estadoEdicion()` desde dentro del módulo, porque si copiaras el valor el arnés leería siempre el inicial.
 - **Congelar "hoy" con `'2026-03-10T12:00:00'`, nunca con `'2026-03-10'`.** Una fecha sin hora se parsea como medianoche **UTC** y en husos negativos el día se desplaza, provocando ~16 fallos falsos de golpe.
-- Sustituye `Date` por una subclase que en el constructor sin argumentos devuelve la fecha fija; `app.js` solo usa `new Date()`, `new Date(string)` y `Date.UTC`.
+- Sustituye `Date` por una subclase que en el constructor sin argumentos devuelve la fecha fija; el código solo usa `new Date()`, `new Date(string)` y `Date.UTC`.
 - El stub de elemento debe **borrar los hijos cuando se escribe `textContent = ''`** (igual que el DOM). `pintarSesiones()` depende de eso para no duplicar filas.
 - Usa `process.env.TZ` con 2-3 zonas con cambio de hora (p. ej. `America/Santiago`, `Pacific/Auckland`) para comprobar que la racha sobrevive al DST.
 - `<input type="number">` devuelve `''` si el usuario escribe letras, así que la rama "los minutos deben ser un número" de `validar()` es inalcanzable desde la interfaz. Es una red de seguridad, no un fallo.

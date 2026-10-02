@@ -1,0 +1,42 @@
+/*
+ * base.css — las variables de color y la forma general de la página.
+ *
+ * Solo lo que no cambia de sitio: los tokens, el reset y el contenedor.
+ * Los componentes van en componentes.css.
+ */
+
+:root {
+  --fondo: #f4f5f7;
+  --superficie: #ffffff;
+  --texto: #1f2430;
+  --texto-suave: #6b7280;
+  --borde: #e3e6ea;
+  --acento: #2f6df6;
+  --acento-oscuro: #1f57cc;
+  --fuego: #ef6c00;
+  --error: #d13438;
+  --exito: #0b6b3f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 16px;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.5;
+}
+
+/* Móvil primero: una sola columna estrecha; en pantallas grandes se centra. */
+.contenedor {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
