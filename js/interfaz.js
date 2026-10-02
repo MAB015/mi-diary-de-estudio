@@ -50,7 +50,7 @@ Diario.registrar('interfaz', (function () {
     textoRacha.textContent = textos.formatearDias(dias);
 
     const mejor = datos.calcularMejorRacha(sesiones);
-    textoMejorRacha.textContent = `Mejor racha: ${textos.formatearDias(mejor)}`;
+    textoMejorRacha.textContent = textos.t('racha.mejor', { dias: textos.formatearDias(mejor) });
     // Un récord de 0 no es un récord, así que la línea se esconde hasta que haya uno.
     textoMejorRacha.hidden = mejor === 0;
 
@@ -113,7 +113,9 @@ Diario.registrar('interfaz', (function () {
 
       const minutos = document.createElement('p');
       minutos.className = 'sesion__minutos';
-      minutos.textContent = `${sesion.minutos} min`;
+      minutos.textContent = textos.t('sesiones.minutos', {
+        minutos: textos.formatearNumero(sesion.minutos),
+      });
 
       datosFila.append(tema, fecha);
 
@@ -125,13 +127,13 @@ Diario.registrar('interfaz', (function () {
       const botonEditar = document.createElement('button');
       botonEditar.type = 'button';
       botonEditar.className = 'boton boton--pequeno boton--secundario';
-      botonEditar.textContent = 'Editar';
+      botonEditar.textContent = textos.t('sesiones.editar');
       botonEditar.addEventListener('click', () => empezarEdicion(sesion));
 
       const botonEliminar = document.createElement('button');
       botonEliminar.type = 'button';
       botonEliminar.className = 'boton boton--pequeno boton--peligro';
-      botonEliminar.textContent = 'Eliminar';
+      botonEliminar.textContent = textos.t('sesiones.eliminar');
       botonEliminar.addEventListener('click', () => confirmarBorrado(sesion));
 
       acciones.append(botonEditar, botonEliminar);
@@ -159,7 +161,7 @@ Diario.registrar('interfaz', (function () {
    */
   function salirDeEdicion() {
     idEnEdicion = null;
-    botonGuardar.textContent = 'Guardar sesión';
+    botonGuardar.textContent = textos.t('formulario.guardar');
     botonCancelar.hidden = true;
     limpiarErrores();
   }
@@ -170,7 +172,7 @@ Diario.registrar('interfaz', (function () {
     campoFecha.value = sesion.fecha;
     campoTema.value = sesion.tema;
     campoMinutos.value = String(sesion.minutos);
-    botonGuardar.textContent = 'Guardar cambios';
+    botonGuardar.textContent = textos.t('formulario.guardarCambios');
     botonCancelar.hidden = false;
     limpiarErrores();
     // Se sube al formulario porque la lista está debajo y en móvil no caben los dos sitios juntos.
@@ -180,7 +182,7 @@ Diario.registrar('interfaz', (function () {
 
   /* Pregunta antes de borrar. Si se cancela, no se toca nada. */
   function confirmarBorrado(sesion) {
-    if (!confirm(`¿Eliminar la sesión de "${sesion.tema}"?`)) return;
+    if (!confirm(textos.t('sesiones.confirmar', { tema: sesion.tema }))) return;
 
     const sesiones = datos.leerSesiones();
     const quedan = sesiones.filter((otra) => otra.id !== sesion.id);
@@ -200,9 +202,9 @@ Diario.registrar('interfaz', (function () {
   /* La leyenda se construye con la meta actual para que nunca contradiga el color. */
   function pintarLeyenda(meta) {
     const niveles = [
-      ['dia--vacio', 'Sin sesión'],
-      ['dia--bajo', `Hasta ${meta} min`],
-      ['dia--intenso', `Más de ${meta} min`],
+      ['dia--vacio', textos.t('calendario.sinSesion')],
+      ['dia--bajo', textos.t('calendario.hasta', { meta: textos.formatearNumero(meta) })],
+      ['dia--intenso', textos.t('calendario.masDe', { meta: textos.formatearNumero(meta) })],
     ];
 
     leyenda.textContent = '';
@@ -238,7 +240,12 @@ Diario.registrar('interfaz', (function () {
 
       // El número del día hace que se entienda sin depender solo del color.
       casilla.textContent = clave.slice(-2);
-      casilla.title = `${textos.fechaLegible(clave)} · ${minutos === 0 ? 'sin sesiones' : `${minutos} min`}`;
+      // El title lleva la fecha y los minutos, que es lo que no cabe en la casilla.
+      casilla.title = minutos === 0
+        ? textos.t('calendario.sinSesiones', { fecha: textos.fechaLegible(clave) })
+        : `${textos.fechaLegible(clave)} · ${textos.t('sesiones.minutos', {
+            minutos: textos.formatearNumero(minutos),
+          })}`;
 
       calendario.append(casilla);
     }
@@ -268,22 +275,22 @@ Diario.registrar('interfaz', (function () {
   function validar() {
     const tema = campoTema.value.trim();
     if (tema === '') {
-      return { campo: campoTema, mensaje: 'Escribe el tema que estudiaste.' };
+      return { campo: campoTema, mensaje: textos.t('error.temaVacio') };
     }
 
     const minutos = campoMinutos.value;
     if (minutos === '') {
-      return { campo: campoMinutos, mensaje: 'Indica cuántos minutos estudiaste.' };
+      return { campo: campoMinutos, mensaje: textos.t('error.minutosVacio') };
     }
     if (!Number.isFinite(Number(minutos))) {
-      return { campo: campoMinutos, mensaje: 'Los minutos deben ser un número.' };
+      return { campo: campoMinutos, mensaje: textos.t('error.minutosNumero') };
     }
     if (Number(minutos) <= 0) {
-      return { campo: campoMinutos, mensaje: 'Los minutos deben ser mayores que 0.' };
+      return { campo: campoMinutos, mensaje: textos.t('error.minutosPositivos') };
     }
 
     if (campoFecha.value === '') {
-      return { campo: campoFecha, mensaje: 'Indica la fecha de la sesión.' };
+      return { campo: campoFecha, mensaje: textos.t('error.fechaVacia') };
     }
 
     return null;
@@ -296,7 +303,7 @@ Diario.registrar('interfaz', (function () {
     campoMeta.addEventListener('change', () => {
       const numero = Number(campoMeta.value);
       if (campoMeta.value === '' || !Number.isInteger(numero) || numero <= 0) {
-        mostrarError(campoMeta, 'La meta debe ser un número entero mayor que 0.');
+        mostrarError(campoMeta, textos.t('meta.error'));
         // Volvemos al último valor válido: una meta no cambia sin que nos demos cuenta.
         campoMeta.value = String(datos.leerMeta());
         return;
@@ -359,6 +366,11 @@ Diario.registrar('interfaz', (function () {
     // La fecha por defecto es hoy, en hora local.
     campoFecha.value = claveDeFecha(new Date());
     campoMeta.value = datos.leerMeta();
+
+    // El idioma va primero: traduce el texto fijo del HTML y fija el idioma
+    // con el que se pinta todo lo demás. Al revés se vería un instante en español.
+    textos.arrancar();
+    textos.alCambiarIdioma(() => pintarTodo(datos.leerSesiones()));
 
     // El tema ya está puesto por el script de la cabecera; aquí solo se
     // refleja la preferencia guardada en el selector y se le escucha.

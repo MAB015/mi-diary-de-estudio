@@ -39,48 +39,51 @@
   <body>
     <main class="contenedor">
       <header class="cabecera">
-        <h1 class="cabecera__titulo">Diario de Estudio</h1>
-        <p class="cabecera__subtitulo">Apunta tus sesiones y mantén viva la racha.</p>
+        <h1 class="cabecera__titulo" data-i18n="app.nombre">Diario de Estudio</h1>
+        <p class="cabecera__subtitulo" data-i18n="app.subtitulo">
+          Apunta tus sesiones y mantén viva la racha.
+        </p>
 
-        <fieldset class="ajustes">
-          <legend class="ajustes__leyenda">Tema</legend>
-          <!-- Tres radios nativos, no botones: el teclado y la semántica
-               de grupo salen gratis. El falso se pone en "sistema". -->
-          <div class="ajustes__grupo">
-            <input
-              class="ajustes__radio"
-              type="radio"
-              name="tema"
-              id="tema-sistema"
-              value="sistema"
-              checked
-            />
-            <label class="ajustes__opcion" for="tema-sistema">Sistema</label>
+        <!--
+          Dos grupos de radios nativos, no botones: el teclado, el "cuál está
+          elegido" y la semántica de grupo salen del elemento. El falso del
+          tema se pone en "sistema".
+        -->
+        <div class="ajustes">
+          <fieldset class="ajustes__seccion">
+            <legend class="ajustes__leyenda" data-i18n="ajustes.temaLeyenda">Tema</legend>
+            <div class="ajustes__grupo">
+              <input class="ajustes__radio" type="radio" name="tema" id="tema-sistema" value="sistema" checked />
+              <label class="ajustes__opcion" for="tema-sistema" data-i18n="ajustes.temaSistema">Sistema</label>
 
-            <input
-              class="ajustes__radio"
-              type="radio"
-              name="tema"
-              id="tema-claro"
-              value="claro"
-            />
-            <label class="ajustes__opcion" for="tema-claro">Claro</label>
+              <input class="ajustes__radio" type="radio" name="tema" id="tema-claro" value="claro" />
+              <label class="ajustes__opcion" for="tema-claro" data-i18n="ajustes.temaClaro">Claro</label>
 
-            <input
-              class="ajustes__radio"
-              type="radio"
-              name="tema"
-              id="tema-oscuro"
-              value="oscuro"
-            />
-            <label class="ajustes__opcion" for="tema-oscuro">Oscuro</label>
-          </div>
-        </fieldset>
+              <input class="ajustes__radio" type="radio" name="tema" id="tema-oscuro" value="oscuro" />
+              <label class="ajustes__opcion" for="tema-oscuro" data-i18n="ajustes.temaOscuro">Oscuro</label>
+            </div>
+          </fieldset>
+
+          <fieldset class="ajustes__seccion">
+            <legend class="ajustes__leyenda" data-i18n="ajustes.idiomaLeyenda">Idioma</legend>
+            <!-- Cada opción va en su propia lengua, que es como se eligen idiomas. -->
+            <div class="ajustes__grupo">
+              <input class="ajustes__radio" type="radio" name="idioma" id="idioma-es" value="es" checked />
+              <label class="ajustes__opcion" for="idioma-es" data-i18n="ajustes.idiomaEs">Español</label>
+
+              <input class="ajustes__radio" type="radio" name="idioma" id="idioma-en" value="en" />
+              <label class="ajustes__opcion" for="idioma-en" data-i18n="ajustes.idiomaEn">English</label>
+
+              <input class="ajustes__radio" type="radio" name="idioma" id="idioma-fr" value="fr" />
+              <label class="ajustes__opcion" for="idioma-fr" data-i18n="ajustes.idiomaFr">Français</label>
+            </div>
+          </fieldset>
+        </div>
       </header>
 
       <!-- La racha se lee sola al cambiar, por eso el aviso a lectores de pantalla. -->
       <section class="tarjeta racha" id="racha-tarjeta" aria-live="polite">
-        <p class="racha__etiqueta">Racha actual</p>
+        <p class="racha__etiqueta" data-i18n="racha.etiqueta">Racha actual</p>
         <!-- La llama es decorativa (aria-hidden) y su tamano lo pone el CSS
              segun el tramo de racha: el numero de al lado ya lo dice. -->
         <svg class="racha__llama" viewBox="0 0 48 60" aria-hidden="true" focusable="false">
@@ -91,10 +94,10 @@
       </section>
 
       <section class="tarjeta">
-        <h2 class="tarjeta__titulo">Meta diaria</h2>
+        <h2 class="tarjeta__titulo" data-i18n="meta.titulo">Meta diaria</h2>
 
         <div class="campo campo--meta">
-          <label class="campo__etiqueta" for="meta">Minutos al día</label>
+          <label class="campo__etiqueta" for="meta" data-i18n="meta.etiqueta">Minutos al día</label>
           <input
             class="campo__control campo__control--corto"
             type="number"
@@ -112,34 +115,28 @@
         <div class="barra" id="barra">
           <div class="barra__relleno" id="barra-relleno"></div>
         </div>
-        <p class="meta__cumplida" id="meta-cumplida" hidden>🎉 ¡Meta conseguida!</p>
+        <p class="meta__cumplida" id="meta-cumplida" hidden data-i18n="meta.cumplida">¡Meta conseguida!</p>
       </section>
 
       <section class="tarjeta">
-        <h2 class="tarjeta__titulo">Últimos 28 días</h2>
+        <h2 class="tarjeta__titulo" data-i18n="calendario.titulo">Últimos 28 días</h2>
         <div class="calendario" id="calendario"></div>
         <p class="leyenda" id="leyenda"></p>
       </section>
 
       <section class="tarjeta">
-        <h2 class="tarjeta__titulo">Nueva sesión</h2>
+        <h2 class="tarjeta__titulo" data-i18n="formulario.titulo">Nueva sesión</h2>
 
         <!-- novalidate: los errores los mostramos nosotros, junto a cada campo. -->
         <form id="formulario" class="formulario" novalidate>
           <div class="campo">
-            <label class="campo__etiqueta" for="fecha">Fecha</label>
-            <input
-              class="campo__control"
-              type="date"
-              id="fecha"
-              name="fecha"
-              aria-describedby="error-fecha"
-            />
+            <label class="campo__etiqueta" for="fecha" data-i18n="formulario.fecha">Fecha</label>
+            <input class="campo__control" type="date" id="fecha" name="fecha" aria-describedby="error-fecha" />
             <p class="campo__error" id="error-fecha" hidden></p>
           </div>
 
           <div class="campo">
-            <label class="campo__etiqueta" for="tema">Tema</label>
+            <label class="campo__etiqueta" for="tema" data-i18n="formulario.tema">Tema</label>
             <input
               class="campo__control"
               type="text"
@@ -147,13 +144,14 @@
               name="tema"
               placeholder="Ej. Arrays y LinkedList"
               autocomplete="off"
+              data-i18n-placeholder="formulario.ejemploTema"
               aria-describedby="error-tema"
             />
             <p class="campo__error" id="error-tema" hidden></p>
           </div>
 
           <div class="campo">
-            <label class="campo__etiqueta" for="minutos">Minutos</label>
+            <label class="campo__etiqueta" for="minutos" data-i18n="formulario.minutos">Minutos</label>
             <input
               class="campo__control"
               type="number"
@@ -163,21 +161,32 @@
               step="1"
               inputmode="numeric"
               placeholder="Ej. 45"
+              data-i18n-placeholder="formulario.ejemploMinutos"
               aria-describedby="error-minutos"
             />
             <p class="campo__error" id="error-minutos" hidden></p>
           </div>
 
-          <button class="boton" type="submit" id="guardar">Guardar sesión</button>
+          <button class="boton" type="submit" id="guardar" data-i18n="formulario.guardar">Guardar sesión</button>
         <!-- OJO: sin "display" en estilos/componentes.css, se oculta con el atributo hidden. -->
-        <button class="boton boton--secundario" type="button" id="cancelar-edicion" hidden>Cancelar</button>
-      </form>
+        <button
+          class="boton boton--secundario"
+          type="button"
+          id="cancelar-edicion"
+          hidden
+          data-i18n="formulario.cancelar"
+        >
+          Cancelar
+        </button>
+        </form>
       </section>
 
       <section class="tarjeta">
-        <h2 class="tarjeta__titulo">Sesiones</h2>
+        <h2 class="tarjeta__titulo" data-i18n="sesiones.titulo">Sesiones</h2>
         <ul class="sesiones" id="sesiones"></ul>
-        <p class="vacio" id="sin-sesiones">Todavía no has registrado ninguna sesión.</p>
+        <p class="vacio" id="sin-sesiones" data-i18n="sesiones.vacio">
+          Todavía no has registrado ninguna sesión.
+        </p>
       </section>
     </main>
 

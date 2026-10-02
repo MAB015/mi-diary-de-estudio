@@ -20,11 +20,18 @@
   font-size: var(--texto-base);
 }
 
-/* --- Ajustes (selector de tema) ---
-   Un fieldset con tres radios nativos: el grupo, el teclado y elannouncedor
-   de "cuál está elegido" salen del propio elemento, sin ARIA. */
+/* --- Ajustes (tema e idioma) ---
+   Dos fieldsets con tres radios nativos cada uno: el grupo, el teclado y el
+   anuncio de "cuál está elegido" salen del propio elemento, sin ARIA. */
 .ajustes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e-3) var(--e-5);
   margin: var(--e-4) 0 0;
+}
+
+.ajustes__seccion {
+  margin: 0;
   padding: 0;
   border: 0;
 }
