@@ -78,7 +78,7 @@ Diario.registrar('sonido', (function () {
   }
 
   function marcarEnElSelector(valor) {
-    const interruptor = document.getElementById('sonido-activo');
+    const interruptor = document.getElementById('cabecera-sonido');
     if (interruptor) interruptor.checked = valor === 'si';
   }
 
@@ -143,13 +143,28 @@ Diario.registrar('sonido', (function () {
 
   /* ---------- Arranque ---------- */
 
+  /* Actualiza el icono del altavoz en la barra: el SVG que muestra sonido
+     depende del estado, no del HTML. Es lo único que toca el DOM. */
+  function actualizarIconoSonido(activado) {
+    const opcion = document.getElementById('cabecera-sonido-opcion');
+    if (opcion) {
+      opcion.classList.toggle('sonido-activado', activado);
+    }
+  }
+
   function arrancar() {
     const guardada = preferenciaGuardada();
     aplicar(guardada);
     marcarEnElSelector(guardada);
+    actualizarIconoSonido(guardada === 'si');
 
-    const interruptor = document.getElementById('sonido-activo');
-    if (interruptor) interruptor.addEventListener('change', () => elegir(interruptor.checked ? 'si' : 'no'));
+    const interruptor = document.getElementById('cabecera-sonido');
+    if (interruptor) {
+      interruptor.addEventListener('change', () => {
+        elegir(interruptor.checked ? 'si' : 'no');
+        actualizarIconoSonido(interruptor.checked);
+      });
+    }
   }
 
   return {

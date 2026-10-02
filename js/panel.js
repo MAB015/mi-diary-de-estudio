@@ -144,7 +144,7 @@ Diario.registrar('panel', (function () {
       barra.setAttribute('y', String(BASE - altoDelDia(dia.minutos)));
       barra.setAttribute('width', String(Math.round(ancho * 100) / 100));
       barra.setAttribute('height', String(altoDelDia(dia.minutos)));
-      barra.setAttribute('class', dia.minutos === maximo && dia.minutos > 0 ? 'barra barra--maxima' : 'barra');
+      barra.setAttribute('class', dia.minutos === maximo && dia.minutos > 0 ? 'barra-dia barra--maxima' : 'barra-dia');
       grupo.append(barra);
 
       const titulo = document.createElementNS(ESPACIO_SVG, 'title');

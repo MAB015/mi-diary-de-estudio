@@ -106,6 +106,26 @@
 
   /* Objetivo táctil (WCAG 2.5.8 pide 24; usamos 44 por gusto). */
   --objetivo: 44px;
+
+  /* Barra de navegación pegajosa. */
+  --cabecera-alto: 64px;
+  --cabecera-alto-mobile: 56px;
+  --cabecera-fondo: var(--superficie);
+  --cabecera-borde: var(--borde);
+  --cabecera-sombra: var(--sombra-1);
+
+  /* Marca / logotipo. */
+  --marca-tamano: clamp(1.25rem, 3vw, 1.75rem);
+  --marca-linea: 1.15;
+  --marca-grueso: 700;
+  --marca-color: var(--fuego-texto);
+
+  /* Ancho máximo del contenido y separación del tablero. */
+  --ancho-max: 1240px;
+  --tablero-gap: var(--e-5);
+
+  /* Espaciado extra para el tablero (20px). */
+  --e-5: 20px;
 }
 
 /* Tema oscuro de verdad: fondo gris azulado, nunca negro puro, y texto que
@@ -208,6 +228,30 @@ body {
   }
 }
 
+/* Accesibilidad: salto de contenido, por si la gente se queda atascada en la
+   primera opción de la barra. La clase la pone el HTML y el foco la hace
+   visible: nadie se entera de que existe si no la usa. */
+.saltar {
+  position: absolute;
+  top: calc(var(--cabecera-alto) + var(--e-2));
+  left: var(--e-4);
+  z-index: 1000;
+  padding: var(--e-2) var(--e-3);
+  background: var(--superficie);
+  color: var(--texto);
+  text-decoration: underline;
+  border-radius: var(--r-1);
+  border: 1px solid var(--borde);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--d-micro);
+  box-shadow: var(--sombra-2);
+}
+.saltar:focus {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 /* Sólo para lectores de pantalla: visible para el motor, no para el ojo. */
 .visualmente-oculto {
   position: absolute;
@@ -222,28 +266,51 @@ body {
   border: 0;
 }
 
-/* Móvil primero: una sola columna estrecha. En pantallas grandes se abre a
- * rejilla (bento) y se ensancha, para que la app no parezca un móvil
- * estirado. */
-.contenedor {
-  width: 100%;
-  max-width: 520px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: var(--e-4);
-}
-
-@media (min-width: 60rem) {
+  /* Móvil primero: una sola columna estrecha. En pantallas grandes se abre a
+   * rejilla (bento) y se ensancha, para que la app no parezca un móvil
+   * estirado. */
   .contenedor {
-    max-width: 68rem;
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: var(--e-6);
-    align-items: start;
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--e-4);
   }
 
-  .contenedor > * {
-    grid-column: span 12;
+  @media (min-width: 60rem) {
+    .contenedor {
+      max-width: var(--ancho-max);
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--e-6);
+      align-items: start;
+    }
+
+    .contenedor > * {
+      grid-column: span 12;
+    }
   }
-}
+
+  /* El tablero ocupa su propia rejilla de 12 columnas: cada tarjeta de
+     4 columnas = un tercio del ancho. En móvil es una sola columna. */
+  .tablero {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--e-4);
+  }
+
+  @media (min-width: 60rem) {
+    .tablero {
+      grid-template-columns: repeat(12, 1fr);
+      gap: var(--tablero-gap);
+    }
+
+    /* Bento de tres columnas de cuatro: izquierda progreso+calendario,
+       centro acción+crono, derecha sesiones a toda la altura del tablero. */
+    .card-progreso { grid-column: 1 / 5; grid-row: 1; }
+    .card-accion { grid-column: 5 / 9; grid-row: 1; }
+    .card-crono { grid-column: 5 / 9; grid-row: 2; }
+    .card-calendario { grid-column: 1 / 5; grid-row: 2; }
+    .card-sesiones { grid-column: 9 / 13; grid-row: 1 / 3; }
+  }

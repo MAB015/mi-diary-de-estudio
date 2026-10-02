@@ -83,7 +83,7 @@
   overflow: visible;
 }
 
-.grafico__svg .barra {
+.grafico__svg .barra-dia {
   fill: var(--llama-2);
 }
 

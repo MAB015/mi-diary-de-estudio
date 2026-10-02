@@ -41,9 +41,10 @@ Diario.registrar('textos', (function () {
    */
   const DICCIONARIO = {
     es: {
-      'app.nombre': 'Diario de Estudio',
+      'app.nombre': 'Ascua',
       'app.subtitulo': 'Apunta tus sesiones y mantén viva la racha.',
 
+      'progreso.titulo': 'Tu progreso',
       'racha.etiqueta': 'Racha actual',
       'racha.mejor': 'Mejor racha: {dias}',
       'racha.dias': '{n} día',
@@ -153,9 +154,10 @@ Diario.registrar('textos', (function () {
     },
 
     en: {
-      'app.nombre': 'Study Diary',
+      'app.nombre': 'Ascua',
       'app.subtitulo': 'Log your sessions and keep the streak alive.',
 
+      'progreso.titulo': 'Your progress',
       'racha.etiqueta': 'Current streak',
       'racha.mejor': 'Best streak: {dias}',
       'racha.dias': '{n} day',
@@ -263,9 +265,10 @@ Diario.registrar('textos', (function () {
     },
 
     fr: {
-      'app.nombre': "Journal d'étude",
+      'app.nombre': "Ascua",
       'app.subtitulo': 'Notez vos sessions et gardez votre série.',
 
+      'progreso.titulo': 'Votre progression',
       'racha.etiqueta': 'Série actuelle',
       'racha.mejor': 'Meilleure série : {dias}',
       'racha.dias': '{n} jour',
@@ -429,7 +432,7 @@ Diario.registrar('textos', (function () {
   /* Desmarca los otros a mano por el mismo motivo que en el selector de tema. */
   function marcarEnElSelector(valor) {
     for (const idioma of IDIOMAS) {
-      const radio = document.getElementById(`idioma-${idioma}`);
+      const radio = document.getElementById(`cabecera-idioma-${idioma}`);
       if (radio) radio.checked = idioma === valor;
     }
   }

@@ -6,18 +6,242 @@
  * aparece un hexadecimal, es que falta un token.
  */
 
-/* --- Cabecera --- */
-.cabecera__titulo {
-  margin: 0;
-  font-size: var(--texto-h1);
-  line-height: var(--linea-titulo);
-  letter-spacing: -0.015em;
+/* --- Barra de navegación ---
+   Cabecera pegajosa: no puede quedar contenido detrás al hacer scroll. La
+   altura es un token para que el salto de contenido y el calendario la
+   tengan en cuenta. Los controles son radios nativos, no botones: el grupo,
+   el teclado y "cuál está elegido" salen del elemento, y la skill exige
+   radios, no botones falsos. */
+.cabecera {
+  position: sticky;
+  top: 0;
+  z-index: 9;
+  height: var(--cabecera-alto);
+  background: var(--cabecera-fondo);
+  border-bottom: 1px solid var(--cabecera-borde);
+  box-shadow: var(--cabecera-sombra);
 }
 
-.cabecera__subtitulo {
-  margin: var(--e-1) 0 0;
+@media (max-width: 44rem) {
+  .cabecera {
+    height: var(--cabecera-alto-mobile);
+  }
+}
+
+.cabecera__dentro {
+  max-width: var(--ancho-max);
+  margin: 0 auto;
+  padding: 0 var(--e-3);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e-2);
+  flex-wrap: wrap;
+}
+
+@media (max-width: 44rem) {
+  .cabecera__dentro {
+    gap: var(--e-1);
+    padding: 0 var(--e-2);
+  }
+}
+
+.marca {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-2);
+  text-decoration: none;
+  color: var(--marca-color);
+  font-size: var(--marca-tamano);
+  font-weight: var(--marca-grueso);
+  line-height: var(--marca-linea);
+  white-space: nowrap;
+}
+
+.marca:hover {
+  color: var(--fuego-texto);
+}
+
+.marca__llama {
+  width: 0.9em;
+  height: auto;
+  fill: currentColor;
+  flex-shrink: 0;
+}
+
+.marca__texto {
+  text-transform: lowercase;
+  letter-spacing: -0.01em;
+}
+
+/* Cada grupo de controles: fieldset sin bordes, radio oculto, label visible.
+   Los radios son la fuente de la verdad (estado + foco + teclado); el label es
+   el botón. El checkbox de sonido se detecta con una clase que pone JS. */
+.cabecera__campo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e-1);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: var(--texto-xs);
+}
+
+.cabecera__campo.radios .cabecera__radio {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+.cabecera__campo.radios .cabecera__radio:checked + .cabecera__opcion {
+  background: var(--superficie);
+  color: var(--texto);
+  box-shadow: var(--sombra-1);
+}
+
+.cabecera__campo.radios .cabecera__radio:focus-visible + .cabecera__opcion {
+  outline: 3px solid var(--foco);
+  outline-offset: 2px;
+  background: var(--superficie);
+  color: var(--texto);
+}
+
+/* Checkbox de sonido: oculto también, pero pinta su propio color. */
+.cabecera__campo.sonido .cabecera__casilla {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+.cabecera__campo.sonido .cabecera__casilla:checked + .cabecera__opcion {
+  color: var(--exito);
+}
+
+/* Iconos y etiquetas: el radio no muestra nada, el label pinta. */
+.cabecera__icono {
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+}
+
+.cabecera__etiqueta {
+  line-height: 1;
+}
+
+.cabecera__opcion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--e-1);
+  min-height: var(--objetivo);
+  padding: var(--e-2) var(--e-3);
+  border-radius: var(--r-pill);
+  font-weight: 600;
   color: var(--texto-suave);
-  font-size: var(--texto-base);
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--d-micro) var(--e-salida),
+    color var(--d-micro) var(--e-salida);
+  white-space: nowrap;
+}
+
+.cabecera__opcion:hover {
+  color: var(--texto);
+}
+
+.cabecera__opcion:active {
+  transform: scale(0.97);
+}
+
+/* Icono de altavoz: solo se muestra uno a la vez, el estado lo decide el JS. */
+.cabecera__opcion .icono-altavoz,
+.cabecera__opcion .icono-altavoz-mudo {
+  display: none;
+}
+
+.cabecera__opcion .icono-altavoz-default {
+  display: inline-flex;
+}
+
+.cabecera__opcion.sonido-activado .icono-altavoz-mudo {
+  display: inline-flex;
+}
+
+/* --- Portada --- */
+.portada {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--e-4);
+  padding: var(--e-5) var(--e-3);
+  text-align: center;
+}
+
+.portada__texto {
+  margin: 0;
+  font-size: var(--texto-h2);
+  line-height: var(--linea-titulo);
+  color: var(--texto);
+}
+
+@media (min-width: 40rem) {
+  .portada__texto {
+    font-size: var(--texto-h1);
+  }
+}
+
+/* --- Tarjeta de progreso (racha + meta apiladas) --- */
+.progreso__dos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-4);
+}
+
+.bloque {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e-3);
+}
+
+.bloque__titulo {
+  margin: 0;
+  font-size: var(--texto-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--texto-suave);
+}
+
+/* Racha compacta: la llama y el número siguen siendo el protagonista, pero ya
+   no ocupa toda la tarjeta. El fondo tenue la agrupa visualmente. Se aplica al
+   bloque interior: la sección conserva la clase "racha" solo para heredar las
+   variables de tramo, no para pintarse. */
+.bloque.racha {
+  background: var(--fuego-tenue);
+  border: 1px solid var(--fuego-tenue);
+  border-radius: var(--r-2);
+  padding: var(--e-3);
+  text-align: center;
+}
+
+.racha__cabeza {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: var(--e-2);
+  min-width: 0;
+}
+
+/* --- Meta compacta: su propio recuadro dentro de la tarjeta. */
+.bloque.meta {
+  border: 1px solid var(--borde);
+  border-radius: var(--r-2);
+  padding: var(--e-3);
 }
 
 /* --- Ajustes (tema e idioma) ---
@@ -275,30 +499,16 @@ body.en-foco .enfoque {
   line-height: var(--linea-titulo);
 }
 
-/* --- Racha: la protagonista ---
-   Es lo único realmente distinto de la pantalla (efecto Von Restorff), así
-   que se lleva el único acento de color y el único número gigante. */
-.racha {
-  text-align: center;
-  background: var(--fuego-tenue);
-  border-color: var(--fuego-tenue);
-  padding-block: var(--e-8);
-}
-
-.racha__etiqueta {
-  margin: 0;
-  font-size: var(--texto-xs);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--texto-suave);
-}
+/* --- Racha: variables de tramo ---
+   La clase "racha" va sobre la sección (#racha-tarjeta): solo aporta las
+   variables --llama-*, que heredan hasta el SVG de la llama. El aspecto
+   pastel del bloque va en .bloque.racha, definido arriba. */
 
 .racha__llama {
   display: block;
-  margin: var(--e-3) auto 0;
+  margin: 0;
   width: var(--llama-ancho);
-  max-width: 30vw;
+  max-width: none;
   height: auto;
   fill: var(--llama-color);
   /* El desenfoque y el color del halo van en tokens separados: en un solo
@@ -307,6 +517,7 @@ body.en-foco .enfoque {
   transition: width var(--llama-duracion) var(--e-salida),
     fill var(--llama-duracion) var(--e-salida),
     filter var(--llama-duracion) var(--e-salida);
+  flex-shrink: 0;
 }
 
 .racha__llama-nucleo {

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Diario de Estudio</title>
+    <title>Ascua</title>
     <meta name="theme-color" id="color-barra" content="#fbf8f4" />
 
     <!--
@@ -50,223 +50,281 @@
     <link rel="stylesheet" href="estilos/panel.css" />
   </head>
   <body>
-    <main class="contenedor">
-      <header class="cabecera">
-        <h1 class="cabecera__titulo" data-i18n="app.nombre">Diario de Estudio</h1>
-        <p class="cabecera__subtitulo" data-i18n="app.subtitulo">
+    <!-- Salto de contenido: la barra se repite en cada página y hay que poder
+         saltarla. Se ve solo cuando la usa el teclado: la barra la hace
+         pegajosa y esto evita que la gente de la tabique se quede atrapada. -->
+    <a class="saltar" href="#contenido">Saltar al contenido</a>
+
+    <!-- Barra de navegación pegajosa. Las opciones son radios nativos dentro de
+         fieldsets: el grupo, el teclado, el "cuál está elegido" y la accesibilidad
+         los pone el navegador. Los botones visibles son los <label>, para que la
+         marca y los controles entren apretados en cualquier pantalla. -->
+    <header class="cabecera">
+      <div class="cabecera__dentro">
+        <a href="#contenido" class="marca" aria-label="Ascua — Diario de estudio">
+          <svg class="marca__llama" viewBox="0 0 48 60" aria-hidden="true" focusable="false">
+            <path d="M24 4c2 8-6 10-6 17a8 8 0 0 0 16 0c0-4-2-7-4-9 4 1 8 6 8 13 0 10-7 17-14 17S10 35 10 25C10 14 20 10 24 4z" />
+          </svg>
+          <span class="marca__texto">ascua</span>
+        </a>
+
+        <!-- Tema -->
+        <fieldset class="cabecera__campo radios" role="radiogroup" aria-label="Tema">
+          <input class="cabecera__radio" type="radio" name="tema" id="cabecera-tema-sistema" value="sistema" checked aria-labelledby="tema-titulo" />
+          <label class="cabecera__opcion" for="cabecera-tema-sistema">
+            <svg class="cabecera__icono" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg>
+            <span class="cabecera__etiqueta" data-i18n="ajustes.temaSistema">Sistema</span>
+          </label>
+
+          <input class="cabecera__radio" type="radio" name="tema" id="cabecera-tema-claro" value="claro" aria-labelledby="tema-titulo" />
+          <label class="cabecera__opcion" for="cabecera-tema-claro">
+            <svg class="cabecera__icono" aria-hidden="true"><circle cx="12" cy="12" r="4.5" /><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" /></svg>
+            <span class="cabecera__etiqueta" data-i18n="ajustes.temaClaro">Claro</span>
+          </label>
+
+          <input class="cabecera__radio" type="radio" name="tema" id="cabecera-tema-oscuro" value="oscuro" aria-labelledby="tema-titulo" />
+          <label class="cabecera__opcion" for="cabecera-tema-oscuro">
+            <svg class="cabecera__icono" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5z" /></svg>
+            <span class="cabecera__etiqueta" data-i18n="ajustes.temaOscuro">Oscuro</span>
+          </label>
+          <span id="tema-titulo" class="visualmente-oculto" data-i18n="ajustes.temaLeyenda">Tema</span>
+        </fieldset>
+
+        <!-- Idioma -->
+        <fieldset class="cabecera__campo radios" role="radiogroup" aria-label="Idioma">
+          <input class="cabecera__radio" type="radio" name="idioma" id="cabecera-idioma-es" value="es" checked aria-labelledby="idioma-titulo" />
+          <label class="cabecera__opcion" for="cabecera-idioma-es">ES</label>
+
+          <input class="cabecera__radio" type="radio" name="idioma" id="cabecera-idioma-en" value="en" aria-labelledby="idioma-titulo" />
+          <label class="cabecera__opcion" for="cabecera-idioma-en">EN</label>
+
+          <input class="cabecera__radio" type="radio" name="idioma" id="cabecera-idioma-fr" value="fr" aria-labelledby="idioma-titulo" />
+          <label class="cabecera__opcion" for="cabecera-idioma-fr">FR</label>
+          <span id="idioma-titulo" class="visualmente-oculto" data-i18n="ajustes.idiomaLeyenda">Idioma</span>
+        </fieldset>
+
+        <!-- Sonido -->
+        <fieldset class="cabecera__campo sonido" aria-label="Sonido">
+          <input class="cabecera__casilla" type="checkbox" id="cabecera-sonido" aria-labelledby="sonido-titulo" />
+          <label class="cabecera__opcion cabecera__toggle" for="cabecera-sonido" id="cabecera-sonido-opcion">
+            <svg class="cabecera__icono icono-altavoz" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" /><path d="M15.5 9.5a4 4 0 0 1 0 5M18.5 7a7.5 7.5 0 0 1 0 10" /></svg>
+            <svg class="cabecera__icono icono-altavoz-mudo" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" /><path d="M16 10l4 4M20 10l-4 4" /></svg>
+            <span class="cabecera__etiqueta" data-i18n="ajustes.sonidoActivar">Activar</span>
+          </label>
+          <span id="sonido-titulo" class="visualmente-oculto" data-i18n="ajustes.sonidoLeyenda">Sonido</span>
+        </fieldset>
+
+        <!-- Movimiento -->
+        <fieldset class="cabecera__campo radios" role="radiogroup" aria-label="Movimiento">
+          <input class="cabecera__radio" type="radio" name="movimiento" id="cabecera-movimiento-sistema" value="sistema" checked aria-labelledby="movimiento-titulo" />
+          <label class="cabecera__opcion" for="cabecera-movimiento-sistema">
+            <svg class="cabecera__icono" aria-hidden="true"><path d="M8 5v10M16 5v10M5 9h8" /></svg>
+            <span class="cabecera__etiqueta" data-i18n="ajustes.movimientoSistema">Sistema</span>
+          </label>
+
+          <input class="cabecera__radio" type="radio" name="movimiento" id="cabecera-movimiento-reducido" value="reducido" aria-labelledby="movimiento-titulo" />
+          <label class="cabecera__opcion" for="cabecera-movimiento-reducido">
+            <svg class="cabecera__icono" aria-hidden="true"><path d="M8 9h8M12 5v10M8 5a4 4 0 0 1 8 0" /></svg>
+            <span class="cabecera__etiqueta" data-i18n="ajustes.movimientoReducido">Reducido</span>
+          </label>
+          <span id="movimiento-titulo" class="visualmente-oculto" data-i18n="ajustes.movimientoLeyenda">Movimiento</span>
+        </fieldset>
+      </div>
+    </header>
+
+    <main class="contenedor" id="contenido">
+      <!-- La llamada a la acción: sin ella la app es solo un formulario. -->
+      <div class="portada">
+        <p class="portada__texto" data-i18n="app.subtitulo">
           Apunta tus sesiones y mantén viva la racha.
         </p>
-
-        <!-- La llamada a la accion: sin ella la app es solo un formulario. -->
         <button class="boton boton--grande" type="button" id="empezar-estudio" data-i18n="enfoque.cta">
           Empezar a estudiar
         </button>
+      </div>
 
-        <!--
-          Dos grupos de radios nativos, no botones: el teclado, el "cuál está
-          elegido" y la semántica de grupo salen del elemento. El falso del
-          tema se pone en "sistema".
-        -->
-        <div class="ajustes">
-          <fieldset class="ajustes__seccion">
-            <legend class="ajustes__leyenda" data-i18n="ajustes.temaLeyenda">Tema</legend>
-            <div class="ajustes__grupo">
-              <input class="ajustes__radio" type="radio" name="tema" id="tema-sistema" value="sistema" checked />
-              <label class="ajustes__opcion" for="tema-sistema" data-i18n="ajustes.temaSistema">Sistema</label>
-
-              <input class="ajustes__radio" type="radio" name="tema" id="tema-claro" value="claro" />
-              <label class="ajustes__opcion" for="tema-claro" data-i18n="ajustes.temaClaro">Claro</label>
-
-              <input class="ajustes__radio" type="radio" name="tema" id="tema-oscuro" value="oscuro" />
-              <label class="ajustes__opcion" for="tema-oscuro" data-i18n="ajustes.temaOscuro">Oscuro</label>
+      <!-- Tablero: en móvil una sola columna y en laptop dos o tres. Las tarjetas
+           se posicionan con la rejilla de base.css; abajo, las estadísticas a
+           ancho completo. -->
+      <div class="tablero">
+        <!-- Progreso: racha + meta juntas en una tarjeta. -->
+        <section class="tarjeta card-progreso" id="racha-tarjeta" aria-labelledby="progreso-titulo" aria-live="polite">
+          <h2 class="tarjeta__titulo" id="progreso-titulo" data-i18n="progreso.titulo">Tu progreso</h2>
+          <div class="progreso__dos">
+            <!-- La racha: la llama crece por tramos y el número al lado lo dice. -->
+            <div class="bloque racha">
+              <h3 class="bloque__titulo" data-i18n="racha.etiqueta">Racha actual</h3>
+              <div class="racha__cabeza">
+                <svg class="racha__llama" viewBox="0 0 48 60" aria-hidden="true" focusable="false">
+                  <path class="racha__llama-nucleo" d="M24 4c2 8-6 10-6 17a8 8 0 0 0 16 0c0-4-2-7-4-9 4 1 8 6 8 13 0 10-7 17-14 17S10 35 10 25C10 14 20 10 24 4z" />
+                </svg>
+                <p class="racha__valor" id="racha">0 días</p>
+              </div>
+              <p class="racha__mejor" id="mejor-racha" hidden>Mejor racha: 0 días</p>
             </div>
-          </fieldset>
 
-          <fieldset class="ajustes__seccion">
-            <legend class="ajustes__leyenda" data-i18n="ajustes.idiomaLeyenda">Idioma</legend>
-            <!-- Cada opción va en su propia lengua, que es como se eligen idiomas. -->
-            <div class="ajustes__grupo">
-              <input class="ajustes__radio" type="radio" name="idioma" id="idioma-es" value="es" checked />
-              <label class="ajustes__opcion" for="idioma-es" data-i18n="ajustes.idiomaEs">Español</label>
-
-              <input class="ajustes__radio" type="radio" name="idioma" id="idioma-en" value="en" />
-              <label class="ajustes__opcion" for="idioma-en" data-i18n="ajustes.idiomaEn">English</label>
-
-              <input class="ajustes__radio" type="radio" name="idioma" id="idioma-fr" value="fr" />
-              <label class="ajustes__opcion" for="idioma-fr" data-i18n="ajustes.idiomaFr">Français</label>
+            <!-- La meta diaria: se llena a medida que avanza el día. -->
+            <div class="bloque meta">
+              <h3 class="bloque__titulo" data-i18n="meta.titulo">Meta diaria</h3>
+              <div class="campo campo--meta">
+                <label class="campo__etiqueta" for="meta" data-i18n="meta.etiqueta">Minutos al día</label>
+                <input class="campo__control campo__control--corto" type="number" id="meta" min="1" step="1" inputmode="numeric" aria-describedby="error-meta" />
+                <p class="campo__error" id="error-meta" hidden></p>
+              </div>
+              <p class="meta__texto" id="meta-texto">0 / 30 min</p>
+              <div class="barra" id="barra">
+                <div class="barra__relleno" id="barra-relleno"></div>
+              </div>
+              <p class="meta__cumplida" id="meta-cumplida" hidden data-i18n="meta.cumplida">¡Meta conseguida!</p>
             </div>
-          </fieldset>
-        </div>
+          </div>
+        </section>
 
-        <!--
-          El movimiento también es un grupo de radios, y con la misma idea que el
-          tema: "sistema" no pone atributo ninguno (manda el SO), "reducido" lo
-          pone y estilos/componentes.css apaga transiciones y animaciones igual
-          que hace @media (prefers-reduced-motion: reduce).
-        -->
-        <div class="ajustes">
-          <fieldset class="ajustes__seccion">
-            <legend class="ajustes__leyenda" data-i18n="ajustes.movimientoLeyenda">Movimiento</legend>
-            <div class="ajustes__grupo">
-              <input class="ajustes__radio" type="radio" name="movimiento" id="movimiento-sistema" value="sistema" checked />
-              <label class="ajustes__opcion" for="movimiento-sistema" data-i18n="ajustes.movimientoSistema">Sistema</label>
+        <!-- Calendario: veintisiete días más hoy, terminando en hoy. -->
+        <section class="tarjeta card-calendario">
+          <h2 class="tarjeta__titulo" data-i18n="calendario.titulo">Últimos 28 días</h2>
+          <div class="calendario" id="calendario"></div>
+          <p class="leyenda" id="leyenda"></p>
+        </section>
 
-              <input class="ajustes__radio" type="radio" name="movimiento" id="movimiento-reducido" value="reducido" />
-              <label class="ajustes__opcion" for="movimiento-reducido" data-i18n="ajustes.movimientoReducido">Reducido</label>
+        <!-- Formulario: anota la sesión. -->
+        <section class="tarjeta card-accion">
+          <h2 class="tarjeta__titulo" data-i18n="formulario.titulo">Nueva sesión</h2>
+
+          <!-- novalidate: los errores los mostramos nosotros, junto a cada campo. -->
+          <form id="formulario" class="formulario" novalidate>
+            <div class="campo">
+              <label class="campo__etiqueta" for="fecha" data-i18n="formulario.fecha">Fecha</label>
+              <input class="campo__control" type="date" id="fecha" name="fecha" aria-describedby="error-fecha" />
+              <p class="campo__error" id="error-fecha" hidden></p>
             </div>
-          </fieldset>
 
-          <!-- El sonido es un sí/no, y un sí/no es una casilla: con radios
-               habría que inventar un valor para "apagado" que además no siempre
-               es lo contrario de "encendido" (puede estar en pausa por el
-               navegador). Va apagado por defecto. -->
-          <fieldset class="ajustes__seccion">
-            <legend class="ajustes__leyenda" data-i18n="ajustes.sonidoLeyenda">Sonido</legend>
-            <div class="ajustes__grupo">
-              <input class="ajustes__radio" type="checkbox" id="sonido-activo" />
-              <label class="ajustes__opcion" for="sonido-activo" data-i18n="ajustes.sonidoActivar">Activar pitidos</label>
+            <div class="campo">
+              <label class="campo__etiqueta" for="tema" data-i18n="formulario.tema">Tema</label>
+              <input class="campo__control" type="text" id="tema" name="tema" placeholder="Ej. Arrays y LinkedList" autocomplete="off" data-i18n-placeholder="formulario.ejemploTema" aria-describedby="error-tema" />
+              <p class="campo__error" id="error-tema" hidden></p>
             </div>
-          </fieldset>
-        </div>
-      </header>
 
-      <!-- La racha se lee sola al cambiar, por eso el aviso a lectores de pantalla. -->
-      <section class="tarjeta racha" id="racha-tarjeta" aria-live="polite">
-        <p class="racha__etiqueta" data-i18n="racha.etiqueta">Racha actual</p>
-        <!-- La llama es decorativa (aria-hidden) y su tamano lo pone el CSS
-             segun el tramo de racha: el numero de al lado ya lo dice. -->
-        <svg class="racha__llama" viewBox="0 0 48 60" aria-hidden="true" focusable="false">
-          <path class="racha__llama-nucleo" d="M24 4c2 8-6 10-6 17a8 8 0 0 0 16 0c0-4-2-7-4-9 4 1 8 6 8 13 0 10-7 17-14 17S10 35 10 25C10 14 20 10 24 4z" />
-        </svg>
-        <p class="racha__valor" id="racha">0 días</p>
-        <p class="racha__mejor" id="mejor-racha" hidden>Mejor racha: 0 días</p>
-      </section>
+            <div class="campo">
+              <label class="campo__etiqueta" for="minutos" data-i18n="formulario.minutos">Minutos</label>
+              <input class="campo__control" type="number" id="minutos" name="minutos" min="1" step="1" inputmode="numeric" placeholder="Ej. 45" data-i18n-placeholder="formulario.ejemploMinutos" aria-describedby="error-minutos" />
+              <p class="campo__error" id="error-minutos" hidden></p>
+            </div>
 
-      <section class="tarjeta cronometro">
-        <h2 class="tarjeta__titulo" data-i18n="cronometro.titulo">Cronómetro</h2>
+            <button class="boton" type="submit" id="guardar" data-i18n="formulario.guardar">Guardar sesión</button>
+            <button class="boton boton--secundario" type="button" id="cancelar-edicion" hidden data-i18n="formulario.cancelar">Cancelar</button>
+          </form>
+        </section>
 
-        <!-- El reloj NO es aria-live: un lector de pantalla que lee los
-             segundos cada vez es inservible. Lo que se anuncia es el cambio de
-             estado, en un aviso aparte (ver cronometro.anuncio). -->
-        <p class="cronometro__tiempo" id="cronometro-tiempo">00:00</p>
-        <p class="cronometro__estado" id="cronometro-estado">Listo para empezar</p>
-        <p class="visualmente-oculto" id="cronometro-anuncio" aria-live="polite"></p>
+        <!-- Cronómetro: el otro camino para medir el rato. -->
+        <section class="tarjeta card-crono cronometro">
+          <h2 class="tarjeta__titulo" data-i18n="cronometro.titulo">Cronómetro</h2>
 
-        <div class="cronometro__botones">
-          <button class="boton" type="button" id="cronometro-iniciar" data-i18n="cronometro.iniciar">
-            Iniciar
-          </button>
-          <!-- El texto de este lo pone el JS: cambia entre "Pausar" y "Reanudar". -->
-          <button class="boton boton--secundario" type="button" id="cronometro-alternar" hidden>
-            Pausar
-          </button>
-          <button class="boton" type="button" id="cronometro-terminar" hidden data-i18n="cronometro.terminar">
-            Terminar
-          </button>
-          <!-- OJO: sin "display" en estilos/componentes.css, se oculta con el atributo hidden. -->
-          <button class="boton boton--peligro" type="button" id="cronometro-descartar" hidden data-i18n="cronometro.descartar">
-            Descartar
-          </button>
-        </div>
+          <p class="cronometro__tiempo" id="cronometro-tiempo">00:00</p>
+          <p class="cronometro__estado" id="cronometro-estado">Listo para empezar</p>
+          <p class="visualmente-oculto" id="cronometro-anuncio" aria-live="polite"></p>
 
-        <p class="cronometro__ayuda" data-i18n="cronometro.ayuda">
-          Al terminar se rellenan los minutos en el formulario.
-        </p>
-      </section>
-
-      <section class="tarjeta">
-        <h2 class="tarjeta__titulo" data-i18n="meta.titulo">Meta diaria</h2>
-
-        <div class="campo campo--meta">
-          <label class="campo__etiqueta" for="meta" data-i18n="meta.etiqueta">Minutos al día</label>
-          <input
-            class="campo__control campo__control--corto"
-            type="number"
-            id="meta"
-            min="1"
-            step="1"
-            inputmode="numeric"
-            aria-describedby="error-meta"
-          />
-          <p class="campo__error" id="error-meta" hidden></p>
-        </div>
-
-        <p class="meta__texto" id="meta-texto">0 / 30 min</p>
-        <!-- La pista recorta el relleno con overflow: la barra no puede desbordarse. -->
-        <div class="barra" id="barra">
-          <div class="barra__relleno" id="barra-relleno"></div>
-        </div>
-        <p class="meta__cumplida" id="meta-cumplida" hidden data-i18n="meta.cumplida">¡Meta conseguida!</p>
-      </section>
-
-      <section class="tarjeta">
-        <h2 class="tarjeta__titulo" data-i18n="calendario.titulo">Últimos 28 días</h2>
-        <div class="calendario" id="calendario"></div>
-        <p class="leyenda" id="leyenda"></p>
-      </section>
-
-      <section class="tarjeta">
-        <h2 class="tarjeta__titulo" data-i18n="formulario.titulo">Nueva sesión</h2>
-
-        <!-- novalidate: los errores los mostramos nosotros, junto a cada campo. -->
-        <form id="formulario" class="formulario" novalidate>
-          <div class="campo">
-            <label class="campo__etiqueta" for="fecha" data-i18n="formulario.fecha">Fecha</label>
-            <input class="campo__control" type="date" id="fecha" name="fecha" aria-describedby="error-fecha" />
-            <p class="campo__error" id="error-fecha" hidden></p>
+          <div class="cronometro__botones">
+            <button class="boton" type="button" id="cronometro-iniciar" data-i18n="cronometro.iniciar">
+              Iniciar
+            </button>
+            <button class="boton boton--secundario" type="button" id="cronometro-alternar" hidden>
+              Pausar
+            </button>
+            <button class="boton" type="button" id="cronometro-terminar" hidden data-i18n="cronometro.terminar">
+              Terminar
+            </button>
+            <button class="boton boton--peligro" type="button" id="cronometro-descartar" hidden data-i18n="cronometro.descartar">
+              Descartar
+            </button>
           </div>
 
-          <div class="campo">
-            <label class="campo__etiqueta" for="tema" data-i18n="formulario.tema">Tema</label>
-            <input
-              class="campo__control"
-              type="text"
-              id="tema"
-              name="tema"
-              placeholder="Ej. Arrays y LinkedList"
-              autocomplete="off"
-              data-i18n-placeholder="formulario.ejemploTema"
-              aria-describedby="error-tema"
-            />
-            <p class="campo__error" id="error-tema" hidden></p>
+          <p class="cronometro__ayuda" data-i18n="cronometro.ayuda">
+            Al terminar se rellenan los minutos en el formulario.
+          </p>
+        </section>
+
+        <!-- Lista de sesiones: el historial, de más reciente a más antigua. -->
+        <section class="tarjeta card-sesiones">
+          <h2 class="tarjeta__titulo" data-i18n="sesiones.titulo">Sesiones</h2>
+          <ul class="sesiones" id="sesiones"></ul>
+          <p class="vacio" id="sin-sesiones" data-i18n="sesiones.vacio">
+            Todavía no has registrado ninguna sesión.
+          </p>
+        </section>
+      </div>
+
+      <!-- Panel de estadísticas: abajo y a ancho completo. -->
+      <section class="tarjeta panel" id="panel" aria-labelledby="panel-titulo">
+        <h2 class="tarjeta__titulo" id="panel-titulo" data-i18n="panel.titulo">Estadísticas</h2>
+
+        <fieldset class="ajustes panel__filtros">
+          <legend class="ajustes__leyenda" data-i18n="panel.periodo">Periodo</legend>
+          <div class="ajustes__grupo">
+            <input class="ajustes__radio" type="radio" name="periodo" id="periodo-7" value="7" checked />
+            <label class="ajustes__opcion" for="periodo-7">
+              <span data-i18n="panel.ultimos7">7 días</span>
+            </label>
+            <input class="ajustes__radio" type="radio" name="periodo" id="periodo-30" value="30" />
+            <label class="ajustes__opcion" for="periodo-30">
+              <span data-i18n="panel.ultimos30">30 días</span>
+            </label>
+            <input class="ajustes__radio" type="radio" name="periodo" id="periodo-todo" value="0" />
+            <label class="ajustes__opcion" for="periodo-todo">
+              <span data-i18n="panel.todo">Todo</span>
+            </label>
           </div>
+        </fieldset>
 
-          <div class="campo">
-            <label class="campo__etiqueta" for="minutos" data-i18n="formulario.minutos">Minutos</label>
-            <input
-              class="campo__control"
-              type="number"
-              id="minutos"
-              name="minutos"
-              min="1"
-              step="1"
-              inputmode="numeric"
-              placeholder="Ej. 45"
-              data-i18n-placeholder="formulario.ejemploMinutos"
-              aria-describedby="error-minutos"
-            />
-            <p class="campo__error" id="error-minutos" hidden></p>
-          </div>
+        <ul class="kpis">
+          <li class="kpi">
+            <span class="kpi__valor" id="kpi-total">0</span>
+            <span class="kpi__etiqueta" data-i18n="panel.totalMinutos">Minutos</span>
+          </li>
+          <li class="kpi">
+            <span class="kpi__valor" id="kpi-media">0</span>
+            <span class="kpi__etiqueta" data-i18n="panel.mediaDiaria">Media diaria</span>
+          </li>
+          <li class="kpi">
+            <span class="kpi__valor" id="kpi-dias">0</span>
+            <span class="kpi__etiqueta" data-i18n="panel.diasConSesion">Días con sesión</span>
+          </li>
+          <li class="kpi">
+            <span class="kpi__valor" id="kpi-sesiones">0</span>
+            <span class="kpi__etiqueta" data-i18n="panel.numSesiones">Sesiones</span>
+          </li>
+        </ul>
 
-          <button class="boton" type="submit" id="guardar" data-i18n="formulario.guardar">Guardar sesión</button>
-        <!-- OJO: sin "display" en estilos/componentes.css, se oculta con el atributo hidden. -->
-        <button
-          class="boton boton--secundario"
-          type="button"
-          id="cancelar-edicion"
-          hidden
-          data-i18n="formulario.cancelar"
-        >
-          Cancelar
-        </button>
-        </form>
-      </section>
+        <figure class="grafico">
+          <figcaption class="grafico__titulo" id="grafico-titulo" data-i18n="panel.minutosPorDia">
+            Minutos por día
+          </figcaption>
+          <!-- El SVG lo construye el panel: con 7 o 30 días cambia el número de
+               barras y la etiqueta de cada una. Se pone role="img" con un
+               aria-label-resumen porque los números que importan ya están arriba,
+               en los KPI. -->
+          <svg
+            class="grafico__svg"
+            id="grafico-dias"
+            viewBox="0 0 280 108"
+            role="img"
+            aria-labelledby="grafico-titulo"
+          ></svg>
+          <p class="grafico__ayuda" data-i18n="panel.ayudaGrafico">
+            Pasa el ratón por una barra para ver el día.
+          </p>
+          <!-- Con el periodo "todo" el gráfico sigue teachendo los últimos 30 días, así
+               que hay que decirlo: si no, los KPI de toda la vida y el gráfico parecerían
+               medir lo mismo. Se oculta con el atributo hidden, nunca con display. -->
+          <p class="grafico__nota" id="grafico-nota" hidden data-i18n="panel.ultimos30Nota">
+            El gráfico muestra siempre los últimos 30 días.
+          </p>
+        </figure>
 
-      <section class="tarjeta">
-        <h2 class="tarjeta__titulo" data-i18n="sesiones.titulo">Sesiones</h2>
-        <ul class="sesiones" id="sesiones"></ul>
-        <p class="vacio" id="sin-sesiones" data-i18n="sesiones.vacio">
-          Todavía no has registrado ninguna sesión.
+        <h3 class="panel__subtitulo" data-i18n="panel.reparto">Reparto del tiempo</h3>
+        <ul class="reparto" id="reparto"></ul>
+        <p class="reparto__vacio" id="reparto-vacio" hidden data-i18n="panel.sinDatos">
+          Todavía no hay sesiones en este periodo.
         </p>
       </section>
     </main>
@@ -284,15 +342,7 @@
           <label class="campo__etiqueta" for="enfoque-tema" data-i18n="enfoque.temaEtiqueta">
             Qué vas a estudiar
           </label>
-          <input
-            class="campo__control"
-            type="text"
-            id="enfoque-tema"
-            autocomplete="off"
-            placeholder="Ej. Arrays y LinkedList"
-            data-i18n-placeholder="enfoque.temaEjemplo"
-            aria-describedby="error-enfoque-tema"
-          />
+          <input class="campo__control" type="text" id="enfoque-tema" autocomplete="off" placeholder="Ej. Arrays y LinkedList" data-i18n-placeholder="enfoque.temaEjemplo" aria-describedby="error-enfoque-tema" />
           <p class="campo__error" id="error-enfoque-tema" hidden></p>
         </div>
 
@@ -300,16 +350,7 @@
           <label class="campo__etiqueta" for="enfoque-objetivo" data-i18n="enfoque.objetivoEtiqueta">
             Objetivo en minutos
           </label>
-          <input
-            class="campo__control campo__control--corto"
-            type="number"
-            id="enfoque-objetivo"
-            min="1"
-            max="480"
-            step="5"
-            inputmode="numeric"
-            aria-describedby="enfoque-ayuda error-enfoque-objetivo"
-          />
+          <input class="campo__control campo__control--corto" type="number" id="enfoque-objetivo" min="1" max="480" step="5" inputmode="numeric" aria-describedby="enfoque-ayuda error-enfoque-objetivo" />
           <p class="campo__ayuda" id="enfoque-ayuda" data-i18n="enfoque.objetivoAyuda">
             Es un objetivo, no un límite: puedes seguir estudundo al llegar.
           </p>
@@ -354,81 +395,6 @@
         Salir
       </button>
     </div>
-
-    <!-- Panel de estadísticas. Su aspecto va en estilos/panel.css y su lógica en
-         js/panel.js, que se cargan antes que interfaz.js. -->
-    <section class="tarjeta panel" id="panel" aria-labelledby="panel-titulo">
-      <h2 class="tarjeta__titulo" id="panel-titulo" data-i18n="panel.titulo">Estadísticas</h2>
-
-      <fieldset class="ajustes panel__filtros">
-        <legend class="ajustes__leyenda" data-i18n="panel.periodo">Periodo</legend>
-        <div class="ajustes__grupo">
-          <input class="ajustes__radio" type="radio" name="periodo" id="periodo-7" value="7" checked />
-          <label class="ajustes__opcion" for="periodo-7">
-            <span data-i18n="panel.ultimos7">7 días</span>
-          </label>
-          <input class="ajustes__radio" type="radio" name="periodo" id="periodo-30" value="30" />
-          <label class="ajustes__opcion" for="periodo-30">
-            <span data-i18n="panel.ultimos30">30 días</span>
-          </label>
-          <input class="ajustes__radio" type="radio" name="periodo" id="periodo-todo" value="0" />
-          <label class="ajustes__opcion" for="periodo-todo">
-            <span data-i18n="panel.todo">Todo</span>
-          </label>
-        </div>
-      </fieldset>
-
-      <ul class="kpis">
-        <li class="kpi">
-          <span class="kpi__valor" id="kpi-total">0</span>
-          <span class="kpi__etiqueta" data-i18n="panel.totalMinutos">Minutos</span>
-        </li>
-        <li class="kpi">
-          <span class="kpi__valor" id="kpi-media">0</span>
-          <span class="kpi__etiqueta" data-i18n="panel.mediaDiaria">Media diaria</span>
-        </li>
-        <li class="kpi">
-          <span class="kpi__valor" id="kpi-dias">0</span>
-          <span class="kpi__etiqueta" data-i18n="panel.diasConSesion">Días con sesión</span>
-        </li>
-        <li class="kpi">
-          <span class="kpi__valor" id="kpi-sesiones">0</span>
-          <span class="kpi__etiqueta" data-i18n="panel.numSesiones">Sesiones</span>
-        </li>
-      </ul>
-
-      <figure class="grafico">
-        <figcaption class="grafico__titulo" id="grafico-titulo" data-i18n="panel.minutosPorDia">
-          Minutos por día
-        </figcaption>
-        <!-- El SVG lo construye el panel: con 7 o 30 días cambia el número de
-             barras y la etiqueta de cada una. Se pone role="img" con un
-             aria-label-resumen porque los números que importan ya están arriba,
-             en los KPI. -->
-        <svg
-          class="grafico__svg"
-          id="grafico-dias"
-          viewBox="0 0 280 108"
-          role="img"
-          aria-labelledby="grafico-titulo"
-        ></svg>
-<p class="grafico__ayuda" data-i18n="panel.ayudaGrafico">
-Pasa el ratón por una barra para ver el día.
-</p>
-<!-- Con el periodo "todo" el gráfico sigue teachendo los últimos 30 días, así
-que hay que decirlo: si no, los KPI de toda la vida y el gráfico parecerían
-medir lo mismo. Se oculta con el atributo hidden, nunca con display. -->
-<p class="grafico__nota" id="grafico-nota" hidden data-i18n="panel.ultimos30Nota">
-El gráfico muestra siempre los últimos 30 días.
-</p>
-      </figure>
-
-      <h3 class="panel__subtitulo" data-i18n="panel.reparto">Reparto del tiempo</h3>
-      <ul class="reparto" id="reparto"></ul>
-      <p class="reparto__vacio" id="reparto-vacio" hidden data-i18n="panel.sinDatos">
-        Todavía no hay sesiones en este periodo.
-      </p>
-    </section>
 
     <!--
       Los scripts van en este orden y en este orden importa:

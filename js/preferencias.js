@@ -48,7 +48,7 @@ Diario.registrar('preferencias', (function () {
     // cuenta al ser un grupo de radios: así el estado no depende de una
     // casualidad del navegador y se puede comprobar en las pruebas.
     for (const otro of VALORES) {
-      const radio = document.getElementById(`tema-${otro}`);
+      const radio = document.getElementById(`cabecera-tema-${otro}`);
       if (radio) radio.checked = otro === valor;
     }
   }
@@ -63,7 +63,7 @@ Diario.registrar('preferencias', (function () {
     aplicar(guardada, consulta.matches);
 
     for (const valor of VALORES) {
-      const radio = document.getElementById(`tema-${valor}`);
+      const radio = document.getElementById(`cabecera-tema-${valor}`);
       if (radio) radio.addEventListener('change', () => elegirTema(valor));
     }
 
@@ -74,7 +74,7 @@ Diario.registrar('preferencias', (function () {
     aplicarMovimiento(movimiento);
 
     for (const valor of VALORES_MOVIMIENTO) {
-      const radio = document.getElementById(`movimiento-${valor}`);
+      const radio = document.getElementById(`cabecera-movimiento-${valor}`);
       if (radio) radio.addEventListener('change', () => elegirMovimiento(valor));
     }
 
@@ -116,7 +116,7 @@ Diario.registrar('preferencias', (function () {
 
   function marcarMovimientoEnElSelector(valor) {
     for (const otro of VALORES_MOVIMIENTO) {
-      const radio = document.getElementById(`movimiento-${otro}`);
+      const radio = document.getElementById(`cabecera-movimiento-${otro}`);
       if (radio) radio.checked = otro === valor;
     }
   }

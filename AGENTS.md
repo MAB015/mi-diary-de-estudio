@@ -101,7 +101,7 @@ Vale la pena saber por qué se chose esto y no un `app.js` de 2.600 líneas: es 
 2. Tres periodos y ninguno más: 7 días, 30 días y todo. "Todo" **excluye las fechas futuras**, igual que la racha: una sesión apuntada al futuro no es estudio.
 3. **El gráfico tiene tope de 30 días aunque el periodo sea todo.** Por eso `#grafico-nota` avisa de ello con el atributo `hidden`: los KPI de toda la vida y el gráfico de 30 barras no miden lo mismo, y sin la nota se leerían como si sí. La nota **no puede llevar `display`** en `panel.css` (misma trampa que `.campo__error`).
 4. Los KPI se calculan con `resumen(sesiones)`, contando **fechas únicas de las sesiones**, nunca desde las barras: con "todo", contar desde el gráfico de 30 días dejaría fuera la historia.
-5. El gráfico se construye con `document.createElementNS` y nodos SVG. Un `<rect>` dentro de un `innerHTML` no es un elemento y no lleva `<title>`. La barra más alta se marca con la clase combinada `barra barra--maxima` (en SVG el atributo no se separa solo): en las pruebas hay que buscar la clase **dentro** de la cadena, no compararla entera.
+5. El gráfico se construye con `document.createElementNS` y nodos SVG. Un `<rect>` dentro de un `innerHTML` no es un elemento y no lleva `<title>`. La barra más alta se marca con la clase combinada `barra-dia barra--maxima` (en SVG el atributo no se separa solo): en las pruebas hay que buscar la clase **dentro** de la cadena, no compararla entera.
 6. El SVG lleva `role="img"` con un `aria-label` resumen que se escribe en `pintarGrafico()`: los números que importan ya están arriba, en los KPI, y ese texto es el resumen para quien no ve las barras. Cada barra añade su fecha larga y sus minutos en un `<title>`.
 7. `#reparto-vacio` se oculta con `hidden` y no lleva `display`; la lista se construye con `createElement` y el ancho de cada carril va en `style.width` porque son datos, no estados.
 8. El reparto se queda con los **cinco primeros** temas: una lista de veinte no es un resumen y ocupa media pantalla. El desempate es alfabético para que el orden sea estable.
@@ -118,6 +118,15 @@ El encargo de la fase decía "pestañas", y se的实现 se decidió al revés a 
 - **Móvil**: a 375 px el panel mide unos 450 px con KPI y gráfico; el reparto son 250 px más. Como mucho se ahorra un desplazamiento, y se paga con dos toques.
 
 El filtro de periodo hace de navegación: 7 días / 30 días / todo, con los tres a la vista. Si algún día hacen falta pestañas de verdad, que sea porque hay una tercera vista, no por moda.
+
+## Estructura de pantalla (rediseño v4)
+
+1. **Cabecera pegajosa** (`<header class="cabecera">`): logo `ascua` y, en la misma fila, los selectores de tema, idioma, sonido y movimiento — ya no hay `.ajustes` ni fieldsets sueltos en el cuerpo. Sus radios son `cabecera-tema-*`, `cabecera-idioma-*`, `cabecera-movimiento-*` y la casilla `#cabecera-sonido`; todos con label visible. No use `.barra`: quedó reservado para la meta (`#barra`, `.barra__relleno`, `.barra--cumplida`).
+2. **Portada** (`.portada`): una línea y la CTA grande de Empezar a estudiar.
+3. **Tablero bento** (`.tablero`): grid de 12 columnas a partir de 60rem. Izquierda `card-progreso` + `card-calendario`, centro `card-accion` + `card-crono`, derecha `card-sesiones` a toda la altura. Sin esa regla el bento no se abre.
+4. **Racha y meta compactas** dentro de `card-progreso`: el bloque de racha conserva la clase `.bloque.racha` y lo de la meta `.bloque.meta`. La sección lleva las clases `tarjeta card-progreso racha racha--N`: la clase `racha--N` define las variables de tramo, y el aspecto pastel lo pone `.bloque.racha`.
+5. **Panel** sigue existiendo pero a ancho completo debajo del tablero.
+6. El gráfico SVG usa la clase `barra-dia` (antes `barra`), para no chocar con la barra de meta ni con la cabecera.
 
 ## Tema claro y oscuro
 
@@ -143,7 +152,7 @@ El filtro de periodo hace de navegación: 7 días / 30 días / todo, con los tre
 ## Movimiento
 
 1. Todo movimiento pasa por tokens (`--d-micro`, `--d-estandar`, `--d-grande`, `--e-salida`, `--e-entrada`) y por la regla final de `componentes.css` que respeta `prefers-reduced-motion`.
-2. El interruptor visible es un `<fieldset>` de **dos radios** (`movimiento-sistema` y `movimiento-reducido`), como el tema: "Sistema" y "Reducido". **No hay opción "Completo"**: una preferencia del SO no se puede desactivar con CSS, así que prometerlo sería mentir sobre lo que hace el selector.
+2. El interruptor visible es un `<fieldset>` de **dos radios** (`cabecera-movimiento-sistema` y `cabecera-movimiento-reducido`), como el tema: "Sistema" y "Reducido". **No hay opción "Completo"**: una preferencia del SO no se puede desactivar con CSS, así que prometerlo sería mentir sobre lo que hace el selector.
 3. Solo `reducido` pone atributo: `data-movimiento="reducido"` en `<html>`. "Sistema" lo quita, porque sin atributo manda el `@media` y así el sistema sigue siendo quien decide. La clave se aplica también en el `<script>` inline de `<head>` (antes de los `<link>`), por el mismo motivo que el tema: si se aplicara al final, la primera transición saldría sin querer.
 4. La regla de CSS está **escrita dos veces** a propósito (el `@media` y el selector del atributo) porque una media query no puede meter selectores dentro. Si añades otro sitio que anime algo, los dos bloques lo cubren; no hace falta tocar nada más.
 5. Aun así, **no añadas movimiento automático de más de 5 s** (fondos animados, partículas): reducir el movimiento no es "no mover nada" y un bucle infinito sigue molestando con `animation-iteration-count: 1`.
@@ -152,7 +161,7 @@ El filtro de periodo hace de navegación: 7 días / 30 días / todo, con los tre
 ## Sonido
 
 1. **Seis tonos generados, cero ficheros.** `js/sonido.js` usa osciladores de la Web Audio API (`guardado` 660 Hz, `error` 180, `logro` 880, `reloj` 520, `pausa` 300, `fin` 440; ninguno pasa de 0,25 s). No hay `vendor/` ni audio binario: la app sigue abriéndose con doble clic.
-2. **Apagado por defecto** (`diario-de-estudio.sonido` = `"no"`). El interruptor es una casilla (`#sonido-activo`), no radios: es un sí/no.
+2. **Apagado por defecto** (`diario-de-estudio.sonido` = `"no"`). El interruptor es una casilla (`#cabecera-sonido`), no radios: es un sí/no.
 3. **Un sonido nunca rompe nada.** `tocar()` va enteramente en `try/catch` y devuelve `true`/`false`: sin Web Audio, con el audio en pausa o lanzando, la app sigue (el arnés lo comprueba en los tres casos).
 4. **El `AudioContext` se crea la primera vez que suena, no al cargar**: un contexto sin gesto del usuario queda en pausa y gasta recursos. Al apagarlo se `close()`a.
 5. **No suena con la pestaña en segundo plano** (`document.hidden`): un cronómetro pitando en una pestaña que no miras es una molestía.

@@ -68,7 +68,7 @@ Diario.registrar('interfaz', (function () {
     // La llama crece por tramos y no por cada día: a partir de 30 días ya
     // no cabe más, y un número que sube cada vez daría la sensación de que
     // el esfuerzo diario no cuenta. El color y el tamaño van en el CSS.
-    tarjetaRacha.className = `tarjeta racha racha--${tramoDeLlama(dias)}`;
+    tarjetaRacha.className = `tarjeta card-progreso racha racha--${tramoDeLlama(dias)}`;
 
     // El tono de logro cuando la llama pasa a un tramo nuevo: es el momento que
     // más merece un aviso. Solo si crece, y solo si ya había llama antes, para
