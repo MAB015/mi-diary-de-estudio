@@ -541,7 +541,7 @@ Diario.registrar('textos', (function () {
     traducirPagina();
 
     for (const idioma of IDIOMAS) {
-      const radio = document.getElementById(`idioma-${idioma}`);
+      const radio = document.getElementById(`cabecera-idioma-${idioma}`);
       if (radio) radio.addEventListener('change', () => cambiarIdioma(idioma));
     }
   }
