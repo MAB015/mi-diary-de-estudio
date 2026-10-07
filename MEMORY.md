@@ -37,6 +37,7 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - El movimiento tiene solo **dos** opciones: una preferencia del SO no se puede desactivar con CSS, así que "Completo" sería una mentira.
 - **El sonido se genera, no se carga**: osciladores de Web Audio, cero ficheros, y cada `tocar()` va en `try/catch` — sin audio la app sigue igual.
 - El tono de logro suena al **cruzar** (meta o tramo de llama), no al repintar: cargar la página con todo cumplido nunca suena.
+- **Constitución del proyecto** en `docs/constitution.md`: seis principios innegociables (stack puro, AGENTS.md manda sobre el código, lógica e interfaz separadas, tests sin instalar nada, datos solo en el navegador, español en el código y tres idiomas en la interfaz). Un cambio que rompa uno, no se mergea.
 
 ## Aprendizajes y errores a evitar
 - Varios `<script src>` clásicos cargan desde `file://`; un módulo ES falla con `blocked by CORS policy`.
