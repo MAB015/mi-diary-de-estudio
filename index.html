@@ -61,28 +61,32 @@
          marca y los controles entren apretados en cualquier pantalla. -->
     <header class="cabecera">
       <div class="cabecera__dentro">
-        <a href="#contenido" class="marca" aria-label="Ascua — Diario de estudio">
-          <svg class="marca__llama" viewBox="0 0 48 60" aria-hidden="true" focusable="false">
-            <path d="M24 4c2 8-6 10-6 17a8 8 0 0 0 16 0c0-4-2-7-4-9 4 1 8 6 8 13 0 10-7 17-14 17S10 35 10 25C10 14 20 10 24 4z" />
-          </svg>
-          <span class="marca__texto">ascua</span>
-        </a>
+        <!-- El h1 va fuera del enlace: es el único título de nivel 1 de la página,
+             y el enlace sigue siendo el enlace. -->
+        <h1 class="marca__titulo">
+          <a href="#contenido" class="marca">
+            <svg class="marca__llama" viewBox="0 0 48 60" aria-hidden="true" focusable="false">
+              <path d="M24 4c2 8-6 10-6 17a8 8 0 0 0 16 0c0-4-2-7-4-9 4 1 8 6 8 13 0 10-7 17-14 17S10 35 10 25C10 14 20 10 24 4z" />
+            </svg>
+            <span class="marca__texto">ascua</span>
+          </a>
+        </h1>
 
         <!-- Tema -->
-        <fieldset class="cabecera__campo radios" role="radiogroup" aria-label="Tema">
-          <input class="cabecera__radio" type="radio" name="tema" id="cabecera-tema-sistema" value="sistema" checked aria-labelledby="tema-titulo" />
+        <fieldset class="cabecera__campo radios" role="radiogroup" aria-labelledby="tema-titulo">
+          <input class="cabecera__radio" type="radio" name="tema" id="cabecera-tema-sistema" value="sistema" checked />
           <label class="cabecera__opcion" for="cabecera-tema-sistema">
             <svg class="cabecera__icono" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg>
             <span class="cabecera__etiqueta" data-i18n="ajustes.temaSistema">Sistema</span>
           </label>
 
-          <input class="cabecera__radio" type="radio" name="tema" id="cabecera-tema-claro" value="claro" aria-labelledby="tema-titulo" />
+          <input class="cabecera__radio" type="radio" name="tema" id="cabecera-tema-claro" value="claro" />
           <label class="cabecera__opcion" for="cabecera-tema-claro">
             <svg class="cabecera__icono" aria-hidden="true"><circle cx="12" cy="12" r="4.5" /><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8" /></svg>
             <span class="cabecera__etiqueta" data-i18n="ajustes.temaClaro">Claro</span>
           </label>
 
-          <input class="cabecera__radio" type="radio" name="tema" id="cabecera-tema-oscuro" value="oscuro" aria-labelledby="tema-titulo" />
+          <input class="cabecera__radio" type="radio" name="tema" id="cabecera-tema-oscuro" value="oscuro" />
           <label class="cabecera__opcion" for="cabecera-tema-oscuro">
             <svg class="cabecera__icono" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5z" /></svg>
             <span class="cabecera__etiqueta" data-i18n="ajustes.temaOscuro">Oscuro</span>
@@ -91,21 +95,21 @@
         </fieldset>
 
         <!-- Idioma -->
-        <fieldset class="cabecera__campo radios" role="radiogroup" aria-label="Idioma">
-          <input class="cabecera__radio" type="radio" name="idioma" id="cabecera-idioma-es" value="es" checked aria-labelledby="idioma-titulo" />
+        <fieldset class="cabecera__campo radios" role="radiogroup" aria-labelledby="idioma-titulo">
+          <input class="cabecera__radio" type="radio" name="idioma" id="cabecera-idioma-es" value="es" checked />
           <label class="cabecera__opcion" for="cabecera-idioma-es">ES</label>
 
-          <input class="cabecera__radio" type="radio" name="idioma" id="cabecera-idioma-en" value="en" aria-labelledby="idioma-titulo" />
+          <input class="cabecera__radio" type="radio" name="idioma" id="cabecera-idioma-en" value="en" />
           <label class="cabecera__opcion" for="cabecera-idioma-en">EN</label>
 
-          <input class="cabecera__radio" type="radio" name="idioma" id="cabecera-idioma-fr" value="fr" aria-labelledby="idioma-titulo" />
+          <input class="cabecera__radio" type="radio" name="idioma" id="cabecera-idioma-fr" value="fr" />
           <label class="cabecera__opcion" for="cabecera-idioma-fr">FR</label>
           <span id="idioma-titulo" class="visualmente-oculto" data-i18n="ajustes.idiomaLeyenda">Idioma</span>
         </fieldset>
 
         <!-- Sonido -->
-        <fieldset class="cabecera__campo sonido" aria-label="Sonido">
-          <input class="cabecera__casilla" type="checkbox" id="cabecera-sonido" aria-labelledby="sonido-titulo" />
+        <fieldset class="cabecera__campo sonido" aria-labelledby="sonido-titulo">
+          <input class="cabecera__casilla" type="checkbox" id="cabecera-sonido" />
           <label class="cabecera__opcion cabecera__toggle" for="cabecera-sonido" id="cabecera-sonido-opcion">
             <svg class="cabecera__icono icono-altavoz" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" /><path d="M15.5 9.5a4 4 0 0 1 0 5M18.5 7a7.5 7.5 0 0 1 0 10" /></svg>
             <svg class="cabecera__icono icono-altavoz-mudo" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" /><path d="M16 10l4 4M20 10l-4 4" /></svg>
@@ -115,14 +119,14 @@
         </fieldset>
 
         <!-- Movimiento -->
-        <fieldset class="cabecera__campo radios" role="radiogroup" aria-label="Movimiento">
-          <input class="cabecera__radio" type="radio" name="movimiento" id="cabecera-movimiento-sistema" value="sistema" checked aria-labelledby="movimiento-titulo" />
+        <fieldset class="cabecera__campo radios" role="radiogroup" aria-labelledby="movimiento-titulo">
+          <input class="cabecera__radio" type="radio" name="movimiento" id="cabecera-movimiento-sistema" value="sistema" checked />
           <label class="cabecera__opcion" for="cabecera-movimiento-sistema">
             <svg class="cabecera__icono" aria-hidden="true"><path d="M8 5v10M16 5v10M5 9h8" /></svg>
             <span class="cabecera__etiqueta" data-i18n="ajustes.movimientoSistema">Sistema</span>
           </label>
 
-          <input class="cabecera__radio" type="radio" name="movimiento" id="cabecera-movimiento-reducido" value="reducido" aria-labelledby="movimiento-titulo" />
+          <input class="cabecera__radio" type="radio" name="movimiento" id="cabecera-movimiento-reducido" value="reducido" />
           <label class="cabecera__opcion" for="cabecera-movimiento-reducido">
             <svg class="cabecera__icono" aria-hidden="true"><path d="M8 9h8M12 5v10M8 5a4 4 0 0 1 8 0" /></svg>
             <span class="cabecera__etiqueta" data-i18n="ajustes.movimientoReducido">Reducido</span>

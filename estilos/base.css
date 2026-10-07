@@ -228,6 +228,18 @@ body {
   }
 }
 
+/* Para que el scroll que pone Chrome al tabular (y los saltos de ancla) deje
+   el elemento con foco por debajo de la cabecera pegajosa, no tapado por ella
+   (WCAG 2.4.11). En móvil la cabecera puede tener hasta 3 filas. */
+html {
+  scroll-padding-top: calc(var(--cabecera-alto) + var(--e-2));
+}
+@media (max-width: 44rem) {
+  html {
+    scroll-padding-top: calc(var(--objetivo) * 3 + var(--e-4));
+  }
+}
+
 /* Accesibilidad: salto de contenido, por si la gente se queda atascada en la
    primera opción de la barra. La clase la pone el HTML y el foco la hace
    visible: nadie se entera de que existe si no la usa. */
@@ -236,6 +248,9 @@ body {
   top: calc(var(--cabecera-alto) + var(--e-2));
   left: var(--e-4);
   z-index: 1000;
+  min-block-size: var(--objetivo);
+  display: inline-flex;
+  align-items: center;
   padding: var(--e-2) var(--e-3);
   background: var(--superficie);
   color: var(--texto);

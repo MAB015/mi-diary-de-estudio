@@ -3,14 +3,14 @@
 Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo que ya no aporte.
 
 ## Estado actual
-- v4 en curso: **Fases 0, (a), (b), (c), (d), (e), (f) y (g) listas**, más rediseño de pantalla (marca Ascua, cabecera compacta, tablero bento, racha/meta compactas). Falta la auditoría WCAG final.
+- v4 **lista**: fases 0-(g), rediseño Ascua (marca, cabecera, bento) y **auditoría WCAG 2.2 AA cerrada el 7/10/2026**: `auditar.js` da 23/23 puntos, 0 fallos y 0 avisos (axe claro/oscuro/best-practice, teclado y foco, reflujo 320/375, objetivos ≥44, i18n es/en/fr, reduced-motion, forced-colors, diálogo de enfoque y pintado con datos).
 - Estructura: `js/nucleo.js`, `js/datos.js`, `js/textos.js`, `js/preferencias.js`, `js/sonido.js`, `js/cronometro.js`, `js/enfoque.js`, `js/panel.js`, `js/interfaz.js` + `estilos/base.css`, `estilos/componentes.css` y `estilos/panel.css`.
 - Funcionalidad: sesiones, racha, mejor racha, meta, calendario, editar/eliminar, cronómetro, modo enfoque, panel de estadísticas, tema, idioma y movimiento.
 - **Fase (g)**: seis tonos generados con Web Audio (sin ficheros), apagado por defecto (`diario-de-estudio.sonido`), checkbox `#cabecera-sonido`. Suena al guardar, al error, al iniciar/pausar/terminar cronómetro y enfoque, al cruzar meta y al subir de tramo de llama; nunca al cargar ni con la pestaña oculta.
 - IDs/clases cambiados en la cabecera: `.barra` → `.cabecera` (radios `cabecera-tema/-idioma/-movimiento-*`), `#sonido-activo` → `#cabecera-sonido`, y las barras del SVG pasan de `.barra` a `.barra-dia`.
 - El arnés `node:vm` original (550 checks) se perdió el 2/10/2026 (truncado a 0 bytes). Reconstruido como un arnés nuevo y funcional en `C:\Users\AERO\AppData\Local\Temp\opencode\test-harness.js`: **83 comprobaciones, 0 fallos**.
 - Datos en `localStorage`: `sesiones`, `meta`, `tema`, `idioma`, `cronometro`, `enfoque`, `movimiento`, `sonido`.
-- Verificado hasta la v4 antigua: 550 comprobaciones en arnés `node:vm` (perdido) + Chrome headless. Verificado ahora: **83 checks** en el arnés nuevo + contrastes 46/46 + bento medido a 375/1280 px.
+- Verificado ahora: arnés nuevo **83/83**, contraste **46/46**, auditoría `auditar.js` **23/23** y bento medido a 375/1280 px.
 - Skill de UI en `.opencode/skills/ui-director-accesible/SKILL.md`, obligatoria para todo lo visual.
 
 ## Decisiones (y por qué)
@@ -50,10 +50,12 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - En `forced-colors` hay que redeclarar los bordes `transparent` como `ButtonText`.
 - Con `--virtual-time-budget` las transiciones no avanzan; `getAnimations()` lista transiciones "en curso" aunque la duración sea 0.00001s: medir `transitionDuration`, no `playState`.
 - Un `aria-live` no puede reescribirse en cada tick: se compara la descripción, no la frase entera.
+- Cabecera pegajosa: `height` fija + `flex-wrap` deja las filas de más pintándose encima de la portada → `min-height` + `display: grid` en la barra; y `scroll-padding-top` en `html` para que el foco no caiga debajo (2.4.11).
+- El input de fecha de Chrome se tabula por segmentos (mes/día/año): el anillo necesita `:focus-within`, y en el arnés los radios 1×1 ocultos hay que medirlos por su `label`, no por el input.
 - En el arnés, `interfaz.arrancar()` **ya corre al final de `js/interfaz.js`**: volver a llamarlo engancha los oyentes dos veces y cada acción se dispara dos veces. Para simular una carga con datos, se siembra el `localStorage` inicial (6º parámetro de `crearContexto`), no se repinta a mano.
 - **Un check multi-línea sin llamar a su IIFE pasa la función, no su resultado**: `JSON.stringify(fn)` es `undefined` y el cuerpo no se ejecuta. El fallo parece un bug y es un paréntesis que falta.
 - En SVG la clase se escribe entera en el atributo; los `<text>` son hijos directos del `<svg>`.
 
 ## Próximos pasos
-- Cerrar con una auditoría WCAG 2.2 AA completa (contrastes ya OK con `contraste.js`).
 - Ampliar el arnés nuevo hacia el tamaño del antiguo (~550 checks) si hace falta más red de seguridad.
+- `push` de los commits locales cuando el usuario lo pida.

@@ -13,10 +13,16 @@
    el teclado y "cuál está elegido" salen del elemento, y la skill exige
    radios, no botones falsos. */
 .cabecera {
+  /* grid + fila que se estira: centra el contenido cuando la barra es más
+     alta que él (min-height) y crece con él cuando son 2-3 filas en móvil. */
+  display: grid;
   position: sticky;
   top: 0;
   z-index: 9;
-  height: var(--cabecera-alto);
+  /* min-height y no height: con flex-wrap, por debajo de ~760 px el contenido
+     se reparte en 2-3 filas y una altura fija lo dejaba pintándose encima de
+     la portada en vez de ensanchar la barra. */
+  min-height: var(--cabecera-alto);
   background: var(--cabecera-fondo);
   border-bottom: 1px solid var(--cabecera-borde);
   box-shadow: var(--cabecera-sombra);
@@ -24,7 +30,7 @@
 
 @media (max-width: 44rem) {
   .cabecera {
-    height: var(--cabecera-alto-mobile);
+    min-height: var(--cabecera-alto-mobile);
   }
 }
 
@@ -32,7 +38,6 @@
   max-width: var(--ancho-max);
   margin: 0 auto;
   padding: 0 var(--e-3);
-  height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -47,9 +52,19 @@
   }
 }
 
+/* El h1 solo envuelve la marca: sin este reset, el tamaño por defecto de
+   h1 (2em) despeinaría toda la cabecera. */
+.marca__titulo {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}
+
 .marca {
   display: inline-flex;
   align-items: center;
+  min-block-size: var(--objetivo);
   gap: var(--e-2);
   text-decoration: none;
   color: var(--marca-color);
@@ -139,6 +154,7 @@
   justify-content: center;
   gap: var(--e-1);
   min-height: var(--objetivo);
+  min-inline-size: var(--objetivo);
   padding: var(--e-2) var(--e-3);
   border-radius: var(--r-pill);
   font-weight: 600;
@@ -632,7 +648,11 @@ body.en-foco .enfoque {
   box-shadow: 0 0 0 3px var(--foco-halo);
 }
 
-.campo__control:focus-visible {
+/* focus-within y no solo focus-visible: el input de fecha de Chrome se abre en
+   segmentos (mes/día/año) y en esos pasos el foco está en el interior del
+   control, no en el input; con :focus el anillo desaparecía a mitad de la fecha. */
+.campo__control:focus-visible,
+.campo__control:focus-within {
   outline: 3px solid var(--foco);
   outline-offset: 1px;
 }
