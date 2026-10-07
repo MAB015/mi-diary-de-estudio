@@ -43,6 +43,7 @@ Diario.registrar('textos', (function () {
     es: {
       'app.nombre': 'Ascua',
       'app.subtitulo': 'Apunta tus sesiones y mantén viva la racha.',
+      'app.saltar': 'Saltar al contenido',
 
       'progreso.titulo': 'Tu progreso',
       'racha.etiqueta': 'Racha actual',
@@ -158,6 +159,7 @@ Diario.registrar('textos', (function () {
     en: {
       'app.nombre': 'Ascua',
       'app.subtitulo': 'Log your sessions and keep the streak alive.',
+      'app.saltar': 'Skip to content',
 
       'progreso.titulo': 'Your progress',
       'racha.etiqueta': 'Current streak',
@@ -271,6 +273,7 @@ Diario.registrar('textos', (function () {
     fr: {
       'app.nombre': "Ascua",
       'app.subtitulo': 'Notez vos sessions et gardez votre série.',
+      'app.saltar': 'Aller au contenu',
 
       'progreso.titulo': 'Votre progression',
       'racha.etiqueta': 'Série actuelle',
