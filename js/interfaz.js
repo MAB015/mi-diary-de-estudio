@@ -28,6 +28,7 @@ Diario.registrar('interfaz', (function () {
   const textoMejorRacha = document.getElementById('mejor-racha');
   const tarjetaRacha = document.getElementById('racha-tarjeta');
   const textoMeta = document.getElementById('meta-texto');
+  const textoSemana = document.getElementById('semana-minutos');
   const barra = document.getElementById('barra');
   const rellenoBarra = document.getElementById('barra-relleno');
   const textoMetaCumplida = document.getElementById('meta-cumplida');
@@ -103,10 +104,19 @@ Diario.registrar('interfaz', (function () {
     metaCumplidaAntes = cumplida;
   }
 
+  /* Los minutos de la semana (lunes a domingo) junto a racha y meta. El valor
+     depende de los datos, así que se repinta aquí y no con data-i18n. */
+  function pintarSemana(sesiones) {
+    textoSemana.textContent = textos.t('sesiones.minutos', {
+      minutos: textos.formatearNumero(datos.minutosDeSemana(sesiones)),
+    });
+  }
+
   /* Repinta todo lo que depende de las sesiones desde un único sitio. */
   function pintarTodo(sesiones) {
     pintarRacha(sesiones);
     pintarMeta(sesiones);
+    pintarSemana(sesiones);
     pintarCalendario(sesiones);
     pintarSesiones(sesiones);
     // El panel lee las sesiones por su cuenta (filtra por periodo), así que no
@@ -451,6 +461,7 @@ Diario.registrar('interfaz', (function () {
     pintarTodo: pintarTodo,
     pintarRacha: pintarRacha,
     pintarMeta: pintarMeta,
+    pintarSemana: pintarSemana,
     pintarSesiones: pintarSesiones,
     pintarCalendario: pintarCalendario,
     pintarLeyenda: pintarLeyenda,

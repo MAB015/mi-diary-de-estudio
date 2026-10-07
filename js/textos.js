@@ -56,6 +56,8 @@ Diario.registrar('textos', (function () {
       'meta.texto': '{minutos} / {meta} min',
       'meta.cumplida': '¡Meta conseguida!',
 
+      'semana.titulo': 'Esta semana',
+
       'cronometro.titulo': 'Cronómetro',
       'cronometro.enMarcha': 'Estudiando',
       'cronometro.enPausa': 'En pausa',
@@ -169,6 +171,8 @@ Diario.registrar('textos', (function () {
       'meta.texto': '{minutos} / {meta} min',
       'meta.cumplida': 'Goal reached!',
 
+      'semana.titulo': 'This week',
+
       'cronometro.titulo': 'Timer',
       'cronometro.enMarcha': 'Studying',
       'cronometro.enPausa': 'Paused',
@@ -279,6 +283,8 @@ Diario.registrar('textos', (function () {
       'meta.error': "L'objectif doit être un nombre entier supérieur à 0.",
       'meta.texto': '{minutos} / {meta} min',
       'meta.cumplida': 'Objectif atteint !',
+
+      'semana.titulo': 'Cette semaine',
 
       'cronometro.titulo': 'Minuteur',
       'cronometro.enMarcha': 'En étude',

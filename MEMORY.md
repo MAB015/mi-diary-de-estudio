@@ -5,12 +5,12 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 ## Estado actual
 - v4 **lista**: fases 0-(g), rediseño Ascua (marca, cabecera, bento) y **auditoría WCAG 2.2 AA cerrada el 7/10/2026**: `auditar.js` da 23/23 puntos, 0 fallos y 0 avisos (axe claro/oscuro/best-practice, teclado y foco, reflujo 320/375, objetivos ≥44, i18n es/en/fr, reduced-motion, forced-colors, diálogo de enfoque y pintado con datos).
 - Estructura: `js/nucleo.js`, `js/datos.js`, `js/textos.js`, `js/preferencias.js`, `js/sonido.js`, `js/cronometro.js`, `js/enfoque.js`, `js/panel.js`, `js/interfaz.js` + `estilos/base.css`, `estilos/componentes.css` y `estilos/panel.css`.
-- Funcionalidad: sesiones, racha, mejor racha, meta, calendario, editar/eliminar, cronómetro, modo enfoque, panel de estadísticas, tema, idioma y movimiento.
+- Funcionalidad: sesiones, racha, mejor racha, meta, minutos de la semana, calendario, editar/eliminar, cronómetro, modo enfoque, panel de estadísticas, tema, idioma y movimiento.
 - **Fase (g)**: seis tonos generados con Web Audio (sin ficheros), apagado por defecto (`diario-de-estudio.sonido`), checkbox `#cabecera-sonido`. Suena al guardar, al error, al iniciar/pausar/terminar cronómetro y enfoque, al cruzar meta y al subir de tramo de llama; nunca al cargar ni con la pestaña oculta.
 - IDs/clases cambiados en la cabecera: `.barra` → `.cabecera` (radios `cabecera-tema/-idioma/-movimiento-*`), `#sonido-activo` → `#cabecera-sonido`, y las barras del SVG pasan de `.barra` a `.barra-dia`.
-- El arnés `node:vm` original (550 checks) se perdió el 2/10/2026 (truncado a 0 bytes). Reconstruido como un arnés nuevo y funcional en `C:\Users\AERO\AppData\Local\Temp\opencode\test-harness.js`: **83 comprobaciones, 0 fallos**.
+- El arnés `node:vm` original (550 checks) se perdió el 2/10/2026 (truncado a 0 bytes). Reconstruido como un arnés nuevo y funcional en `C:\Users\AERO\AppData\Local\Temp\opencode\test-harness.js`: **96 comprobaciones, 0 fallos**.
 - Datos en `localStorage`: `sesiones`, `meta`, `tema`, `idioma`, `cronometro`, `enfoque`, `movimiento`, `sonido`.
-- Verificado ahora: arnés nuevo **83/83**, contraste **46/46**, auditoría `auditar.js` **23/23** y bento medido a 375/1280 px.
+- Verificado ahora: arnés nuevo **96/96** (y en `TZ` Santiago/Auckland/London), contraste **46/46**, auditoría `auditar.js` **23/23** y bento medido a 320/375/1280 px.
 - Skill de UI en `.opencode/skills/ui-director-accesible/SKILL.md`, obligatoria para todo lo visual.
 
 ## Decisiones (y por qué)
@@ -27,6 +27,7 @@ Memoria del proyecto entre sesiones. Máximo ~50 líneas: resume o elimina lo qu
 - Terminar cronómetro o enfoque **no guarda la sesión**, solo rellena el formulario: un único camino para escribir en `localStorage`.
 - El modo enfoque usa `<dialog showModal()>` y una clase en `<body>` (nunca `hidden`); el reloj **cuenta hacia arriba** y el objetivo es un objetivo, no un límite; la pantalla completa es un extra; salir sin terminar **pregunta**.
 - Meta guardada en `change`, sin botón, revierte al último válido; el umbral de "día intenso" del calendario **es la meta**.
+- **Minutos de la semana = semana natural (lunes→domingo)**, no 7 días rodantes (eso es el filtro del panel): tercer bloque en `card-progreso`, siempre visible, sin meta semanal ni sonido nuevo.
 - Calendario de 28 días terminando hoy, con `moverClave()`: cruza meses y años sin código extra.
 - Estado de edición en `idEnEdicion`, no en el DOM; editar conserva el `id`.
 - Mejor racha derivada de las sesiones, nunca guardada; las fechas futuras no cuentan para racha, mejor racha, meta ni calendario.

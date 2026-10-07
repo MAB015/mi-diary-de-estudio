@@ -63,7 +63,7 @@ Vale la pena saber por qué se chose esto y no un `app.js` de 2.600 líneas: es 
 - `localStorage`, clave `diario-de-estudio.movimiento`: `"sistema"` (por defecto) o `"reducido"`. Como con el tema, se guarda la preferencia y no el movimiento efectivo: con `sistema` manda el `@media (prefers-reduced-motion)`.
 - `localStorage`, clave `diario-de-estudio.sonido`: `"no"` (por defecto) o `"si"`. Ver "Sonido".
 - `id` es interno. Sirve para **ordenar** sesiones del mismo día (la más reciente guardada arriba) y para **saber cuál se está editando o borrando**. No lo pongas en la interfaz.
-- Puntos de entrada, por módulo: en `js/datos.js`, `calcularRacha()`, `calcularMejorRacha()`, `leerSesiones()`, `leerMeta()`; en `js/interfaz.js`, `pintarTodo()`, `validar()`, `pintarRacha()`, `pintarMeta()`, `pintarCalendario()`, `pintarSesiones()`. Todo lo demás son satélites de esos.
+- Puntos de entrada, por módulo: en `js/datos.js`, `calcularRacha()`, `calcularMejorRacha()`, `leerSesiones()`, `leerMeta()`, `minutosDeSemana()`; en `js/interfaz.js`, `pintarTodo()`, `validar()`, `pintarRacha()`, `pintarMeta()`, `pintarSemana()`, `pintarCalendario()`, `pintarSesiones()`. Todo lo demás son satélites de esos.
 - `pintarTodo(sesiones)` es el único sitio desde el que se repinta la pantalla entera. Si añades algo que dependa de las sesiones, llámalo desde ahí y no desde el manejador del botón.
 - `index.html` usa `novalidate` a propósito: los errores los pinta la app, no el navegador. Quitarlo hace que aparezcan los tooltips nativos y desaparezcan los mensajes propios.
 
@@ -124,7 +124,7 @@ El filtro de periodo hace de navegación: 7 días / 30 días / todo, con los tre
 1. **Cabecera pegajosa** (`<header class="cabecera">`): logo `ascua` y, en la misma fila, los selectores de tema, idioma, sonido y movimiento — ya no hay `.ajustes` ni fieldsets sueltos en el cuerpo. Sus radios son `cabecera-tema-*`, `cabecera-idioma-*`, `cabecera-movimiento-*` y la casilla `#cabecera-sonido`; todos con label visible. No use `.barra`: quedó reservado para la meta (`#barra`, `.barra__relleno`, `.barra--cumplida`).
 2. **Portada** (`.portada`): una línea y la CTA grande de Empezar a estudiar.
 3. **Tablero bento** (`.tablero`): grid de 12 columnas a partir de 60rem. Izquierda `card-progreso` + `card-calendario`, centro `card-accion` + `card-crono`, derecha `card-sesiones` a toda la altura. Sin esa regla el bento no se abre.
-4. **Racha y meta compactas** dentro de `card-progreso`: el bloque de racha conserva la clase `.bloque.racha` y lo de la meta `.bloque.meta`. La sección lleva las clases `tarjeta card-progreso racha racha--N`: la clase `racha--N` define las variables de tramo, y el aspecto pastel lo pone `.bloque.racha`.
+4. **Racha, meta y minutos de semana compactas** dentro de `card-progreso`: el bloque de racha conserva la clase `.bloque.racha`, lo de la meta `.bloque.meta` y lo de la semana `.bloque.semana` (mismo recuadro que la meta). La sección lleva las clases `tarjeta card-progreso racha racha--N`: la clase `racha--N` define las variables de tramo, y el aspecto pastel lo pone `.bloque.racha`.
 5. **Panel** sigue existiendo pero a ancho completo debajo del tablero.
 6. El gráfico SVG usa la clase `barra-dia` (antes `barra`), para no chocar con la barra de meta ni con la cabecera.
 
@@ -178,6 +178,13 @@ El filtro de periodo hace de navegación: 7 días / 30 días / todo, con los tre
 5. `>= meta` pone la barra en verde y enseña `🎉 ¡Meta conseguida!`.
 6. La meta no afecta a la racha ni a la mejor racha.
 7. Cambia la meta también repinta el calendario, porque el umbral de "día intenso" es la meta (ver abajo).
+
+## Minutos de la semana
+
+1. **Semana natural: lunes a domingo que termina hoy**, no "los últimos 7 días". Eso otro es el filtro del panel (rodante) y son dos preguntas distintas: no lo cambies de sitio sin pensarlo.
+2. El cálculo es `minutosDeSemana()` en `js/datos.js`: la ventana sale de `moverClave(hoy, -(getDay()+6)%7)` (`getDay()` empieza en domingo, por eso el desplazamiento) y se filtra por cadenas `AAAA-MM-DD`. **Las fechas futuras no cuentan**, igual que en racha, mejor racha, meta y calendario.
+3. Se pinta con `pintarSemana()` desde `pintarTodo()`. El número **no** lleva `data-i18n` (depende de los datos): se repinta con `t('sesiones.minutos')` y `formatearNumero()`; solo el rótulo `semana.titulo` es texto fijo.
+4. El bloque va **siempre visible** en `card-progreso` (0 min también se enseña), sin `hidden` y sin `display` en `.bloque.semana` ni `.semana__valor`.
 
 ## Reglas de la racha (no reimplementar sin leer esto)
 

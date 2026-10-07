@@ -260,6 +260,23 @@
   padding: var(--e-3);
 }
 
+/* --- Minutos de la semana: el mismo recuadro que la meta, para que los tres
+   bloques de la tarjeta hablen el mismo idioma visual. El número lleva
+   cifras tabulares para que no baile al repintar. */
+.bloque.semana {
+  border: 1px solid var(--borde);
+  border-radius: var(--r-2);
+  padding: var(--e-3);
+}
+
+.semana__valor {
+  margin: 0;
+  font-size: var(--texto-h3);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--texto);
+}
+
 /* --- Ajustes (tema e idioma) ---
    Dos fieldsets con tres radios nativos cada uno: el grupo, el teclado y el
    anuncio de "cuál está elegido" salen del propio elemento, sin ARIA. */

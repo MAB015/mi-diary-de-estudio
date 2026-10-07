@@ -87,6 +87,23 @@ Diario.registrar('datos', (function () {
     return sesiones.filter((sesion) => sesion.fecha === hoy).reduce((total, sesion) => total + sesion.minutos, 0);
   }
 
+  /*
+   * Minutos de la semana que termina hoy: de lunes a domingo, en hora local.
+   * getDay() cuenta desde el domingo (0), por eso se desplaza un día para
+   * empezar la semana en lunes, que es como se cuenta en español, inglés y
+   * francés. La ventana se recorre con moverClave, así que cruza meses y
+   * años sin código extra, y las fechas futuras no cuentan: igual que en la
+   * racha, la mejor racha, la meta y el calendario.
+   */
+  function minutosDeSemana(sesiones) {
+    const hoy = claveDeFecha(new Date());
+    const diaDeLaSemana = (new Date().getDay() + 6) % 7;
+    const lunes = moverClave(hoy, -diaDeLaSemana);
+    return sesiones
+      .filter((sesion) => sesion.fecha >= lunes && sesion.fecha <= hoy)
+      .reduce((total, sesion) => total + sesion.minutos, 0);
+  }
+
   /* ---------- Racha ---------- */
 
   /*
@@ -152,6 +169,7 @@ Diario.registrar('datos', (function () {
     leerMeta: leerMeta,
     escribirMeta: escribirMeta,
     minutosDeHoy: minutosDeHoy,
+    minutosDeSemana: minutosDeSemana,
     calcularRacha: calcularRacha,
     calcularMejorRacha: calcularMejorRacha,
     minutosPorDia: minutosPorDia,
